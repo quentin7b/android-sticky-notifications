@@ -12,79 +12,84 @@
         android:layout_alignParentBottom="true"
         android:text="@string/create_validate" />
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/validate"
         android:layout_alignParentTop="true"
-        android:layout_margin="15dp"
-        android:orientation="vertical">
+        android:layout_margin="15dp">
 
-        <EditText
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:hint="@string/create_title"
-            android:singleLine="true" />
 
-        <RadioGroup
-            android:id="@+id/radios"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/useless"
-                style="@style/RadioButtonBlueTheme"
+            <EditText
+                android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:hint="@string/create_title"
+                android:singleLine="true" />
+
+            <RadioGroup
+                android:id="@+id/radios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/useless"
+                    style="@style/RadioButtonBlueTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="@string/useless" />
+
+                <RadioButton
+                    android:id="@+id/normal"
+                    style="@style/RadioButtonGreenTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/normal" />
+
+                <RadioButton
+                    android:id="@+id/important"
+                    style="@style/RadioButtonOrangeTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/important" />
+
+                <RadioButton
+                    android:id="@+id/ultra"
+                    style="@style/RadioButtonRedTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/ultra" />
+
+            </RadioGroup>
+
+            <Switch
+                android:id="@+id/stick"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
                 android:checked="true"
-                android:text="@string/useless" />
+                android:text="@string/create_notif" />
 
-            <RadioButton
-                android:id="@+id/normal"
-                style="@style/RadioButtonGreenTheme"
+            <EditText
+                android:id="@+id/content"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/normal" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:hint="@string/create_content" />
 
-            <RadioButton
-                android:id="@+id/important"
-                style="@style/RadioButtonOrangeTheme"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/important" />
-
-            <RadioButton
-                android:id="@+id/ultra"
-                style="@style/RadioButtonRedTheme"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/ultra" />
-
-        </RadioGroup>
-
-        <Switch
-            android:id="@+id/stick"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="15dp"
-            android:checked="true"
-            android:text="@string/create_notif" />
-
-        <EditText
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="@string/create_content" />
-
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
