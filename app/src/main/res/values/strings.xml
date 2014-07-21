@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">Sticky Notifications</string>
+
+
+    <string name="create_note_title">Create</string>
+    <string name="create_title">Title</string>
+    <string name="create_content">Content</string>
+    <string name="create_notif">Show notification</string>
+    <string name="create_delete">Delete</string>
+    <string name="create_validate">Save</string>
+
+    <string name="action_about">About</string>
+    <string name="action_edit">Edit</string>
+
+    <string name="useless">Low priority</string>
+    <string name="normal">Standard priority</string>
+    <string name="important">High priority</string>
+    <string name="ultra">High priority</string>
+
+    <string name="note_deleted">Notification deleted</string>
+    <string name="note_deleted_error">Error while deleting notification</string>
+    <string name="note_retrive_error">Error while retrieving notification</string>
+    <string name="note_saved">Notification saved</string>
+    <string name="note_saved_error">Error while saving notification</string>
+
+    <string name="about_author">Sticky Notifications by Quentin KLEIN</string>
+    <string name="about_version">Version : </string>
+    <string name="about_explain">If you like the app, please mark it and comment on the store. If you have any question/remark, feel free to send me a mail</string>
+    <string name="about_explain_rate">Mark the application ;)</string>
+    <string name="about_explain_complain">A question/remark ?</string>
+    <string name="about_thanks">Special thanks, I use them</string>
+    <string name="about_thanks_androidannotations">androidannotations.org</string>
+    <string name="about_thanks_ormlite">ormlite.com</string>
+    <string name="about_thanks_cards">github.com/Androguide/cardsui-for-android</string>
+    <string name="about_graphics">Icons &amp; Pictures</string>
+    <string name="about_graphics_flat">www.iconfinder.com/iconsets/freecns-cumulus</string>
+
+    <!-- compain -->
+    <string name="complain_choose">Send a remark</string>
+    <string name="complain_subject">Remark on the app</string>
+    <string name="complain_message">Remarks :\n\n\n(Optional) My mail : </string>
+    <string name="complain_error">Error while choosing mail app :/</string>
+
+</resources>

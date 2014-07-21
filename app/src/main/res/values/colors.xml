@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bluetheme_color">#33B5E5</color>
+    <color name="greentheme_color">#99CC00</color>
+    <color name="orangetheme_color">#FFBB33</color>
+    <color name="redtheme_color">#FF4444</color>
+</resources>

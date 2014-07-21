@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Sticky Notifications</string>
+
+    <string name="create_note_title">Créer</string>
+    <string name="create_title">Titre</string>
+    <string name="create_content">Description</string>
+    <string name="create_notif">Afficher une notification</string>
+    <string name="create_delete">Supprimer</string>
+    <string name="create_validate">Enregistrer</string>
+
+    <string name="action_about">A propos</string>
+    <string name="action_edit">Editer</string>
+
+    <string name="useless">Basse priorité</string>
+    <string name="normal">Priorité normale</string>
+    <string name="important">Priorité importante</string>
+    <string name="ultra">Haute priorité</string>
+
+    <string name="note_deleted">Note supprimée</string>
+    <string name="note_deleted_error">Erreur lors de la suppression de la note</string>
+    <string name="note_retrive_error">Erreur lors de la récupération de la note</string>
+    <string name="note_saved">Note enregistrée</string>
+    <string name="note_saved_error">Erreur lors de l\'enregistrement de la note</string>
+
+    <!-- About -->
+    <string name="about_author">Sticky Notifications par Quentin KLEIN</string>
+    <string name="about_version">Version : </string>
+    <string name="about_explain">Si vous aimez cette application, n\'hésitez pas à laisser une note sur le play store avec un petit commentaire. En revanche, pour toute remarque quelle qu\'elle soit, vous pouvez m\'envoyer un mail!</string>
+    <string name="about_explain_rate">Noter l\'application ;)</string>
+    <string name="about_explain_complain">Une remarque ?</string>
+    <string name="about_thanks">Merci à eux, je les utilise</string>
+    <string name="about_thanks_androidannotations">androidannotations.org</string>
+    <string name="about_thanks_ormlite">ormlite.com</string>
+    <string name="about_thanks_cards">github.com/Androguide/cardsui-for-android</string>
+    <string name="about_graphics">Icônes &amp; Images</string>
+    <string name="about_graphics_flat">www.iconfinder.com/iconsets/freecns-cumulus</string>
+
+    <!-- compain -->
+    <string name="complain_choose">Envoyer une remarque</string>
+    <string name="complain_subject">Remarques sur l\'application</string>
+    <string name="complain_message">Remarques :\n\n\n(Optionnel) Mon email : </string>
+    <string name="complain_error">Erreur lors de du choix de l\'application mail</string>
+</resources>

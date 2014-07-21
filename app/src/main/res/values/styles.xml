@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="RadioButtonGreenTheme" parent="android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/greentheme_btn_radio_holo_light</item>
+    </style>
+
+    <style name="RadioButtonBlueTheme" parent="android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/bluetheme_btn_radio_holo_light</item>
+    </style>
+
+    <style name="RadioButtonOrangeTheme" parent="android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/orangetheme_btn_radio_holo_light</item>
+    </style>
+
+    <style name="RadioButtonRedTheme" parent="android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/redtheme_btn_radio_holo_light</item>
+    </style>
+</resources>
