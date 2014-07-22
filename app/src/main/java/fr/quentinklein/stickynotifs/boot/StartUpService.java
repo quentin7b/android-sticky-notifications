@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.analytics.tracking.android.StandardExceptionParser;
 import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.Bean;
@@ -43,6 +46,16 @@ public class StartUpService extends Service {
             stickyNotifications = stickyNotificationDao.queryForAll();
         } catch (SQLException e) {
             Log.e(StartUpService.class.getSimpleName(), "Errow while requesting notes", e);
+            EasyTracker.getInstance(getApplicationContext()).send(
+                    MapBuilder.createException(
+                            new StandardExceptionParser(this, null)
+                                    // Context and optional collection of package names to be used in reporting the exception.
+                                    .getDescription(Thread.currentThread().getName(),
+                                            // The name of the thread on which the exception occurred.
+                                            e),                                  // The exception.
+                            false
+                    ).build()
+            );
         }
         List<StickyNotification> urgentNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.ULTRA);
         List<StickyNotification> importantNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.IMPORTANT);

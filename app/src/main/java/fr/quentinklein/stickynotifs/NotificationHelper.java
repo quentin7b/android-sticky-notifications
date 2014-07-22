@@ -10,6 +10,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.analytics.tracking.android.StandardExceptionParser;
 import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.EBean;
@@ -61,6 +64,16 @@ public class NotificationHelper {
             mNotificationManager.notify(id, mBuilder.build());
         } catch (SQLException e) {
             Log.e(NotificationHelper.class.getSimpleName(), "Error while retribving", e);
+            EasyTracker.getInstance(context.getApplicationContext()).send(
+                    MapBuilder.createException(
+                            new StandardExceptionParser(context, null)
+                                    // Context and optional collection of package names to be used in reporting the exception.
+                                    .getDescription(Thread.currentThread().getName(),
+                                            // The name of the thread on which the exception occurred.
+                                            e),                                  // The exception.
+                            false
+                    ).build()
+            );
         }
     }
 

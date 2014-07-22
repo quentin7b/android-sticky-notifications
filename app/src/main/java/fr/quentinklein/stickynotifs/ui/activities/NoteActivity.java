@@ -2,6 +2,8 @@ package fr.quentinklein.stickynotifs.ui.activities;
 
 import android.support.v7.app.ActionBarActivity;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -35,6 +37,7 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
 
     @AfterViews
     void init() {
+        EasyTracker.getInstance(this).activityStart(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (notificationId != -1) {
             fragment.noteSelected(notificationId);

@@ -9,6 +9,9 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.analytics.tracking.android.StandardExceptionParser;
 import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.AfterViews;
@@ -57,6 +60,16 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
         } catch (SQLException e) {
             Log.e(NoteFragment.class.getSimpleName(), "Can't retrieve note", e);
             Toast.makeText(getActivity(), R.string.note_retrive_error, Toast.LENGTH_SHORT).show();
+            EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                    MapBuilder.createException(
+                            new StandardExceptionParser(getActivity(), null)
+                                    // Context and optional collection of package names to be used in reporting the exception.
+                                    .getDescription(Thread.currentThread().getName(),
+                                            // The name of the thread on which the exception occurred.
+                                            e),                                  // The exception.
+                            false
+                    ).build()
+            );
         }
     }
 
@@ -135,6 +148,16 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
         } catch (SQLException exception) {
             Log.e(NoteFragment.class.getSimpleName(), "Error while saving note", exception);
             Toast.makeText(getActivity(), R.string.note_saved_error, Toast.LENGTH_SHORT).show();
+            EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                    MapBuilder.createException(
+                            new StandardExceptionParser(getActivity(), null)
+                                    // Context and optional collection of package names to be used in reporting the exception.
+                                    .getDescription(Thread.currentThread().getName(),
+                                            // The name of the thread on which the exception occurred.
+                                            exception),                                  // The exception.
+                            false
+                    ).build()
+            );
         }
     }
 
@@ -171,6 +194,16 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
             } catch (SQLException e) {
                 Log.e(NoteFragment.class.getSimpleName(), "Error while deleting note", e);
                 Toast.makeText(getActivity(), R.string.note_deleted_error, Toast.LENGTH_SHORT).show();
+                EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                        MapBuilder.createException(
+                                new StandardExceptionParser(getActivity(), null)
+                                        // Context and optional collection of package names to be used in reporting the exception.
+                                        .getDescription(Thread.currentThread().getName(),
+                                                // The name of the thread on which the exception occurred.
+                                                e),                                  // The exception.
+                                false
+                        ).build()
+                );
             }
         }
     }

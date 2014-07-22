@@ -13,6 +13,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.analytics.tracking.android.StandardExceptionParser;
+
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
@@ -49,6 +54,11 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         if (noteFragment != null && noteFragment.isInLayout()) {
             noteFragment.hideNote();
         }
+    }
+
+    @AfterViews
+    void log() {
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     @OptionsItem(R.id.action_about)
@@ -108,7 +118,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
                         try {
                             context.startActivity(goToMarket);
                         } catch (ActivityNotFoundException e) {
-                            /*EasyTracker.getInstance(context.getApplicationContext()).send(
+                            EasyTracker.getInstance(context.getApplicationContext()).send(
                                     MapBuilder.createException(
                                             new StandardExceptionParser(getContext(), null)
                                                     // Context and optional collection of package names to be used in reporting the exception.
@@ -117,7 +127,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
                                                             e),                                  // The exception.
                                             false
                                     ).build()
-                            );*/
+                            );
                             context.startActivity(
                                     new Intent(Intent.ACTION_VIEW,
                                             Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())
@@ -137,7 +147,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
                             context.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.complain_choose)));
                         } catch (android.content.ActivityNotFoundException ex) {
                             Toast.makeText(getContext(), R.string.complain_error, Toast.LENGTH_SHORT).show();
-                            /*EasyTracker.getInstance(context.getApplicationContext()).send(
+                            EasyTracker.getInstance(context.getApplicationContext()).send(
                                     MapBuilder.createException(
                                             new StandardExceptionParser(getContext(), null)
                                                     // Context and optional collection of package names to be used in reporting the exception.
@@ -146,7 +156,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
                                                             ex),                                  // The exception.
                                             false
                                     ).build()
-                            );*/
+                            );
                             Log.e(NotesListActivity.class.getSimpleName(), "Error while complaining", ex);
                         }
                         break;
@@ -166,6 +176,16 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
                 versionName = pInfo.versionName;
             } catch (PackageManager.NameNotFoundException e) {
                 Log.e(AboutDialog.class.getSimpleName(), "Unable to find version name", e);
+                EasyTracker.getInstance(context.getApplicationContext()).send(
+                        MapBuilder.createException(
+                                new StandardExceptionParser(getContext(), null)
+                                        // Context and optional collection of package names to be used in reporting the exception.
+                                        .getDescription(Thread.currentThread().getName(),
+                                                // The name of the thread on which the exception occurred.
+                                                e),                                  // The exception.
+                                false
+                        ).build()
+                );
             }
 
             TextView version = (TextView) findViewById(R.id.about_version);

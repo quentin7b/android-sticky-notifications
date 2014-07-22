@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import com.fima.cardsui.objects.CardStack;
 import com.fima.cardsui.views.CardUI;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.analytics.tracking.android.StandardExceptionParser;
 import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.Bean;
@@ -54,6 +57,16 @@ public class NotesListFragment extends Fragment {
             stickyNotifications = stickyNotificationDao.queryForAll();
         } catch (SQLException e) {
             Log.e(NotesListFragment.class.getSimpleName(), "Errow while requesting notes", e);
+            EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                    MapBuilder.createException(
+                            new StandardExceptionParser(getActivity(), null)
+                                    // Context and optional collection of package names to be used in reporting the exception.
+                                    .getDescription(Thread.currentThread().getName(),
+                                            // The name of the thread on which the exception occurred.
+                                            e),                                  // The exception.
+                            false
+                    ).build()
+            );
         }
         if (stickyNotifications.size() == 0) {
             // hide detail
@@ -108,6 +121,16 @@ public class NotesListFragment extends Fragment {
                             } catch (SQLException e) {
                                 Log.e(NoteFragment.class.getSimpleName(), "Error while deleting note", e);
                                 Toast.makeText(getActivity(), R.string.note_deleted_error, Toast.LENGTH_SHORT).show();
+                                EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                                        MapBuilder.createException(
+                                                new StandardExceptionParser(getActivity(), null)
+                                                        // Context and optional collection of package names to be used in reporting the exception.
+                                                        .getDescription(Thread.currentThread().getName(),
+                                                                // The name of the thread on which the exception occurred.
+                                                                e),                                  // The exception.
+                                                false
+                                        ).build()
+                                );
                             }
                         }
                     }
