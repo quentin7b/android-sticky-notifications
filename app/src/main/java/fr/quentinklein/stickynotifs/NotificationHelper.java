@@ -98,13 +98,13 @@ public class NotificationHelper {
     private int getSmallIconResource(StickyNotification notification) {
         switch (notification.getDefcon()) {
             case USELESS:
-                return R.drawable.blue_square_paper;
+                return R.drawable.blue_square_paper_small;
             case NORMAL:
-                return R.drawable.green_square_paper;
+                return R.drawable.green_square_paper_small;
             case IMPORTANT:
-                return R.drawable.orange_square_paper;
+                return R.drawable.orange_square_paper_small;
             case ULTRA:
-                return R.drawable.red_square_paper;
+                return R.drawable.red_square_paper_small;
             default:
                 return R.drawable.ic_launcher;
         }
