@@ -111,29 +111,35 @@ public class NotificationHelper {
     }
 
     private Bitmap getColorSquareResource(StickyNotification notification) {
+        int width = (int) context.getResources().getDimension(android.R.dimen.notification_large_icon_width);
+        int height = (int) context.getResources().getDimension(android.R.dimen.notification_large_icon_height);
         switch (notification.getDefcon()) {
             case USELESS:
                 if (uselessBitmap == null) {
                     uselessBitmap = Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), R.drawable.blue_square_paper), 150, 150, false);
+                            BitmapFactory.decodeResource(context.getResources(), R.drawable.blue_square_paper),
+                            width, height, false);
                 }
                 return uselessBitmap;
             case NORMAL:
                 if (normalBitmap == null) {
                     normalBitmap = Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), R.drawable.green_square_paper), 150, 150, false);
+                            BitmapFactory.decodeResource(context.getResources(), R.drawable.green_square_paper),
+                            width, height, false);
                 }
                 return normalBitmap;
             case IMPORTANT:
                 if (importantBitmap == null) {
                     importantBitmap = Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), R.drawable.orange_square_paper), 150, 150, false);
+                            BitmapFactory.decodeResource(context.getResources(), R.drawable.orange_square_paper),
+                            width, height, false);
                 }
                 return importantBitmap;
             case ULTRA:
                 if (ultraBitmap == null) {
                     ultraBitmap = Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), R.drawable.red_square_paper), 150, 150, false);
+                            BitmapFactory.decodeResource(context.getResources(), R.drawable.red_square_paper),
+                            width, height, false);
                 }
                 return ultraBitmap;
             default:
