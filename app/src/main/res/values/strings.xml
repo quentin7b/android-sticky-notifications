@@ -8,6 +8,8 @@
     <string name="create_notif">Show notification</string>
     <string name="create_delete">Delete</string>
     <string name="create_validate">Save</string>
+    <string name="create_title_empty">At least, type a title</string>
+
 
     <string name="action_about">About</string>
     <string name="action_edit">Edit</string>

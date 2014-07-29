@@ -7,6 +7,7 @@
     <string name="create_notif">Afficher une notification</string>
     <string name="create_delete">Supprimer</string>
     <string name="create_validate">Enregistrer</string>
+    <string name="create_title_empty">Entrez au moins un titre</string>
 
     <string name="action_about">A propos</string>
     <string name="action_edit">Editer</string>

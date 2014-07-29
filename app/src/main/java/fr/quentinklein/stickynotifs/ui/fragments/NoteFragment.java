@@ -112,52 +112,58 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
 
     @Click(R.id.validate)
     void saveNote() {
-        notification.setContent(noteContent.getText().toString());
-        StickyNotification.Defcon defcon;
-        switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.useless:
-                defcon = StickyNotification.Defcon.USELESS;
-                break;
-            case R.id.normal:
-                defcon = StickyNotification.Defcon.NORMAL;
-                break;
-            case R.id.important:
-                defcon = StickyNotification.Defcon.IMPORTANT;
-                break;
-            case R.id.ultra:
-                defcon = StickyNotification.Defcon.ULTRA;
-                break;
-            default:
-                defcon = StickyNotification.Defcon.NORMAL;
-                break;
-        }
-        notification.setDefcon(defcon);
-        notification.setTitle(noteTitle.getText().toString());
-        notification.setNotification(noteSwitch.isChecked());
-        notification.setDao(stickyNotificationDao);
-        try {
-            if (isEditing) {
-                notification.update();
-            } else {
-                notification.create();
+        String title = noteTitle.getText().toString();
+        if (title != null && title.length() > 0) {
+            notification.setContent(noteContent.getText().toString());
+            StickyNotification.Defcon defcon;
+            switch (radioGroup.getCheckedRadioButtonId()) {
+                case R.id.useless:
+                    defcon = StickyNotification.Defcon.USELESS;
+                    break;
+                case R.id.normal:
+                    defcon = StickyNotification.Defcon.NORMAL;
+                    break;
+                case R.id.important:
+                    defcon = StickyNotification.Defcon.IMPORTANT;
+                    break;
+                case R.id.ultra:
+                    defcon = StickyNotification.Defcon.ULTRA;
+                    break;
+                default:
+                    defcon = StickyNotification.Defcon.NORMAL;
+                    break;
             }
-            Toast.makeText(getActivity(), R.string.note_saved, Toast.LENGTH_SHORT).show();
-            if (getActivity() instanceof NoteSavedListener) {
-                ((NoteSavedListener) getActivity()).noteSaved(notification.getId());
+            notification.setDefcon(defcon);
+            notification.setTitle(noteTitle.getText().toString());
+            notification.setNotification(noteSwitch.isChecked());
+            notification.setDao(stickyNotificationDao);
+            try {
+                if (isEditing) {
+                    notification.update();
+                } else {
+                    notification.create();
+                }
+                Toast.makeText(getActivity(), R.string.note_saved, Toast.LENGTH_SHORT).show();
+                if (getActivity() instanceof NoteSavedListener) {
+                    ((NoteSavedListener) getActivity()).noteSaved(notification.getId());
+                }
+            } catch (SQLException exception) {
+                Log.e(NoteFragment.class.getSimpleName(), "Error while saving note", exception);
+                Toast.makeText(getActivity(), R.string.note_saved_error, Toast.LENGTH_SHORT).show();
+                EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                        MapBuilder.createException(
+                                new StandardExceptionParser(getActivity(), null)
+                                        // Context and optional collection of package names to be used in reporting the exception.
+                                        .getDescription(Thread.currentThread().getName(),
+                                                // The name of the thread on which the exception occurred.
+                                                exception),                                  // The exception.
+                                false
+                        ).build()
+                );
             }
-        } catch (SQLException exception) {
-            Log.e(NoteFragment.class.getSimpleName(), "Error while saving note", exception);
-            Toast.makeText(getActivity(), R.string.note_saved_error, Toast.LENGTH_SHORT).show();
-            EasyTracker.getInstance(getActivity().getApplicationContext()).send(
-                    MapBuilder.createException(
-                            new StandardExceptionParser(getActivity(), null)
-                                    // Context and optional collection of package names to be used in reporting the exception.
-                                    .getDescription(Thread.currentThread().getName(),
-                                            // The name of the thread on which the exception occurred.
-                                            exception),                                  // The exception.
-                            false
-                    ).build()
-            );
+        } else {
+            String error = getActivity().getString(R.string.create_title_empty);
+            noteTitle.setError((CharSequence) error);
         }
     }
 
