@@ -92,7 +92,8 @@ public class NotificationHelper {
                         .setContentText(notification.getContent())
                         .setSmallIcon(getSmallIconResource(notification))
                         .setOngoing(true)
-                        .setLargeIcon(getColorSquareResource(notification));
+                        .setLargeIcon(getColorSquareResource(notification))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(notification.getContent()));
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, NotesListActivity_.class);
