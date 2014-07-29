@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -43,6 +44,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
     @FragmentById(R.id.note_fragment)
     NoteFragment noteFragment;
+    AboutDialog aboutDialog;
 
     @OptionsItem(R.id.action_new)
     void addNote() {
@@ -63,7 +65,10 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
     @OptionsItem(R.id.action_about)
     void about() {
-        new AboutDialog(this).show();
+        if (aboutDialog == null) {
+            aboutDialog = new AboutDialog(this);
+        }
+        aboutDialog.show();
     }
 
     @OptionsItem(R.id.action_delete)
@@ -103,6 +108,11 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         return (noteFragment != null && noteFragment.isInLayout());
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        aboutDialog.dismiss();
+    }
 
     private static class AboutDialog extends Dialog {
 
