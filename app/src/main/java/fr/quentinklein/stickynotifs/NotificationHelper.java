@@ -1,5 +1,6 @@
 package fr.quentinklein.stickynotifs;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -34,15 +35,13 @@ import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity_;
 @EBean
 public class NotificationHelper {
 
+    static List<Integer> showedNotifications = new ArrayList<Integer>();
     @RootContext
     Context context;
-
     @SystemService
     NotificationManager mNotificationManager;
-
     @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
     Dao<StickyNotification, Integer> stickyNotificationDao;
-
     Bitmap uselessBitmap, normalBitmap, importantBitmap, ultraBitmap;
 
     public static List<StickyNotification> getDefconsNotifications(
@@ -62,6 +61,7 @@ public class NotificationHelper {
             NotificationCompat.Builder mBuilder =
                     getBaseBuilder(stick);
             mNotificationManager.notify(id, mBuilder.build());
+            showedNotifications.add(id);
         } catch (SQLException e) {
             Log.e(NotificationHelper.class.getSimpleName(), "Error while retribving", e);
             EasyTracker.getInstance(context.getApplicationContext()).send(
@@ -79,6 +79,7 @@ public class NotificationHelper {
 
     public void hideNotification(int id) {
         mNotificationManager.cancel(id);
+        showedNotifications.remove(id);
     }
 
     public void hideAll() {
@@ -94,7 +95,23 @@ public class NotificationHelper {
                         .setOngoing(true)
                         .setLargeIcon(getColorSquareResource(notification))
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(notification.getContent()));
-
+        /*
+                        .addAction(R.drawable.ic_action_edit_white, context.getString(R.string.action_edit), null)
+                        .addAction(R.drawable.ic_menu_delete_white, context.getString(R.string.create_delete), null);
+        */
+        switch (notification.getDefcon()) {
+            case ULTRA:
+                mBuilder.setPriority(Notification.PRIORITY_MAX);
+                break;
+            case IMPORTANT:
+                mBuilder.setPriority(Notification.PRIORITY_HIGH);
+                break;
+            case NORMAL:
+                mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
+                break;
+            case USELESS:
+                mBuilder.setPriority(Notification.PRIORITY_LOW);
+        }
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, NotesListActivity_.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
