@@ -9,24 +9,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
-
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
-import com.google.analytics.tracking.android.StandardExceptionParser;
-import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.SystemService;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.quentinklein.stickynotifs.model.StickyNotification;
-import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
 import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity_;
 
 /**
@@ -40,8 +31,6 @@ public class NotificationHelper {
     Context context;
     @SystemService
     NotificationManager mNotificationManager;
-    @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
-    Dao<StickyNotification, Integer> stickyNotificationDao;
     Bitmap uselessBitmap, normalBitmap, importantBitmap, ultraBitmap;
 
     public static List<StickyNotification> getDefconsNotifications(
@@ -55,26 +44,25 @@ public class NotificationHelper {
         return defconNotifications;
     }
 
-    public void showNotification(int id) {
-        try {
-            StickyNotification stick = stickyNotificationDao.queryForId(id);
-            NotificationCompat.Builder mBuilder =
-                    getBaseBuilder(stick);
-            mNotificationManager.notify(id, mBuilder.build());
-            showedNotifications.add(id);
-        } catch (SQLException e) {
-            Log.e(NotificationHelper.class.getSimpleName(), "Error while retribving", e);
-            EasyTracker.getInstance(context.getApplicationContext()).send(
-                    MapBuilder.createException(
-                            new StandardExceptionParser(context, null)
-                                    // Context and optional collection of package names to be used in reporting the exception.
-                                    .getDescription(Thread.currentThread().getName(),
-                                            // The name of the thread on which the exception occurred.
-                                            e),                                  // The exception.
-                            false
-                    ).build()
-            );
+    public void showNotifications(List<StickyNotification> notifications) {
+        for (StickyNotification notification : notifications) {
+            if (notification.isNotification()) {
+                showNotification(notification);
+            } else {
+                hideNotification(notification);
+            }
         }
+    }
+
+    private void showNotification(StickyNotification stick) {
+        NotificationCompat.Builder mBuilder =
+                getBaseBuilder(stick);
+        mNotificationManager.notify(stick.getId(), mBuilder.build());
+        showedNotifications.add(stick.getId());
+    }
+
+    private void hideNotification(StickyNotification stickyNotification) {
+        hideNotification(stickyNotification.getId());
     }
 
     public void hideNotification(int id) {

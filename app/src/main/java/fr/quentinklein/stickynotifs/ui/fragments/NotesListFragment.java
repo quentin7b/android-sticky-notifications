@@ -92,6 +92,7 @@ public class NotesListFragment extends Fragment {
 
     private void fillStackNotifications(List<StickyNotification> notifications, String stackName) {
         if (notifications != null && notifications.size() > 0) {
+            notificationHelper.showNotifications(notifications);
             CardStack stack = new CardStack(stackName);
             cardsView.addStack(stack);
             for (final StickyNotification stickyNotification : notifications) {
@@ -149,11 +150,6 @@ public class NotesListFragment extends Fragment {
                     });
                 }
                 cardsView.addCard(card, true);
-                if (stickyNotification.isNotification()) {
-                    notificationHelper.showNotification(stickyNotification.getId());
-                } else {
-                    notificationHelper.hideNotification(stickyNotification.getId());
-                }
             }
         }
     }

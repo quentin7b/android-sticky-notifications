@@ -57,27 +57,8 @@ public class StartUpService extends Service {
                     ).build()
             );
         }
-        List<StickyNotification> urgentNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.ULTRA);
-        List<StickyNotification> importantNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.IMPORTANT);
-        List<StickyNotification> normalNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.NORMAL);
-        List<StickyNotification> uselessNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.USELESS);
-
-
-        showNotifications(uselessNotifications);
-        showNotifications(normalNotifications);
-        showNotifications(importantNotifications);
-        showNotifications(urgentNotifications);
+        notificationHelper.showNotifications(stickyNotifications);
 
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    private void showNotifications(List<StickyNotification> notifications) {
-        for (final StickyNotification stickyNotification : notifications) {
-            if (stickyNotification.isNotification()) {
-                notificationHelper.showNotification(stickyNotification.getId());
-            } else {
-                notificationHelper.hideNotification(stickyNotification.getId());
-            }
-        }
     }
 }
