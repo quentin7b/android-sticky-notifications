@@ -26,7 +26,6 @@ import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity_;
 @EBean
 public class NotificationHelper {
 
-    static List<Integer> showedNotifications = new ArrayList<Integer>();
     @RootContext
     Context context;
     @SystemService
@@ -58,7 +57,6 @@ public class NotificationHelper {
         NotificationCompat.Builder mBuilder =
                 getBaseBuilder(stick);
         mNotificationManager.notify(stick.getId(), mBuilder.build());
-        showedNotifications.add(stick.getId());
     }
 
     private void hideNotification(StickyNotification stickyNotification) {
@@ -67,7 +65,6 @@ public class NotificationHelper {
 
     public void hideNotification(int id) {
         mNotificationManager.cancel(id);
-        showedNotifications.remove(id);
     }
 
     public void hideAll() {
