@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
-    <!-- Left side pane. (Master) -->
+
     <fragment
         android:id="@+id/notes_fragment"
         android:name="fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment_"

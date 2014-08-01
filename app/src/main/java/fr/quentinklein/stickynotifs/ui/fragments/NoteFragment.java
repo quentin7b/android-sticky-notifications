@@ -33,6 +33,7 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
 
 /**
  * Created by quentin on 20/07/2014.
+ * Note creation/edition page
  */
 @EFragment(R.layout.fragment_note)
 public class NoteFragment extends Fragment implements NoteChanedListener, HideNoteListener {
@@ -49,29 +50,14 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
     EditText noteContent;
     @ViewById(R.id.note_layout)
     RelativeLayout layout;
+    /**
+     * Notification to use
+     */
     StickyNotification notification;
+    /**
+     * Used to know if we should update or insert notification
+     */
     boolean isEditing;
-
-    @Override
-    public void noteSelected(int noteId) {
-        try {
-            notification = stickyNotificationDao.queryForId(noteId);
-            refreshElements();
-        } catch (SQLException e) {
-            Log.e(NoteFragment.class.getSimpleName(), "Can't retrieve note", e);
-            Toast.makeText(getActivity(), R.string.note_retrive_error, Toast.LENGTH_SHORT).show();
-            EasyTracker.getInstance(getActivity().getApplicationContext()).send(
-                    MapBuilder.createException(
-                            new StandardExceptionParser(getActivity(), null)
-                                    // Context and optional collection of package names to be used in reporting the exception.
-                                    .getDescription(Thread.currentThread().getName(),
-                                            // The name of the thread on which the exception occurred.
-                                            e),                                  // The exception.
-                            false
-                    ).build()
-            );
-        }
-    }
 
     @AfterViews
     void refreshElements() {
@@ -188,6 +174,49 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
         }
     }
 
+    /**
+     * Fill the fields with a specific notification
+     *
+     * @param noteId the notification to use
+     * @see fr.quentinklein.stickynotifs.ui.activities.NoteActivity#init()
+     * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#noteSelected(int)
+     */
+    @Override
+    public void noteSelected(int noteId) {
+        try {
+            notification = stickyNotificationDao.queryForId(noteId);
+            refreshElements();
+        } catch (SQLException e) {
+            Log.e(NoteFragment.class.getSimpleName(), "Can't retrieve note", e);
+            Toast.makeText(getActivity(), R.string.note_retrive_error, Toast.LENGTH_SHORT).show();
+            EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                    MapBuilder.createException(
+                            new StandardExceptionParser(getActivity(), null)
+                                    // Context and optional collection of package names to be used in reporting the exception.
+                                    .getDescription(Thread.currentThread().getName(),
+                                            // The name of the thread on which the exception occurred.
+                                            e),                                  // The exception.
+                            false
+                    ).build()
+            );
+        }
+    }
+
+    /**
+     * For tablet master-detail layout
+     *
+     * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#hideNote()
+     */
+    @Override
+    public void hideNote() {
+        layout.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Delete the current note
+     *
+     * @see fr.quentinklein.stickynotifs.ui.activities.NoteActivity#deleteNote()
+     */
     public void deleteNote() {
         if (isEditing) {
             try {
@@ -214,13 +243,11 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
         }
     }
 
+    /**
+     * Not used for now
+     */
     public void clear() {
         notification = null;
         refreshElements();
-    }
-
-    @Override
-    public void hideNote() {
-        layout.setVisibility(View.INVISIBLE);
     }
 }

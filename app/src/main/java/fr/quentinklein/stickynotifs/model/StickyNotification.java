@@ -6,6 +6,9 @@ import com.j256.ormlite.misc.BaseDaoEnabled;
 
 /**
  * Created by quentin on 19/07/2014.
+ * Model class for the notification
+ *
+ * @see com.j256.ormlite.misc.BaseDaoEnabled (auto save/update)
  */
 public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integer> {
 
@@ -71,6 +74,10 @@ public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integ
         this.defcon = defcon;
     }
 
+    /**
+     * Level of the notification
+     * //TODO improvement : use xml values
+     */
     public static enum Defcon {
         USELESS, NORMAL, IMPORTANT, ULTRA;
 

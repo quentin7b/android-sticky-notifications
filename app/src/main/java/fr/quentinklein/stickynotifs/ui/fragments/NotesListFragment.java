@@ -33,6 +33,7 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
 
 /**
  * Created by quentin on 20/07/2014.
+ * All notes list
  */
 @EFragment(R.layout.fragment_list_notes)
 public class NotesListFragment extends Fragment {
@@ -51,12 +52,18 @@ public class NotesListFragment extends Fragment {
         refreshNotesList();
     }
 
+    /**
+     * Reload the list of notifications to display
+     *
+     * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#noteSaved(int)
+     * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#onResume()
+     */
     public void refreshNotesList() {
         List<StickyNotification> stickyNotifications = new ArrayList<StickyNotification>(0);
         try {
             stickyNotifications = stickyNotificationDao.queryForAll();
         } catch (SQLException e) {
-            Log.e(NotesListFragment.class.getSimpleName(), "Errow while requesting notes", e);
+            Log.e(NotesListFragment.class.getSimpleName(), "Error while requesting notes", e);
             EasyTracker.getInstance(getActivity().getApplicationContext()).send(
                     MapBuilder.createException(
                             new StandardExceptionParser(getActivity(), null)
@@ -74,23 +81,29 @@ public class NotesListFragment extends Fragment {
                 ((HideNoteListener) getActivity()).hideNote();
             }
         }
-        List<StickyNotification> urgentNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.ULTRA);
-        List<StickyNotification> importantNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.IMPORTANT);
-        List<StickyNotification> normalNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.NORMAL);
-        List<StickyNotification> uselessNotifications = NotificationHelper.getDefconsNotifications(stickyNotifications, StickyNotification.Defcon.USELESS);
+        List<StickyNotification> urgentNotifications = NotificationHelper.getDefconNotifications(stickyNotifications, StickyNotification.Defcon.ULTRA);
+        List<StickyNotification> importantNotifications = NotificationHelper.getDefconNotifications(stickyNotifications, StickyNotification.Defcon.IMPORTANT);
+        List<StickyNotification> normalNotifications = NotificationHelper.getDefconNotifications(stickyNotifications, StickyNotification.Defcon.NORMAL);
+        List<StickyNotification> uselessNotifications = NotificationHelper.getDefconNotifications(stickyNotifications, StickyNotification.Defcon.USELESS);
 
         cardsView.clearCards();
 
-        fillStackNotifications(urgentNotifications, getString(R.string.ultra));
-        fillStackNotifications(importantNotifications, getString(R.string.important));
-        fillStackNotifications(normalNotifications, getString(R.string.normal));
-        fillStackNotifications(uselessNotifications, getString(R.string.useless));
+        fillNotificationsStack(urgentNotifications, getString(R.string.ultra));
+        fillNotificationsStack(importantNotifications, getString(R.string.important));
+        fillNotificationsStack(normalNotifications, getString(R.string.normal));
+        fillNotificationsStack(uselessNotifications, getString(R.string.useless));
 
         cardsView.setSwipeable(false);
         cardsView.refresh();
     }
 
-    private void fillStackNotifications(List<StickyNotification> notifications, String stackName) {
+    /**
+     * Fill a particular stack of notifications (like ultra / important / normal / useless )
+     *
+     * @param notifications the notifications to display
+     * @param stackName     like "Important", "Normal" or whatever (header)
+     */
+    private void fillNotificationsStack(List<StickyNotification> notifications, String stackName) {
         if (notifications != null && notifications.size() > 0) {
             notificationHelper.showNotifications(notifications);
             CardStack stack = new CardStack(stackName);
@@ -154,6 +167,9 @@ public class NotesListFragment extends Fragment {
         }
     }
 
+    /**
+     * Will be used with special tablet layout
+     */
     public static interface TwoPartProvider {
         public boolean isTwoPartMode();
     }

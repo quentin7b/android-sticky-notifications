@@ -15,6 +15,7 @@ import fr.quentinklein.stickynotifs.R;
 
 /**
  * Created by quentin on 20/07/2014.
+ * Copied from Github with cards ui
  */
 public class PlayCard extends RecyclableCard {
 
@@ -55,7 +56,8 @@ public class PlayCard extends RecyclableCard {
         }
 
         convertView.findViewById(R.id.overflow).setVisibility(hasOverflow ? View.VISIBLE : View.GONE);
-        if(hasOverflow) {
+        if (hasOverflow) {
+            // Popup menu on the overflow button : display special menu on the card
             convertView.findViewById(R.id.overflow).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,6 +85,9 @@ public class PlayCard extends RecyclableCard {
         }
     }
 
+    /**
+     * Listener for overflow menu on a card
+     */
     public static interface PlayCardMenuListener {
         public void editClicked();
 

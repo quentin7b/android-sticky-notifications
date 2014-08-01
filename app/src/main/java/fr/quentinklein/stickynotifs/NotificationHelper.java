@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -22,6 +23,7 @@ import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity_;
 
 /**
  * Created by quentin on 19/07/2014.
+ * Help showing notifications on screen
  */
 @EBean
 public class NotificationHelper {
@@ -32,7 +34,15 @@ public class NotificationHelper {
     NotificationManager mNotificationManager;
     Bitmap uselessBitmap, normalBitmap, importantBitmap, ultraBitmap;
 
-    public static List<StickyNotification> getDefconsNotifications(
+    /**
+     * Return notifications with a particular defcon
+     *
+     * @param notifications the full list of notifications
+     * @param defcon        the defcon needed
+     * @return the filtered list
+     * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment#refreshNotesList()
+     */
+    public static List<StickyNotification> getDefconNotifications(
             List<StickyNotification> notifications, StickyNotification.Defcon defcon) {
         ArrayList<StickyNotification> defconNotifications = new ArrayList<StickyNotification>();
         for (StickyNotification notification : notifications) {
@@ -43,6 +53,13 @@ public class NotificationHelper {
         return defconNotifications;
     }
 
+    /**
+     * Show notifications in action bar
+     *
+     * @param notifications the full list of notifications
+     * @see fr.quentinklein.stickynotifs.boot.StartUpService#onStartCommand(android.content.Intent, int, int)
+     * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment#fillNotificationsStack(java.util.List, String)
+     */
     public void showNotifications(List<StickyNotification> notifications) {
         for (StickyNotification notification : notifications) {
             if (notification.isNotification()) {
@@ -84,18 +101,20 @@ public class NotificationHelper {
                         .addAction(R.drawable.ic_action_edit_white, context.getString(R.string.action_edit), null)
                         .addAction(R.drawable.ic_menu_delete_white, context.getString(R.string.create_delete), null);
         */
-        switch (notification.getDefcon()) {
-            case ULTRA:
-                mBuilder.setPriority(Notification.PRIORITY_MAX);
-                break;
-            case IMPORTANT:
-                mBuilder.setPriority(Notification.PRIORITY_HIGH);
-                break;
-            case NORMAL:
-                mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
-                break;
-            case USELESS:
-                mBuilder.setPriority(Notification.PRIORITY_LOW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            switch (notification.getDefcon()) {
+                case ULTRA:
+                    mBuilder.setPriority(Notification.PRIORITY_MAX);
+                    break;
+                case IMPORTANT:
+                    mBuilder.setPriority(Notification.PRIORITY_HIGH);
+                    break;
+                case NORMAL:
+                    mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
+                    break;
+                case USELESS:
+                    mBuilder.setPriority(Notification.PRIORITY_LOW);
+            }
         }
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, NotesListActivity_.class);
@@ -126,6 +145,13 @@ public class NotificationHelper {
         }
     }
 
+    /**
+     * Return a special square for action bar icon (big icon)
+     * Prevent from reloading bitmap each time
+     *
+     * @param notification the notification to use (square is defcon relative)
+     * @return the Bitmap to show on screen
+     */
     private Bitmap getColorSquareResource(StickyNotification notification) {
         int width = (int) context.getResources().getDimension(android.R.dimen.notification_large_icon_width);
         int height = (int) context.getResources().getDimension(android.R.dimen.notification_large_icon_height);

@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fr.quentinklein.stickynotifs="http://schemas.android.com/apk/res-auto">
 
-
     <item
         android:id="@+id/action_edit"
         android:icon="@drawable/ic_action_edit"
@@ -13,6 +12,5 @@
         android:icon="@drawable/ic_menu_delete"
         android:title="@string/create_delete"
         fr.quentinklein.stickynotifs:showAsAction="ifRoom|withText" />
-
 
 </menu>

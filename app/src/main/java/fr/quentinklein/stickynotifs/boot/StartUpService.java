@@ -24,6 +24,9 @@ import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
 
 /**
  * Created by quentin on 21/07/2014.
+ * Show notifications (called by receiver when boot is done)
+ *
+ * @see fr.quentinklein.stickynotifs.boot.StartUpReceiver
  */
 @EService
 public class StartUpService extends Service {
@@ -45,7 +48,8 @@ public class StartUpService extends Service {
         try {
             stickyNotifications = stickyNotificationDao.queryForAll();
         } catch (SQLException e) {
-            Log.e(StartUpService.class.getSimpleName(), "Errow while requesting notes", e);
+            Log.e(StartUpService.class.getSimpleName(), "Error while fetching notes", e);
+            // Log it to GA
             EasyTracker.getInstance(getApplicationContext()).send(
                     MapBuilder.createException(
                             new StandardExceptionParser(this, null)
@@ -57,8 +61,8 @@ public class StartUpService extends Service {
                     ).build()
             );
         }
+        // Show notifications
         notificationHelper.showNotifications(stickyNotifications);
-
         return super.onStartCommand(intent, flags, startId);
     }
 }

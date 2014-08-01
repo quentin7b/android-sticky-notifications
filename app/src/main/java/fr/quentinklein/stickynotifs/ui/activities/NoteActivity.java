@@ -21,11 +21,17 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
 
 /**
  * Created by quentin on 19/07/2014.
+ * Creation / Edition of a notification
+ *
+ * @see fr.quentinklein.stickynotifs.ui.fragments.NoteFragment
  */
 @EActivity(R.layout.activity_note)
 @OptionsMenu(R.menu.note)
 public class NoteActivity extends ActionBarActivity implements NoteSavedListener, NoteDeletedListener, ChangeIconListener {
 
+    /**
+     * Not used for now
+     */
     @Extra
     int notificationId = -1;
 
@@ -34,6 +40,10 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
 
     @Bean
     NotificationHelper notificationHelper;
+
+    /**
+     * Functions
+     */
 
     @AfterViews
     void init() {
@@ -44,6 +54,10 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
         }
     }
 
+    /**
+     * Menu items
+     */
+
     @OptionsItem(android.R.id.home)
     void homeSelected() {
         finish();
@@ -53,6 +67,10 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
     void deleteNote() {
         fragment.deleteNote();
     }
+
+    /**
+     * Interfaces
+     */
 
     @Override
     public void noteSaved(int noteId) {

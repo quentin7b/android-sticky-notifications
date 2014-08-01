@@ -34,6 +34,9 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
 
 /**
  * Created by quentin on 19/07/2014.
+ * List of notifications
+ *
+ * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment
  */
 @EActivity(R.layout.activity_list_notes)
 @OptionsMenu(R.menu.notes)
@@ -42,14 +45,14 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
     @FragmentById(R.id.notes_fragment)
     NotesListFragment fragment;
 
+    /**
+     * Not used for now (special tablet layout)
+     */
     @FragmentById(R.id.note_fragment)
     NoteFragment noteFragment;
+
     AboutDialog aboutDialog;
 
-    @OptionsItem(R.id.action_new)
-    void addNote() {
-        startActivity(new Intent(NotesListActivity.this, NoteActivity_.class));
-    }
 
     @Override
     public void hideNote() {
@@ -58,9 +61,28 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         }
     }
 
+    /**
+     * Functions
+     */
+
     @AfterViews
     void log() {
         EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fragment.refreshNotesList();
+    }
+
+    /**
+     * Menu items
+     */
+
+    @OptionsItem(R.id.action_new)
+    void addNote() {
+        startActivity(new Intent(NotesListActivity.this, NoteActivity_.class));
     }
 
     @OptionsItem(R.id.action_about)
@@ -78,11 +100,9 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        fragment.refreshNotesList();
-    }
+    /**
+     * Interfaces
+     */
 
     @Override
     public void noteSaved(int noteId) {
@@ -103,6 +123,11 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         onResume();
     }
 
+    /**
+     * Tablet mode provider
+     *
+     * @return true if the master-detail on tablet is on
+     */
     @Override
     public boolean isTwoPartMode() {
         return (noteFragment != null && noteFragment.isInLayout());
@@ -114,6 +139,9 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         aboutDialog.dismiss();
     }
 
+    /**
+     * Special dialog
+     */
     private static class AboutDialog extends Dialog {
 
         private Context context;
