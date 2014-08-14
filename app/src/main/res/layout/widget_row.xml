@@ -3,6 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="40dp"
+    android:id="@+id/widget_row"
     android:background="@color/dark_transparency">
 
     <ImageView
@@ -10,19 +11,46 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:src="@drawable/blue_square_paper" />
 
-    <TextView
-        android:id="@android:id/text1"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@android:id/icon"
-        android:gravity="center_vertical"
-        android:text="Hello text"
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:layout_toEndOf="@android:id/icon"
+        android:layout_toRightOf="@android:id/icon">
 
+        <TextView
+            android:id="@android:id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="Hello text"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
+        <TextView
+            android:id="@android:id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@android:id/text1"
+            android:layout_toRightOf="@android:id/text1"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="This is a test fomr the description of a Notication"
+            android:textColor="@color/dark_grey"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+
+    </RelativeLayout>
 </RelativeLayout>

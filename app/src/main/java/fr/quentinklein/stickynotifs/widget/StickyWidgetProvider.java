@@ -44,7 +44,8 @@ public class StickyWidgetProvider extends AppWidgetProvider {
             // Handle click
             Intent activityIntent = new Intent(context, NotesListActivity_.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setPendingIntentTemplate(android.R.id.list, pendingIntent);
+            rv.setPendingIntentTemplate(R.id.widget_row, pendingIntent);
+            rv.setOnClickFillInIntent(R.id.widget_row, activityIntent);
             //
             appWidgetManager.updateAppWidget(appWidgetId, rv);
         }

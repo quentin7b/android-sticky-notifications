@@ -1,8 +1,6 @@
 package fr.quentinklein.stickynotifs.widget;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -86,11 +84,12 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
                 R.layout.widget_row);
         StickyNotification notification = notificationList.get(position);
         remoteView.setTextViewText(android.R.id.text1, notification.getTitle());
+        remoteView.setTextViewText(android.R.id.text2, notification.getContent());
         remoteView.setImageViewResource(android.R.id.icon, getIconResource(notification));
-        remoteView.setOnClickFillInIntent(
+        /*remoteView.setOnClickFillInIntent(
                 android.R.id.text1,
                 new Intent().putExtra(StickyWidgetProvider.EXTRA_ID, notification.getId())
-        );
+        );*/
         return remoteView;
     }
 
@@ -102,7 +101,7 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -114,15 +113,6 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
     public boolean hasStableIds() {
         return true;
     }
-
-    public int getAppWidgetId() {
-        return appWidgetId;
-    }
-
-    public void setAppWidgetId(int appWidgetId) {
-        this.appWidgetId = appWidgetId;
-    }
-
 
     private int getIconResource(StickyNotification notification) {
         switch (notification.getDefcon()) {

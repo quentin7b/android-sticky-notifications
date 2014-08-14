@@ -76,7 +76,7 @@ public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integ
 
     @Override
     public int compareTo(StickyNotification another) {
-        return defcon.compareTo(another.defcon);
+        return another.defcon.compareTo(defcon);
     }
 
     /**
