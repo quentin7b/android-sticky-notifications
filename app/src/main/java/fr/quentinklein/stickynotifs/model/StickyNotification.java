@@ -10,7 +10,7 @@ import com.j256.ormlite.misc.BaseDaoEnabled;
  *
  * @see com.j256.ormlite.misc.BaseDaoEnabled (auto save/update)
  */
-public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integer> {
+public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integer> implements Comparable<StickyNotification> {
 
     @DatabaseField(generatedId = true)
     private int id;
@@ -72,6 +72,11 @@ public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integ
 
     public void setDefcon(Defcon defcon) {
         this.defcon = defcon;
+    }
+
+    @Override
+    public int compareTo(StickyNotification another) {
+        return defcon.compareTo(another.defcon);
     }
 
     /**

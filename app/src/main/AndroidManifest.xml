@@ -35,6 +35,22 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <!-- widgets -->
+        <!-- Widget -->
+        <receiver android:name=".widget.StickyWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="fr.quentinklein.stickynotifs.UPDATE_LIST" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_infos" />
+        </receiver>
+        <service
+            android:name=".widget.StickyWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 
     </application>

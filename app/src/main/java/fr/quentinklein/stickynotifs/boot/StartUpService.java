@@ -63,6 +63,9 @@ public class StartUpService extends Service {
         }
         // Show notifications
         notificationHelper.showNotifications(stickyNotifications);
+        // Stop the service
+        stopSelf();
+        // Return
         return super.onStartCommand(intent, flags, startId);
     }
 }

@@ -31,6 +31,7 @@ import fr.quentinklein.stickynotifs.ui.listeners.HideNoteListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteDeletedListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
+import fr.quentinklein.stickynotifs.widget.StickyWidgetProvider;
 
 /**
  * Created by quentin on 19/07/2014.
@@ -61,6 +62,13 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fragment.refreshNotesList();
+        reloadWidgets();
+    }
+
     /**
      * Functions
      */
@@ -68,13 +76,10 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
     @AfterViews
     void log() {
         EasyTracker.getInstance(this).activityStart(this);
+        fragment.refreshNotesList();
+        reloadWidgets();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        fragment.refreshNotesList();
-    }
 
     /**
      * Menu items
@@ -98,6 +103,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         if (noteFragment != null && noteFragment.isInLayout()) {
             noteFragment.deleteNote();
         }
+        reloadWidgets();
     }
 
     /**
@@ -107,6 +113,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
     @Override
     public void noteSaved(int noteId) {
         fragment.refreshNotesList();
+        reloadWidgets();
     }
 
     @Override
@@ -120,7 +127,8 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
     @Override
     public void noteDeleted(int noteId) {
-        onResume();
+        fragment.refreshNotesList();
+        reloadWidgets();
     }
 
     /**
@@ -137,6 +145,19 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         aboutDialog.dismiss();
+    }
+
+    private void reloadWidgets() {
+        /*Log.i(NotesListActivity.class.getSimpleName(), "ReloadWidgets");
+        // Refresh widgets
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        final int[] stickyWidgetIds =
+                appWidgetManager.getAppWidgetIds(
+                        new ComponentName(getApplicationContext(), StickyWidgetProvider.class));
+        // Notify dataset changed
+        appWidgetManager.notifyAppWidgetViewDataChanged(stickyWidgetIds, R.layout.widget_sticky);*/
+        sendBroadcast(new Intent(this, StickyWidgetProvider.class)
+                .setAction(StickyWidgetProvider.UPDATE_LIST));
     }
 
     /**
@@ -233,7 +254,6 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
             findViewById(R.id.about_rate).setOnClickListener(listener);
             findViewById(R.id.about_complain).setOnClickListener(listener);
         }
-
 
     }
 }
