@@ -30,6 +30,7 @@ import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
 import fr.quentinklein.stickynotifs.ui.cards.PlayCard;
 import fr.quentinklein.stickynotifs.ui.listeners.HideNoteListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
+import fr.quentinklein.stickynotifs.ui.listeners.NoteDeletedListener;
 
 /**
  * Created by quentin on 20/07/2014.
@@ -128,10 +129,14 @@ public class NotesListFragment extends Fragment {
                         @Override
                         public void deleteClicked() {
                             try {
+                                int id = stickyNotification.getId();
                                 stickyNotification.delete();
                                 Toast.makeText(getActivity(), R.string.note_deleted, Toast.LENGTH_SHORT).show();
                                 notificationHelper.hideAll();
                                 NotesListFragment.this.refreshNotesList();
+                                if (getActivity() instanceof NoteDeletedListener) {
+                                    ((NoteDeletedListener) getActivity()).noteDeleted(id);
+                                }
                             } catch (SQLException e) {
                                 Log.e(NoteFragment.class.getSimpleName(), "Error while deleting note", e);
                                 Toast.makeText(getActivity(), R.string.note_deleted_error, Toast.LENGTH_SHORT).show();

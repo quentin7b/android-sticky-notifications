@@ -103,7 +103,6 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         if (noteFragment != null && noteFragment.isInLayout()) {
             noteFragment.deleteNote();
         }
-        reloadWidgets();
     }
 
     /**
@@ -112,6 +111,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
     @Override
     public void noteSaved(int noteId) {
+        Log.i(NotesListActivity.class.getSimpleName(), "Note saved");
         fragment.refreshNotesList();
         reloadWidgets();
     }
@@ -127,6 +127,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
     @Override
     public void noteDeleted(int noteId) {
+        Log.i(NotesListActivity.class.getSimpleName(), "Note deleted");
         fragment.refreshNotesList();
         reloadWidgets();
     }
