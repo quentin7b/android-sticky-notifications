@@ -12,7 +12,7 @@ import android.widget.RemoteViews;
 import java.util.Arrays;
 
 import fr.quentinklein.stickynotifs.R;
-import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity;
+import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity_;
 
 /**
  * Created by quentin on 13/08/2014.
@@ -42,7 +42,7 @@ public class StickyWidgetProvider extends AppWidgetProvider {
                     R.layout.widget_sticky);
             rv.setRemoteAdapter(android.R.id.list, intent);
             // Handle click
-            Intent activityIntent = new Intent(context, NotesListActivity.class);
+            Intent activityIntent = new Intent(context, NotesListActivity_.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             rv.setPendingIntentTemplate(android.R.id.list, pendingIntent);
             //
