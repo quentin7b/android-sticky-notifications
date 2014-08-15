@@ -99,7 +99,7 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
     @Click(R.id.validate)
     void saveNote() {
         String title = noteTitle.getText().toString();
-        if (title != null && title.length() > 0) {
+        if (title != null && title.trim().length() > 0) {
             notification.setContent(noteContent.getText().toString());
             StickyNotification.Defcon defcon;
             switch (radioGroup.getCheckedRadioButtonId()) {
@@ -240,6 +240,9 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
                         ).build()
                 );
             }
+        } else {
+            // Delete note while creating
+            getActivity().finish();
         }
     }
 
