@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sticky Notifications</string>
+    <string name="app_name">Todo Notifications (Sticky)</string>
 
     <string name="create_note_title">Créer</string>
     <string name="create_title">Titre</string>
@@ -24,7 +24,7 @@
     <string name="note_saved_error">Erreur lors de l\'enregistrement de la note</string>
 
     <!-- About -->
-    <string name="about_author">Sticky Notifications par Quentin KLEIN</string>
+    <string name="about_author">Todo Notifications (Sticky) par Quentin KLEIN</string>
     <string name="about_version">Version : </string>
     <string name="about_explain">Si vous aimez cette application, n\'hésitez pas à laisser une note sur le play store avec un petit commentaire. En revanche, pour toute remarque quelle qu\'elle soit, vous pouvez m\'envoyer un mail!</string>
     <string name="about_explain_rate">Noter l\'application ;)</string>

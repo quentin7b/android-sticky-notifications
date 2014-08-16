@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sticky Notifications</string>
+    <string name="app_name">Todo Notifications (Sticky)</string>
 
     <string name="create_note_title">Create</string>
     <string name="create_title">Title</string>
@@ -23,7 +23,7 @@
     <string name="note_saved">Notification saved</string>
     <string name="note_saved_error">Error while saving notification</string>
 
-    <string name="about_author">Sticky Notifications by Quentin KLEIN</string>
+    <string name="about_author">Todo Notifications (Sticky) by Quentin KLEIN</string>
     <string name="about_version">Version : </string>
     <string name="about_explain">If you like the app, please mark it and comment on the store. If you have any question/remark, feel free to send me a mail</string>
     <string name="about_explain_rate">Mark the application ;)</string>
