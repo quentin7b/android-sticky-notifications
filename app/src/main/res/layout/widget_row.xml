@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_row"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:id="@+id/widget_row"
     android:background="@color/dark_transparency">
 
     <ImageView
@@ -33,6 +33,7 @@
             android:singleLine="true"
             android:text="Hello text"
             android:textColor="@android:color/black"
+            android:textIsSelectable="false"
             android:textSize="20sp" />
 
         <TextView
@@ -49,6 +50,7 @@
             android:singleLine="true"
             android:text="This is a test fomr the description of a Notication"
             android:textColor="@color/dark_grey"
+            android:textIsSelectable="false"
             android:textSize="16sp"
             android:textStyle="italic" />
 

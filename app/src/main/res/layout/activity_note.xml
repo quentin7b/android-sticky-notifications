@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/app_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark" />
+
 
     <fragment
         android:id="@+id/note_fragment"
         android:name="fr.quentinklein.stickynotifs.ui.fragments.NoteFragment_"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/app_toolbar"
         android:layout_gravity="left"
         tools:layout="@layout/fragment_note" />
-</LinearLayout>
+</RelativeLayout>

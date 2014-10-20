@@ -10,7 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
-        android:text="@string/create_validate" />
+        android:background="@color/indigo_500"
+        android:text="@string/create_validate"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -74,7 +77,7 @@
 
             </RadioGroup>
 
-            <Switch
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/stick"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"

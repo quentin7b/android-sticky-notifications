@@ -12,6 +12,7 @@ import android.widget.RemoteViews;
 import java.util.Arrays;
 
 import fr.quentinklein.stickynotifs.R;
+import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity;
 import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity_;
 
 /**
@@ -38,14 +39,14 @@ public class StickyWidgetProvider extends AppWidgetProvider {
             //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             //intent.setData(Uri.parse("custom://" + intent.toUri(Intent.URI_INTENT_SCHEME) + "/" + appWidgetId));
 
-            RemoteViews rv = new RemoteViews(context.getPackageName(),
-                    R.layout.widget_sticky);
+            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_sticky);
             rv.setRemoteAdapter(android.R.id.list, intent);
             // Handle click
-            Intent activityIntent = new Intent(context, NotesListActivity_.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setPendingIntentTemplate(R.id.widget_row, pendingIntent);
-            rv.setOnClickFillInIntent(R.id.widget_row, activityIntent);
+            Intent activityIntent =
+                    new Intent(context, NotesListActivity_.class)
+                            .putExtra(NotesListActivity.EXTRA_NOTE_ID, appWidgetId);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
+            rv.setPendingIntentTemplate(android.R.id.list, pendingIntent);
             //
             appWidgetManager.updateAppWidget(appWidgetId, rv);
         }

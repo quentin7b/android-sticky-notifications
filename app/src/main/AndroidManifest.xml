@@ -8,10 +8,9 @@
     <!-- debuggable should be in gradle but when production apk is generated it fails on play store -->
     <application
         android:allowBackup="true"
-        android:debuggable="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light">
+        android:theme="@style/AppTheme">
         <!-- Activities -->
         <activity
             android:name=".ui.activities.NotesListActivity_"

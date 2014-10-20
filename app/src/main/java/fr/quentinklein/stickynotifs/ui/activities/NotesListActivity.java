@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -39,9 +42,11 @@ import fr.quentinklein.stickynotifs.widget.StickyWidgetProvider;
  *
  * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment
  */
-@EActivity(R.layout.activity_list_notes)
+@EActivity
 @OptionsMenu(R.menu.notes)
 public class NotesListActivity extends ActionBarActivity implements NoteSavedListener, NoteChanedListener, HideNoteListener, NoteDeletedListener, NotesListFragment.TwoPartProvider {
+
+    public static final String EXTRA_NOTE_ID = "note_id";
 
     @FragmentById(R.id.notes_fragment)
     NotesListFragment fragment;
@@ -69,13 +74,25 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         reloadWidgets();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_notes);
+        EasyTracker.getInstance(this).activityStart(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+
+    }
+
     /**
      * Functions
      */
 
+
     @AfterViews
     void log() {
-        EasyTracker.getInstance(this).activityStart(this);
         fragment.refreshNotesList();
         reloadWidgets();
     }
@@ -84,9 +101,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
     /**
      * Menu items
      */
-
-    @OptionsItem(R.id.action_new)
-    void addNote() {
+    public void addNote() {
         startActivity(new Intent(NotesListActivity.this, NoteActivity_.class));
     }
 
@@ -255,6 +270,5 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
             findViewById(R.id.about_rate).setOnClickListener(listener);
             findViewById(R.id.about_complain).setOnClickListener(listener);
         }
-
     }
 }

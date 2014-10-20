@@ -1,6 +1,7 @@
 package fr.quentinklein.stickynotifs.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -86,10 +87,10 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
         remoteView.setTextViewText(android.R.id.text1, notification.getTitle());
         remoteView.setTextViewText(android.R.id.text2, notification.getContent());
         remoteView.setImageViewResource(android.R.id.icon, getIconResource(notification));
-        /*remoteView.setOnClickFillInIntent(
-                android.R.id.text1,
+        remoteView.setOnClickFillInIntent(
+                R.id.widget_row,
                 new Intent().putExtra(StickyWidgetProvider.EXTRA_ID, notification.getId())
-        );*/
+        );
         return remoteView;
     }
 

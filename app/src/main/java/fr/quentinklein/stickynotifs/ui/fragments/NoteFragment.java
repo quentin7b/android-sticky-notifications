@@ -1,12 +1,12 @@
 package fr.quentinklein.stickynotifs.ui.fragments;
 
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.analytics.tracking.android.EasyTracker;
@@ -43,7 +43,7 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
     @ViewById(R.id.radios)
     RadioGroup radioGroup;
     @ViewById(R.id.stick)
-    Switch noteSwitch;
+    SwitchCompat noteSwitch;
     @ViewById(R.id.title)
     EditText noteTitle;
     @ViewById(R.id.content)

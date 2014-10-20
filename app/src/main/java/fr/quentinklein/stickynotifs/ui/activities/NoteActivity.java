@@ -1,6 +1,10 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -25,7 +29,7 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
  *
  * @see fr.quentinklein.stickynotifs.ui.fragments.NoteFragment
  */
-@EActivity(R.layout.activity_note)
+@EActivity
 @OptionsMenu(R.menu.note)
 public class NoteActivity extends ActionBarActivity implements NoteSavedListener, NoteDeletedListener, ChangeIconListener {
 
@@ -41,14 +45,28 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
     @Bean
     NotificationHelper notificationHelper;
 
+    Toolbar toolbar;
+    ActionBar actionBar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_note);
+        EasyTracker.getInstance(this).activityStart(this);
+
+        toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
     /**
      * Functions
      */
 
     @AfterViews
     void init() {
-        EasyTracker.getInstance(this).activityStart(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (notificationId != -1) {
             fragment.noteSelected(notificationId);
         }
@@ -85,6 +103,7 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
 
     @Override
     public void setActivityIcon(int iconResource) {
-        getSupportActionBar().setIcon(iconResource);
+        // getSupportActionBar().setIcon(iconResource);
+        // actionBar.setIcon(iconResource);
     }
 }
