@@ -103,6 +103,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
      */
     public void addNote() {
         startActivity(new Intent(NotesListActivity.this, NoteActivity_.class));
+        overridePendingTransition(R.anim.pop_from_bottom, R.anim.nothing);
     }
 
     @OptionsItem(R.id.action_about)
