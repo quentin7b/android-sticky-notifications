@@ -23,8 +23,8 @@ android {
         applicationId "fr.quentinklein.stickynotifs"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 8
-        versionName "3.0-indev"
+        versionCode 9
+        versionName "3.0"
 
     }
     buildTypes {
