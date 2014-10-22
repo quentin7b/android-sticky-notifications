@@ -17,14 +17,14 @@ apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.0.0"
+    buildToolsVersion "21.0.1"
 
     defaultConfig {
         applicationId "fr.quentinklein.stickynotifs"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 9
-        versionName "3.0"
+        versionCode 10
+        versionName "3.1-indev"
 
     }
     buildTypes {
