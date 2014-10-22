@@ -1,0 +1,20 @@
+<resources>
+
+    <string-array name="ultra_notification">
+        <item>Call Marion</item>
+        <item>Rendez-vous</item>
+    </string-array>
+    <string-array name="important_notification">
+        <item>Post card</item>
+        <item>To Quentin</item>
+    </string-array>
+    <string-array name="normal_notification">
+        <item>Buy some coffee</item>
+        <item>And tea if available</item>
+    </string-array>
+    <string-array name="useless_notification">
+        <item>Print pictures</item>
+        <item>13x15</item>
+    </string-array>
+
+</resources>

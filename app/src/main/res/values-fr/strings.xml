@@ -17,6 +17,14 @@
     <string name="important">Priorité importante</string>
     <string name="ultra">Haute priorité</string>
 
+    <string-array name="spinner_data">
+        <item>Toutes les notifications</item>
+        <item>@string/ultra</item>
+        <item>@string/important</item>
+        <item>@string/normal</item>
+        <item>@string/useless</item>
+    </string-array>
+
     <string name="note_deleted">Note supprimée</string>
     <string name="note_deleted_error">Erreur lors de la suppression de la note</string>
     <string name="note_retrive_error">Erreur lors de la récupération de la note</string>

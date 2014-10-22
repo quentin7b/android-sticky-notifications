@@ -59,6 +59,7 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
      */
     boolean isEditing;
 
+
     @AfterViews
     void refreshElements() {
         layout.setVisibility(View.VISIBLE);
@@ -253,4 +254,5 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
         notification = null;
         refreshElements();
     }
+
 }

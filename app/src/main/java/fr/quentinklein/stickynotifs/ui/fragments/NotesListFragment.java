@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.NotificationHelper;
 import fr.quentinklein.stickynotifs.R;
 import fr.quentinklein.stickynotifs.model.StickyNotification;
@@ -63,12 +64,27 @@ public class NotesListFragment extends Fragment {
     StickyNotificationAdapter adapter;
     List<StickyNotification> notifications;
 
+    List<StickyNotification> debugNotifications;
+
+    private StickyNotification.Defcon mDefconFilter = null;
+
     @AfterViews
     void attachButton() {
         addCardButton.attachToListView(cardsView);
         notifications = new ArrayList<StickyNotification>(0);
         adapter = new StickyNotificationAdapter(getActivity().getLayoutInflater(), notifications);
         cardsView.setAdapter(adapter);
+        if (BuildConfig.DEBUG) {
+            debugNotifications = new ArrayList<StickyNotification>(4);
+            String[] ultraInfo = getResources().getStringArray(R.array.ultra_notification);
+            StickyNotification ultra = new StickyNotification();
+            ultra.setId(0);
+            ultra.setDefcon(StickyNotification.Defcon.ULTRA);
+            ultra.setTitle(ultraInfo[0]);
+            ultra.setContent(ultraInfo[1]);
+            ultra.setNotification(true);
+            debugNotifications.add(ultra);
+        }
     }
 
     @Override
@@ -92,8 +108,15 @@ public class NotesListFragment extends Fragment {
      */
     public void refreshNotesList() {
         try {
+            if (notifications == null) {
+                notifications = new ArrayList<StickyNotification>();
+            }
             notifications.clear();
-            notifications.addAll(stickyNotificationDao.queryForAll());
+            if (mDefconFilter == null) {
+                notifications.addAll(stickyNotificationDao.queryForAll());
+            } else {
+                notifications.addAll(NotificationHelper.getDefconNotifications(stickyNotificationDao.queryForAll(), mDefconFilter));
+            }
             Collections.sort(notifications);
             notificationHelper.showNotifications(notifications);
             adapter.notifyDataSetChanged();
@@ -222,5 +245,11 @@ public class NotesListFragment extends Fragment {
                     return R.drawable.ic_launcher;
             }
         }
+    }
+
+
+    public void setDefconFilter(StickyNotification.Defcon defconFilter) {
+        mDefconFilter = defconFilter;
+        refreshNotesList();
     }
 }

@@ -14,6 +14,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +29,10 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.ViewById;
 
 import fr.quentinklein.stickynotifs.R;
+import fr.quentinklein.stickynotifs.model.StickyNotification;
 import fr.quentinklein.stickynotifs.ui.fragments.NoteFragment;
 import fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment;
 import fr.quentinklein.stickynotifs.ui.listeners.HideNoteListener;
@@ -50,6 +55,9 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
     @FragmentById(R.id.notes_fragment)
     NotesListFragment fragment;
+
+    @ViewById(R.id.spinner)
+    Spinner spinner;
 
     /**
      * Not used for now (special tablet layout)
@@ -94,6 +102,47 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
     @AfterViews
     void log() {
         fragment.refreshNotesList();
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_data, R.layout.adapter_spinner_filter);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        // No filter;
+                        fragment.setDefconFilter(null);
+                        fragment.refreshNotesList();
+                        break;
+                    case 1:
+                        // Only ultra
+                        fragment.setDefconFilter(StickyNotification.Defcon.ULTRA);
+                        fragment.refreshNotesList();
+                        break;
+                    case 2:
+                        // Only important
+                        fragment.setDefconFilter(StickyNotification.Defcon.IMPORTANT);
+                        fragment.refreshNotesList();
+                        break;
+                    case 3:
+                        // Only base
+                        fragment.setDefconFilter(StickyNotification.Defcon.NORMAL);
+                        fragment.refreshNotesList();
+                        break;
+                    case 4:
+                        // Only useless
+                        fragment.setDefconFilter(StickyNotification.Defcon.USELESS);
+                        fragment.refreshNotesList();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        spinner.setSelection(0);
         reloadWidgets();
     }
 

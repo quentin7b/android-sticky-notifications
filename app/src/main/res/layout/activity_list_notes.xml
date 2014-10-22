@@ -11,12 +11,25 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryDark" />
 
+    <RelativeLayout
+        android:id="@+id/spinner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/app_toolbar"
+        android:background="?attr/colorPrimaryDark">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
     <fragment
         android:id="@+id/notes_fragment"
         android:name="fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment_"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/app_toolbar"
+        android:layout_below="@id/spinner_layout"
         android:layout_gravity="left"
         tools:layout="@layout/fragment_list_notes" />
 </RelativeLayout>
