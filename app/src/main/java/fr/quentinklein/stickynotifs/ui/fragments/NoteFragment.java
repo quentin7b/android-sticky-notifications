@@ -100,7 +100,7 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
     @Click(R.id.validate)
     void saveNote() {
         String title = noteTitle.getText().toString();
-        if (title != null && title.trim().length() > 0) {
+        if (title != null && !title.trim().isEmpty()) {
             notification.setContent(noteContent.getText().toString());
             StickyNotification.Defcon defcon;
             switch (radioGroup.getCheckedRadioButtonId()) {
@@ -245,14 +245,6 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
             // Delete note while creating
             getActivity().finish();
         }
-    }
-
-    /**
-     * Not used for now
-     */
-    public void clear() {
-        notification = null;
-        refreshElements();
     }
 
 }

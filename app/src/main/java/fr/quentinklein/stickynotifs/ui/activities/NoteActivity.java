@@ -79,7 +79,7 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
     @OptionsItem(android.R.id.home)
     void homeSelected() {
         finish();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom);
+        overridePendingTransition(R.anim.nothing, R.anim.go_to_right);
     }
 
     @OptionsItem(R.id.action_delete)
@@ -94,14 +94,14 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
     @Override
     public void noteSaved(int noteId) {
         finish();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom);
+        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom_right);
     }
 
     @Override
     public void noteDeleted(int noteId) {
         notificationHelper.hideNotification(noteId);
         finish();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom);
+        overridePendingTransition(R.anim.nothing, R.anim.go_to_right);
     }
 
     @Override
@@ -113,6 +113,6 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom);
+        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom_right);
     }
 }

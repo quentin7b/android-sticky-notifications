@@ -49,4 +49,10 @@
     <string name="complain_message">Remarks :\n\n\n(Optional) My mail : </string>
     <string name="complain_error">Error while choosing mail app :/</string>
 
+    <!-- Plurals -->
+    <plurals name="grouped_notification_title">
+        <item quantity="one">1 notification</item>
+        <item quantity="other">%d notifications</item>
+    </plurals>
+
 </resources>

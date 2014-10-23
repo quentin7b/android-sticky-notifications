@@ -49,4 +49,11 @@
     <string name="complain_subject">Remarques sur l\'application</string>
     <string name="complain_message">Remarques :\n\n\n(Optionnel) Mon email : </string>
     <string name="complain_error">Erreur lors de du choix de l\'application mail</string>
+
+
+    <!-- Plurals -->
+    <plurals name="grouped_notification_title">
+        <item quantity="one">1 notification</item>
+        <item quantity="other">%d notifications</item>
+    </plurals>
 </resources>

@@ -91,7 +91,6 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-
     }
 
     /**
@@ -148,11 +147,11 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
 
     /**
-     * Menu items
+     * Menu items.
      */
-    public void addNote() {
+    public final void addNote() {
         startActivity(new Intent(NotesListActivity.this, NoteActivity_.class));
-        overridePendingTransition(R.anim.pop_from_bottom, R.anim.nothing);
+        overridePendingTransition(R.anim.pop_from_bottom_right, R.anim.nothing);
     }
 
     @OptionsItem(R.id.action_about)
@@ -163,6 +162,12 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
         aboutDialog.show();
     }
 
+    @OptionsItem(R.id.action_settings)
+    void configure() {
+        startActivity(new Intent(this, SettingsActivity_.class));
+        overridePendingTransition(R.anim.pop_from_top, R.anim.nothing);
+    }
+
     @OptionsItem(R.id.action_delete)
     void delete() {
         if (noteFragment != null && noteFragment.isInLayout()) {
@@ -171,7 +176,7 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
     }
 
     /**
-     * Interfaces
+     * Interfaces.
      */
 
     @Override

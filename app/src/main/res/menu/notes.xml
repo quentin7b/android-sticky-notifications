@@ -5,9 +5,12 @@
 
     <item
         android:id="@+id/action_about"
-        android:icon="@drawable/ic_action_about"
+        android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/action_about"
         fr.quentinklein.stickynotifs:showAsAction="ifRoom|withText" />
-
-
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Configurer"
+        fr.quentinklein.stickynotifs:showAsAction="ifRoom|withText" />
 </menu>

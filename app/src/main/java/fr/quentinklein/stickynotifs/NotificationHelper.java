@@ -14,10 +14,12 @@ import android.support.v4.app.TaskStackBuilder;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.SystemService;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
 import fr.quentinklein.stickynotifs.model.StickyNotification;
 import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity_;
 
@@ -33,39 +35,52 @@ public class NotificationHelper {
     @SystemService
     NotificationManager mNotificationManager;
     Bitmap uselessBitmap, normalBitmap, importantBitmap, ultraBitmap;
+    @Pref
+    NotificationPreferences_ preferences;
 
-    /**
-     * Return notifications with a particular defcon
-     *
-     * @param notifications the full list of notifications
-     * @param defcon        the defcon needed
-     * @return the filtered list
-     * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment#refreshNotesList()
-     */
-    public static List<StickyNotification> getDefconNotifications(
-            List<StickyNotification> notifications, StickyNotification.Defcon defcon) {
-        ArrayList<StickyNotification> defconNotifications = new ArrayList<StickyNotification>();
-        for (StickyNotification notification : notifications) {
-            if (defcon.equals(notification.getDefcon())) {
-                defconNotifications.add(notification);
-            }
-        }
-        return defconNotifications;
-    }
+    static boolean lastShowWasConcat = false;
 
     /**
      * Show notifications in action bar
      *
      * @param notifications the full list of notifications
      * @see fr.quentinklein.stickynotifs.boot.StartUpService#onStartCommand(android.content.Intent, int, int)
-     * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment#fillNotificationsStack(java.util.List, String)
      */
-    public void showNotifications(List<StickyNotification> notifications) {
-        for (StickyNotification notification : notifications) {
-            if (notification.isNotification()) {
-                showNotification(notification);
-            } else {
-                hideNotification(notification);
+    public void showNotifications(final List<StickyNotification> notifications) {
+        if (preferences.concatNotifications().get()) {
+            // Concat the notifications
+            if (!lastShowWasConcat) {
+                lastShowWasConcat = true;
+                hideAll();
+            }
+            List<StickyNotification> ultra = getDefconNotifications(notifications, StickyNotification.Defcon.ULTRA);
+            List<StickyNotification> important = getDefconNotifications(notifications, StickyNotification.Defcon.IMPORTANT);
+            List<StickyNotification> normal = getDefconNotifications(notifications, StickyNotification.Defcon.NORMAL);
+            List<StickyNotification> useless = getDefconNotifications(notifications, StickyNotification.Defcon.USELESS);
+            if (ultra != null && ultra.size() > 0) {
+                showGroupedNotifications(ultra, StickyNotification.Defcon.ULTRA);
+            }
+            if (important != null && important.size() > 0) {
+                showGroupedNotifications(important, StickyNotification.Defcon.IMPORTANT);
+            }
+            if (normal != null && normal.size() > 0) {
+                showGroupedNotifications(normal, StickyNotification.Defcon.NORMAL);
+            }
+            if (useless != null && useless.size() > 0) {
+                showGroupedNotifications(useless, StickyNotification.Defcon.USELESS);
+            }
+        } else {
+            if (lastShowWasConcat) {
+                lastShowWasConcat = false;
+                hideAll();
+            }
+            // Solo notifications
+            for (StickyNotification notification : notifications) {
+                if (notification.isNotification()) {
+                    showNotification(notification);
+                } else {
+                    hideNotification(notification);
+                }
             }
         }
     }
@@ -74,6 +89,33 @@ public class NotificationHelper {
         NotificationCompat.Builder mBuilder =
                 getBaseBuilder(stick);
         mNotificationManager.notify(stick.getId(), mBuilder.build());
+    }
+
+    /**
+     * Generate a notification with a bunch of other notifications.
+     *
+     * @param notifications the bunch of notifications to show
+     * @param defcon        the defcon needed
+     */
+    private void showGroupedNotifications(List<StickyNotification> notifications, StickyNotification.Defcon defcon) {
+        if (notifications.size() > 1) {
+            // If there are more than one notification, Generate the Global notification.
+            StickyNotification notification = new StickyNotification();
+            notification.setId(-defcon.ordinal());
+            notification.setTitle(context.getResources().getQuantityString(R.plurals.grouped_notification_title, notifications.size(), notifications.size()));
+            String bigText = "";
+            for (StickyNotification notificationItem : notifications) {
+                bigText += " - " + notificationItem.getTitle() + "\n";
+            }
+            notification.setContent(bigText);
+            notification.setNotification(true);
+            notification.setDefcon(defcon);
+            // Show the notification
+            showNotification(notification);
+        } else {
+            // There is only one notification, show it
+            showNotification(notifications.get(0));
+        }
     }
 
     private void hideNotification(StickyNotification stickyNotification) {
@@ -187,6 +229,26 @@ public class NotificationHelper {
             default:
                 return null;
         }
+    }
+
+
+    /**
+     * Return notifications with a particular defcon.
+     *
+     * @param notifications the full list of notifications
+     * @param defcon        the defcon needed
+     * @return the filtered list
+     * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment#refreshNotesList()
+     */
+    public static List<StickyNotification> getDefconNotifications(
+            List<StickyNotification> notifications, StickyNotification.Defcon defcon) {
+        ArrayList<StickyNotification> defconNotifications = new ArrayList<StickyNotification>();
+        for (StickyNotification notification : notifications) {
+            if (defcon.equals(notification.getDefcon())) {
+                defconNotifications.add(notification);
+            }
+        }
+        return defconNotifications;
     }
 
 }

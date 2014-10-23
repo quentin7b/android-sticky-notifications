@@ -23,6 +23,9 @@
         <activity
             android:name=".ui.activities.NoteActivity_"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".ui.activities.SettingsActivity_"
+            android:configChanges="orientation|screenSize" />
         <!-- Services -->
         <service android:name=".boot.StartUpService_" />
         <!-- Receivers -->

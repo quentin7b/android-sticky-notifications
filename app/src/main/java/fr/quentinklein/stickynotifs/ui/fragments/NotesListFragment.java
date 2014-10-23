@@ -133,7 +133,7 @@ public class NotesListFragment extends Fragment {
                     ).build()
             );
         }
-        if (notifications.size() == 0) {
+        if (notifications.isEmpty()) {
             // hide detail
             if (getActivity() instanceof HideNoteListener) {
                 ((HideNoteListener) getActivity()).hideNote();
@@ -252,4 +252,5 @@ public class NotesListFragment extends Fragment {
         mDefconFilter = defconFilter;
         refreshNotesList();
     }
+
 }
