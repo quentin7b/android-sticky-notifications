@@ -17,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="15dp">
 
@@ -25,7 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:gravity="center_vertical"
-                android:text="Notifications"
+                android:text="@string/settings_notifications_title"
+                android:textAllCaps="true"
                 android:textSize="22sp" />
 
             <View
@@ -38,19 +39,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:checked="false"
-                android:text="Grouper les notifications" />
+                android:text="@string/settings_notifications_switch" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Groupe les notifications de même priorité dans la barre de notifications" />
+                android:text="@string/settings_notifications_explain" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginTop="30dp"
                 android:gravity="center_vertical"
-                android:text="Accueil"
+                android:text="@string/settings_filter_title"
+                android:textAllCaps="true"
                 android:textSize="22sp" />
 
             <View
@@ -63,12 +65,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:checked="false"
-                android:text="Afficher le filtre" />
+                android:text="@string/settings_filter_switch" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Affiche ou non le filtre de notifications par priorité dans l'accueil" />
+                android:text="@string/settings_filter_explain" />
 
 
         </LinearLayout>

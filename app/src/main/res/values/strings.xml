@@ -55,4 +55,14 @@
         <item quantity="other">%d todo notifications</item>
     </plurals>
 
+    <!-- Settings -->
+    <string name="settings_notifications_title">Notifications</string>
+    <string name="settings_notifications_switch">Group notifications by priority</string>
+    <string name="settings_notifications_explain">Group notifications with the same priority as one notification in the notification bar</string>
+
+
+    <string name="settings_filter_title">Priority filter</string>
+    <string name="settings_filter_switch">Show the filter</string>
+    <string name="settings_filter_explain">Show the priority filter in main screen if activated</string>
+
 </resources>

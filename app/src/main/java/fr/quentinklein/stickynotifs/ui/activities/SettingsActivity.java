@@ -59,6 +59,7 @@ public class SettingsActivity extends ActionBarActivity {
                     if (isChecked != preferences.concatNotifications().get()) {
                         preferences.concatNotifications().put(isChecked);
                         try {
+                            notificationHelper.hideGroupedNotifications();
                             notificationHelper.showNotifications(stickyNotificationDao.queryForAll());
                         } catch (SQLException e) {
                             Log.e(SettingsActivity.class.getSimpleName(), "Taratata", e);

@@ -112,13 +112,14 @@ public class NotesListFragment extends Fragment {
                 notifications = new ArrayList<StickyNotification>();
             }
             notifications.clear();
+            List<StickyNotification> allNotifications = stickyNotificationDao.queryForAll();
+            notificationHelper.showNotifications(allNotifications);
             if (mDefconFilter == null) {
-                notifications.addAll(stickyNotificationDao.queryForAll());
+                notifications.addAll(allNotifications);
             } else {
-                notifications.addAll(NotificationHelper.getDefconNotifications(stickyNotificationDao.queryForAll(), mDefconFilter));
+                notifications.addAll(NotificationHelper.getDefconNotifications(allNotifications, mDefconFilter));
             }
             Collections.sort(notifications);
-            notificationHelper.showNotifications(notifications);
             adapter.notifyDataSetChanged();
         } catch (SQLException e) {
             Log.e(NotesListFragment.class.getSimpleName(), "Error while requesting notes", e);

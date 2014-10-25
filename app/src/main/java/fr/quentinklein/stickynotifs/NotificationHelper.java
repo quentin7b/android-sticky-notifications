@@ -43,8 +43,6 @@ public class NotificationHelper {
     @Pref
     NotificationPreferences_ preferences;
 
-    static boolean lastShowWasConcat = false;
-
     /**
      * Show notifications in action bar
      *
@@ -52,12 +50,9 @@ public class NotificationHelper {
      * @see fr.quentinklein.stickynotifs.boot.StartUpService#onStartCommand(android.content.Intent, int, int)
      */
     public void showNotifications(final List<StickyNotification> notifications) {
+        hideAll();
         if (preferences.concatNotifications().get()) {
             // Concat the notifications
-            if (!lastShowWasConcat) {
-                lastShowWasConcat = true;
-                hideAll();
-            }
             List<StickyNotification> ultra = getDefconNotifications(notifications, StickyNotification.Defcon.ULTRA);
             List<StickyNotification> important = getDefconNotifications(notifications, StickyNotification.Defcon.IMPORTANT);
             List<StickyNotification> normal = getDefconNotifications(notifications, StickyNotification.Defcon.NORMAL);
@@ -75,10 +70,6 @@ public class NotificationHelper {
                 showGroupedNotifications(useless, StickyNotification.Defcon.USELESS);
             }
         } else {
-            if (lastShowWasConcat) {
-                lastShowWasConcat = false;
-                hideAll();
-            }
             // Solo notifications
             for (StickyNotification notification : notifications) {
                 if (notification.isNotification()) {
@@ -124,6 +115,13 @@ public class NotificationHelper {
 
     public void hideAll() {
         mNotificationManager.cancelAll();
+    }
+
+    public void hideGroupedNotifications() {
+        mNotificationManager.cancel(-StickyNotification.Defcon.ULTRA.ordinal());
+        mNotificationManager.cancel(-StickyNotification.Defcon.IMPORTANT.ordinal());
+        mNotificationManager.cancel(-StickyNotification.Defcon.NORMAL.ordinal());
+        mNotificationManager.cancel(-StickyNotification.Defcon.USELESS.ordinal());
     }
 
     private NotificationCompat.Builder getListBuilder(List<StickyNotification> notifications) {

@@ -82,7 +82,6 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
                 filterLayout.setVisibility(View.VISIBLE);
                 spinner.setSelection(0);
                 fragment.setDefconFilter(null);
-                fragment.refreshNotesList();
             }
         } else {
             // Spinner is visible
@@ -91,9 +90,9 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
                 filterLayout.setVisibility(View.GONE);
                 spinner.setSelection(0);
                 fragment.setDefconFilter(null);
-                fragment.refreshNotesList();
             }
         }
+        fragment.refreshNotesList();
         reloadWidgets();
     }
 
