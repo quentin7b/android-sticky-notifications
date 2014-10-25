@@ -51,8 +51,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // Support
-    compile 'com.android.support:support-v4:21.0.0'
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:support-v4:21.0.+'
+    compile 'com.android.support:appcompat-v7:21.0.+'
 
     // Android Anotations
     apt 'org.androidannotations:androidannotations:3.0.1'

@@ -11,6 +11,11 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="RadioButtonGreenTheme" parent="android:style/Widget.CompoundButton.RadioButton">
         <item name="android:button">@drawable/greentheme_btn_radio_holo_light</item>
     </style>

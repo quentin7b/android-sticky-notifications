@@ -43,7 +43,31 @@ public class SettingsActivity extends ActionBarActivity {
     NotificationHelper notificationHelper;
 
     @ViewById(R.id.concat_switch)
-    SwitchCompat switchCompat;
+    SwitchCompat concatSwitch;
+
+    @ViewById(R.id.filter_switch)
+    SwitchCompat filterSwitch;
+
+    CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            switch (buttonView.getId()) {
+                case R.id.filter_switch:
+                    preferences.hideFilter().put(!isChecked);
+                    break;
+                case R.id.concat_switch:
+                    if (isChecked != preferences.concatNotifications().get()) {
+                        preferences.concatNotifications().put(isChecked);
+                        try {
+                            notificationHelper.showNotifications(stickyNotificationDao.queryForAll());
+                        } catch (SQLException e) {
+                            Log.e(SettingsActivity.class.getSimpleName(), "Taratata", e);
+                        }
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,20 +83,11 @@ public class SettingsActivity extends ActionBarActivity {
 
     @AfterViews
     void initSwitch() {
-        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked != preferences.concatNotifications().get()) {
-                    preferences.concatNotifications().put(isChecked);
-                    try {
-                        notificationHelper.showNotifications(stickyNotificationDao.queryForAll());
-                    } catch (SQLException e) {
-                        Log.e(SettingsActivity.class.getSimpleName(), "Taratata", e);
-                    }
-                }
-            }
-        });
-        switchCompat.setChecked(preferences.concatNotifications().get());
+        concatSwitch.setOnCheckedChangeListener(checkedChangeListener);
+        concatSwitch.setChecked(preferences.concatNotifications().get());
+
+        filterSwitch.setOnCheckedChangeListener(checkedChangeListener);
+        filterSwitch.setChecked(!preferences.hideFilter().get());
     }
 
     @OptionsItem(android.R.id.home)

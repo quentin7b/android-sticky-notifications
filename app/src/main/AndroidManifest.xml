@@ -26,6 +26,10 @@
         <activity
             android:name=".ui.activities.SettingsActivity_"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".ui.activities.AboutDialogActivity_"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.Dialog" />
         <!-- Services -->
         <service android:name=".boot.StartUpService_" />
         <!-- Receivers -->

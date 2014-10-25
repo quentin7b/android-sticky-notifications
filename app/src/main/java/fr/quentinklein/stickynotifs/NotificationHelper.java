@@ -7,9 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -100,18 +105,9 @@ public class NotificationHelper {
     private void showGroupedNotifications(List<StickyNotification> notifications, StickyNotification.Defcon defcon) {
         if (notifications.size() > 1) {
             // If there are more than one notification, Generate the Global notification.
-            StickyNotification notification = new StickyNotification();
-            notification.setId(-defcon.ordinal());
-            notification.setTitle(context.getResources().getQuantityString(R.plurals.grouped_notification_title, notifications.size(), notifications.size()));
-            String bigText = "";
-            for (StickyNotification notificationItem : notifications) {
-                bigText += " - " + notificationItem.getTitle() + "\n";
-            }
-            notification.setContent(bigText);
-            notification.setNotification(true);
-            notification.setDefcon(defcon);
-            // Show the notification
-            showNotification(notification);
+            NotificationCompat.Builder mBuilder =
+                    getListBuilder(notifications);
+            mNotificationManager.notify(-defcon.ordinal(), mBuilder.build());
         } else {
             // There is only one notification, show it
             showNotification(notifications.get(0));
@@ -128,6 +124,61 @@ public class NotificationHelper {
 
     public void hideAll() {
         mNotificationManager.cancelAll();
+    }
+
+    private NotificationCompat.Builder getListBuilder(List<StickyNotification> notifications) {
+        StickyNotification notification = new StickyNotification();
+        notification.setId(notifications.get(0).getDefcon().ordinal());
+        notification.setTitle(context.getResources().getQuantityString(R.plurals.grouped_notification_title, notifications.size(), notifications.size()));
+        notification.setNotification(true);
+        notification.setDefcon(notifications.get(0).getDefcon());
+
+        NotificationCompat.InboxStyle notificationCompat = new NotificationCompat.InboxStyle();
+        for (StickyNotification notificationItem : notifications) {
+            String suffix = (!notificationItem.getContent().isEmpty() ? " - " + notificationItem.getContent() : "");
+            Spannable wordToSpan = new SpannableString(notificationItem.getTitle() + suffix);
+            wordToSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, notificationItem.getTitle().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            notificationCompat.addLine(wordToSpan);
+        }
+        notificationCompat.setSummaryText(context.getString(R.string.app_name));
+
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setContentTitle(notification.getTitle())
+                        .setContentText(context.getString(R.string.app_name))
+                        .setSmallIcon(getSmallIconResource(notification))
+                        .setOngoing(true)
+                        .setLargeIcon(getColorSquareResource(notification))
+                        .setStyle(notificationCompat);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            switch (notification.getDefcon()) {
+                case ULTRA:
+                    mBuilder.setPriority(Notification.PRIORITY_MAX);
+                    break;
+                case IMPORTANT:
+                    mBuilder.setPriority(Notification.PRIORITY_HIGH);
+                    break;
+                case NORMAL:
+                    mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
+                    break;
+                case USELESS:
+                    mBuilder.setPriority(Notification.PRIORITY_LOW);
+            }
+        }
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(context, NotesListActivity_.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(NotesListActivity_.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        mBuilder.setOngoing(true);
+
+        return mBuilder;
     }
 
     private NotificationCompat.Builder getBaseBuilder(StickyNotification notification) {

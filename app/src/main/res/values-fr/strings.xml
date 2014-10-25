@@ -53,7 +53,7 @@
 
     <!-- Plurals -->
     <plurals name="grouped_notification_title">
-        <item quantity="one">1 notification</item>
-        <item quantity="other">%d notifications</item>
+        <item quantity="one">1 todo notification</item>
+        <item quantity="other">%d todo notifications</item>
     </plurals>
 </resources>
