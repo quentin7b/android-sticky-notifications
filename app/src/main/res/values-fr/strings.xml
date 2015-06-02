@@ -49,5 +49,8 @@
     <string name="settings_help_dev_switch">Envoyer des données anonymes</string>
     <string name="settings_help_dev_explain">Cette application utilise un sytème de remontées d\'informations anonymes. En activant cela, vous acceptez l\'envoie de données anonymes pour aider à améliorer l\'application (Merci :-))</string>
     <string name="edit_title">Edition</string>
+    <string name="help_me">J\'accepte d\'envoyer des données anonymes</string>
+    <string name="no_thanks">Non merci</string>
+    <string name="about_thanks_material_dialogs">github.com/afollestad/material-dialogs</string>
 
 </resources>

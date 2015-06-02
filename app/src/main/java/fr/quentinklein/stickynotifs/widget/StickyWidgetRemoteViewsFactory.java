@@ -86,7 +86,8 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
         StickyNotification notification = notificationList.get(position);
         remoteView.setTextViewText(android.R.id.text1, notification.getTitle());
         remoteView.setTextViewText(android.R.id.text2, notification.getContent());
-        remoteView.setImageViewResource(android.R.id.icon, getIconResource(notification));
+        remoteView.setImageViewResource(R.id.color_icon, getIconResource(notification));
+        remoteView.setImageViewResource(R.id.color_view, getColorResource(notification));
         remoteView.setOnClickFillInIntent(
                 R.id.widget_row,
                 new Intent().putExtra(StickyWidgetProvider.EXTRA_ID, notification.getId())
@@ -118,15 +119,30 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
     private int getIconResource(StickyNotification notification) {
         switch (notification.getDefcon()) {
             case USELESS:
-                return R.drawable.blue_square_paper;
+                return R.drawable.blue_square_paper_small;
             case NORMAL:
-                return R.drawable.green_square_paper;
+                return R.drawable.green_square_paper_small;
             case IMPORTANT:
-                return R.drawable.orange_square_paper;
+                return R.drawable.orange_square_paper_small;
             case ULTRA:
-                return R.drawable.red_square_paper;
+                return R.drawable.red_square_paper_small;
             default:
                 return R.drawable.ic_launcher;
+        }
+    }
+
+    private int getColorResource(StickyNotification notification) {
+        switch (notification.getDefcon()) {
+            case USELESS:
+                return R.drawable.circle_blue;
+            case NORMAL:
+                return R.drawable.circle_green;
+            case IMPORTANT:
+                return R.drawable.circle_orange;
+            case ULTRA:
+                return R.drawable.circle_red;
+            default:
+                return R.drawable.circle_grey;
         }
     }
 }

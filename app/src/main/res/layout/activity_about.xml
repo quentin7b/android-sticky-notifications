@@ -92,6 +92,13 @@
                     android:autoLink="web"
                     android:text="@string/about_thanks_ormlite" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:autoLink="web"
+                    android:text="@string/about_thanks_material_dialogs" />
+
             </LinearLayout>
 
             <!-- icons -->

@@ -47,5 +47,8 @@
     <string name="settings_help_dev_switch">Send anonymous data</string>
     <string name="settings_help_dev_explain">This app uses an analytics tools to helps its improvement. By checking this, you agree to send anonymous data to improve the app! (Thanks :-))</string>
     <string name="edit_title">Edit</string>
+    <string name="help_me">Agree to send anonymous data</string>
+    <string name="no_thanks">No thanks</string>
+    <string name="about_thanks_material_dialogs">github.com/afollestad/material-dialogs</string>
 
 </resources>

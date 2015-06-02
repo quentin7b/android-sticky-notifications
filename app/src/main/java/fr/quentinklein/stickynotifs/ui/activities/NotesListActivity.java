@@ -1,12 +1,17 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -54,12 +59,44 @@ public class NotesListActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         assert viewPager != null;
         setupViewPager(viewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.setupWithViewPager(viewPager);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+            tabLayout.setElevation(px);
+            fab.setElevation(px);
+        }
+
+        if (!preferences.askedForHelp().get()) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.settings_help_dev)
+                    .content(R.string.settings_help_dev_explain)
+                    .positiveText(R.string.help_me)
+                    .negativeText(R.string.no_thanks)
+                    .cancelable(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            preferences.askedForHelp().put(true);
+                            preferences.analytics().put(true);
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            preferences.askedForHelp().put(true);
+                            preferences.analytics().put(false);
+                        }
+                    })
+                    .show();
+        }
 
     }
 

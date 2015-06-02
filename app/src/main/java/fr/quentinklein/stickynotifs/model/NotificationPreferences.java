@@ -14,4 +14,7 @@ public interface NotificationPreferences {
 
     @DefaultBoolean(false)
     boolean analytics();
+
+    @DefaultBoolean(false)
+    boolean askedForHelp();
 }

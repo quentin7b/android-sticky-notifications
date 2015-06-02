@@ -36,6 +36,10 @@
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/base_recycler_margin"
+            android:layout_marginLeft="@dimen/base_recycler_margin"
+            android:layout_marginRight="@dimen/base_recycler_margin"
+            android:layout_marginStart="@dimen/base_recycler_margin"
             android:background="@color/card_background_color"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
