@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Generated with http://android-holo-colors.com -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/indigo_500</item>
-        <item name="colorPrimaryDark">@color/indigo_700</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowActionModeOverlay">true</item>
+    <style name="Theme.Sticky" parent="Base.Theme.Sticky" />
+
+    <style name="Base.Theme.Sticky" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <item name="colorControlHighlight">@color/primary_color_light</item>
+        <item name="colorControlNormal">@color/accent_color</item>
+        <item name="android:textColor">@color/primary_text</item>
     </style>
 
-    <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="RadioButtonGreenTheme" parent="android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/greentheme_btn_radio_holo_light</item>
-    </style>
-
-    <style name="RadioButtonBlueTheme" parent="android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/bluetheme_btn_radio_holo_light</item>
-    </style>
-
-    <style name="RadioButtonOrangeTheme" parent="android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/orangetheme_btn_radio_holo_light</item>
-    </style>
-
-    <style name="RadioButtonRedTheme" parent="android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/redtheme_btn_radio_holo_light</item>
-    </style>
 </resources>

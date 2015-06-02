@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">Todo Notifications (Sticky)</string>
+    <string name="app_name">Todo Notifications</string>
 
-    <string name="create_note_title">Créer</string>
     <string name="create_title">Titre</string>
     <string name="create_content">Description</string>
     <string name="create_notif">Afficher une notification</string>
@@ -10,20 +9,13 @@
     <string name="create_title_empty">Entrez au moins un titre</string>
 
     <string name="action_about">A propos</string>
-    <string name="action_edit">Editer</string>
 
-    <string name="useless">Basse priorité</string>
-    <string name="normal">Priorité normale</string>
-    <string name="important">Priorité importante</string>
-    <string name="ultra">Haute priorité</string>
+    <string name="all">Tout</string>
+    <string name="useless">Bas</string>
+    <string name="normal">Normal</string>
+    <string name="important">Important</string>
+    <string name="ultra">Ultra</string>
 
-    <string-array name="spinner_data">
-        <item>Toutes les notifications</item>
-        <item>@string/ultra</item>
-        <item>@string/important</item>
-        <item>@string/normal</item>
-        <item>@string/useless</item>
-    </string-array>
 
     <string name="note_deleted">Note supprimée</string>
     <string name="note_deleted_error">Erreur lors de la suppression de la note</string>
@@ -32,7 +24,7 @@
     <string name="note_saved_error">Erreur lors de l\'enregistrement de la note</string>
 
     <!-- About -->
-    <string name="about_author">Todo Notifications (Sticky) par Quentin KLEIN</string>
+    <string name="about_author">Todo Notifications par Quentin KLEIN</string>
     <string name="about_version">Version : </string>
     <string name="about_explain">Si vous aimez cette application, n\'hésitez pas à laisser une note sur le play store avec un petit commentaire. En revanche, pour toute remarque quelle qu\'elle soit, vous pouvez m\'envoyer un mail!</string>
     <string name="about_explain_rate">Noter l\'application ;)</string>
@@ -42,14 +34,7 @@
     <string name="about_thanks_ormlite">ormlite.com</string>
     <string name="about_thanks_cards">github.com/makovkastar/FloatingActionButton</string>
     <string name="about_graphics">Icônes &amp; Images</string>
-    <string name="about_graphics_flat">flaticons.net</string>
-
-    <!-- compain -->
-    <string name="complain_choose">Envoyer une remarque</string>
-    <string name="complain_subject">Remarques sur l\'application</string>
-    <string name="complain_message">Remarques :\n\n\n(Optionnel) Mon email : </string>
-    <string name="complain_error">Erreur lors de du choix de l\'application mail</string>
-
+    <string name="about_graphics_flat">www.google.com/design/icons</string>
 
     <!-- Plurals -->
     <plurals name="grouped_notification_title">
@@ -67,4 +52,10 @@
     <string name="settings_filter_title">Filtre de priorité</string>
     <string name="settings_filter_switch">Afficher le filtre</string>
     <string name="settings_filter_explain">Afficher le filtre de priorités dans l\'écran d\'accueil</string>
+    <string name="settings">Paramètres</string>
+    <string name="settings_help_dev">Aider le dévelppeur</string>
+    <string name="settings_help_dev_switch">Envoyer des données anonymes</string>
+    <string name="settings_help_dev_explain">Cette application utilise un sytème de remontées d\'informations anonymes. En activant cela, vous acceptez l\'envoie de données anonymes pour aider à améliorer l\'application (Merci :-))</string>
+    <string name="edit_title">Edition</string>
+
 </resources>

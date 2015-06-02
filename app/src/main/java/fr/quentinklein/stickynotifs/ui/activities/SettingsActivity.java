@@ -1,8 +1,7 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +20,7 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.sql.SQLException;
 
+import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.NotificationHelper;
 import fr.quentinklein.stickynotifs.R;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
@@ -31,7 +31,7 @@ import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
  * Created by quentin on 23/10/14.
  */
 @EActivity
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
     Dao<StickyNotification, Integer> stickyNotificationDao;
@@ -47,6 +47,9 @@ public class SettingsActivity extends ActionBarActivity {
 
     @ViewById(R.id.filter_switch)
     SwitchCompat filterSwitch;
+
+    @ViewById(R.id.dev_switch)
+    SwitchCompat devSwitch;
 
     CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -66,6 +69,9 @@ public class SettingsActivity extends ActionBarActivity {
                         }
                     }
                     break;
+                case R.id.dev_switch:
+                    preferences.analytics().put(isChecked);
+                    break;
             }
         }
     };
@@ -74,31 +80,29 @@ public class SettingsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        EasyTracker.getInstance(this).activityStart(this);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setTitle(R.string.settings);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @AfterViews
     void initSwitch() {
+        if (!BuildConfig.DEBUG && preferences.analytics().get()) {
+            EasyTracker.getInstance(this).activityStart(this);
+        }
         concatSwitch.setOnCheckedChangeListener(checkedChangeListener);
         concatSwitch.setChecked(preferences.concatNotifications().get());
 
         filterSwitch.setOnCheckedChangeListener(checkedChangeListener);
         filterSwitch.setChecked(!preferences.hideFilter().get());
+
+        devSwitch.setOnCheckedChangeListener(checkedChangeListener);
+        devSwitch.setChecked(preferences.analytics().get());
     }
 
     @OptionsItem(android.R.id.home)
     void goBack() {
         finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_right);
     }
 }

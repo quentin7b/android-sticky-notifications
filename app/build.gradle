@@ -1,39 +1,41 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.2+'
-    }
-}
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
 repositories {
     maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
     mavenCentral()
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.0.1"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "fr.quentinklein.stickynotifs"
         minSdkVersion 14
-        targetSdkVersion 21
-        versionCode 10
-        versionName "3.1-indev"
+        targetSdkVersion 22
+        versionCode 11
+        versionName "4.0-indev"
 
     }
+
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable false
         }
     }
+
+    productFlavors {
+        prod {
+            applicationId "fr.quentinklein.stickynotifs"
+        }
+        indev {
+            applicationId "fr.quentinklein.stickynotifs.indev"
+        }
+    }
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -42,7 +44,7 @@ android {
 
 apt {
     arguments {
-        androidManifestFile variant.processResources.manifestFile
+        androidManifestFile variant.outputs[0].processResources.manifestFile
         resourcePackageName 'fr.quentinklein.stickynotifs'
     }
 }
@@ -51,19 +53,17 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // Support
-    compile 'com.android.support:support-v4:21.0.+'
-    compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:design:22.2.0'
 
-    // Android Anotations
+    // Android Annotations
     apt 'org.androidannotations:androidannotations:3.0.1'
     compile 'org.androidannotations:androidannotations-api:3.0.1'
 
     // ORMLite
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.j256.ormlite:ormlite-core:4.48'
-
-    compile 'com.android.support:cardview-v7:+'
-
-    //FAB
-    compile 'com.melnykov:floatingactionbutton:1.0.4'
 }

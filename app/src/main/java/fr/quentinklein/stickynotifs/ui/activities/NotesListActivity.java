@@ -1,33 +1,26 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-
-import com.google.analytics.tracking.android.EasyTracker;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
-import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import fr.quentinklein.stickynotifs.R;
+import fr.quentinklein.stickynotifs.boot.StartUpService_;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
 import fr.quentinklein.stickynotifs.model.StickyNotification;
-import fr.quentinklein.stickynotifs.ui.fragments.NoteFragment;
 import fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment;
-import fr.quentinklein.stickynotifs.ui.listeners.HideNoteListener;
+import fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment_;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteDeletedListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
@@ -39,151 +32,117 @@ import fr.quentinklein.stickynotifs.widget.StickyWidgetProvider;
  *
  * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment
  */
-@EActivity
+@EActivity(R.layout.activity_list_notes)
 @OptionsMenu(R.menu.notes)
-public class NotesListActivity extends ActionBarActivity implements NoteSavedListener, NoteChanedListener, HideNoteListener, NoteDeletedListener, NotesListFragment.TwoPartProvider {
+public class NotesListActivity extends AppCompatActivity
+        implements NoteSavedListener, NoteChanedListener, NoteDeletedListener {
 
     public static final String EXTRA_NOTE_ID = "note_id";
-
-    @FragmentById(R.id.notes_fragment)
-    NotesListFragment fragment;
-
-    @ViewById(R.id.spinner)
-    Spinner spinner;
-
-    @ViewById(R.id.spinner_layout)
-    RelativeLayout filterLayout;
-
-    /**
-     * Not used for now (special tablet layout)
-     */
-    @FragmentById(R.id.note_fragment)
-    NoteFragment noteFragment;
 
     @Pref
     NotificationPreferences_ preferences;
 
+    private NotesListFragment
+            mAllNotesFragment = NotesListFragment_.builder().defcon(null).build(),
+            mUltraNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.ULTRA).build(),
+            mImportantNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.IMPORTANT).build(),
+            mNormalNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.NORMAL).build(),
+            mUselessNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.USELESS).build();
 
-    @Override
-    public void hideNote() {
-        if (noteFragment != null && noteFragment.isInLayout()) {
-            noteFragment.hideNote();
-        }
+    @AfterViews
+    void init() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        assert viewPager != null;
+        setupViewPager(viewPager);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boolean isSpinnerHidden = filterLayout.getVisibility() == View.GONE;
-        if (isSpinnerHidden) {
-            // Spinner is hidden
-            if (!preferences.hideFilter().get()) {
-                // It should not be hidden
-                filterLayout.setVisibility(View.VISIBLE);
-                spinner.setSelection(0);
-                fragment.setDefconFilter(null);
-            }
-        } else {
-            // Spinner is visible
-            if (preferences.hideFilter().get()) {
-                // It should be hidden
-                filterLayout.setVisibility(View.GONE);
-                spinner.setSelection(0);
-                fragment.setDefconFilter(null);
-            }
-        }
-        fragment.refreshNotesList();
+        loadNotes();
+        startService(new Intent(this, StartUpService_.class));
         reloadWidgets();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_notes);
-        EasyTracker.getInstance(this).activityStart(this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-    }
-
     /**
-     * Functions
+     * Initialize the viewpager with the levels
+     *
+     * @param viewPager the view pager to init
      */
+    private void setupViewPager(ViewPager viewPager) {
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
 
-
-    @AfterViews
-    void log() {
-        fragment.refreshNotesList();
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_data, R.layout.adapter_spinner_filter);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        // No filter;
-                        fragment.setDefconFilter(null);
-                        fragment.refreshNotesList();
-                        break;
+                        return mAllNotesFragment;
                     case 1:
-                        // Only ultra
-                        fragment.setDefconFilter(StickyNotification.Defcon.ULTRA);
-                        fragment.refreshNotesList();
-                        break;
+                        return mUltraNotesFragment;
                     case 2:
-                        // Only important
-                        fragment.setDefconFilter(StickyNotification.Defcon.IMPORTANT);
-                        fragment.refreshNotesList();
-                        break;
+                        return mImportantNotesFragment;
                     case 3:
-                        // Only base
-                        fragment.setDefconFilter(StickyNotification.Defcon.NORMAL);
-                        fragment.refreshNotesList();
-                        break;
+                        return mNormalNotesFragment;
                     case 4:
-                        // Only useless
-                        fragment.setDefconFilter(StickyNotification.Defcon.USELESS);
-                        fragment.refreshNotesList();
-                        break;
+                        return mUselessNotesFragment;
+                    default:
+                        return null;
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public int getCount() {
+                return 5;
+            }
 
+            @Override
+            public CharSequence getPageTitle(int position) {
+                int textRes = 0;
+                switch (position) {
+                    case 0:
+                        textRes = R.string.all;
+                        break;
+                    case 1:
+                        textRes = R.string.ultra;
+                        break;
+                    case 2:
+                        textRes = R.string.important;
+                        break;
+                    case 3:
+                        textRes = R.string.normal;
+                        break;
+                    case 4:
+                        textRes = R.string.useless;
+                        break;
+
+                }
+                return getString(textRes);
             }
         });
-        spinner.setSelection(0);
-        reloadWidgets();
     }
-
 
     /**
      * Menu items.
      */
+    @Click(R.id.fab)
     public final void addNote() {
         startActivity(new Intent(NotesListActivity.this, NoteActivity_.class));
-        overridePendingTransition(R.anim.pop_from_bottom_right, R.anim.nothing);
     }
 
     @OptionsItem(R.id.action_about)
     void about() {
-        startActivity(new Intent(this, AboutDialogActivity_.class));
+        startActivity(new Intent(this, AboutActivity_.class));
     }
 
     @OptionsItem(R.id.action_settings)
     void configure() {
         startActivity(new Intent(this, SettingsActivity_.class));
-        overridePendingTransition(R.anim.pop_from_top, R.anim.nothing);
-    }
-
-    @OptionsItem(R.id.action_delete)
-    void delete() {
-        if (noteFragment != null && noteFragment.isInLayout()) {
-            noteFragment.deleteNote();
-        }
     }
 
     /**
@@ -192,35 +151,27 @@ public class NotesListActivity extends ActionBarActivity implements NoteSavedLis
 
     @Override
     public void noteSaved(int noteId) {
-        Log.i(NotesListActivity.class.getSimpleName(), "Note saved");
-        fragment.refreshNotesList();
+        loadNotes();
         reloadWidgets();
     }
 
     @Override
     public void noteSelected(int noteId) {
-        if (noteFragment != null && noteFragment.isInLayout()) {
-            noteFragment.noteSelected(noteId);
-        } else {
-            startActivity(new Intent(this, NoteActivity_.class).putExtra(NoteActivity_.NOTIFICATION_ID_EXTRA, noteId));
-        }
+        startActivity(new Intent(this, NoteActivity_.class).putExtra(NoteActivity_.NOTIFICATION_ID_EXTRA, noteId));
     }
 
     @Override
     public void noteDeleted(int noteId) {
-        Log.i(NotesListActivity.class.getSimpleName(), "Note deleted");
-        fragment.refreshNotesList();
+        // fragment.refreshNotesList();
         reloadWidgets();
     }
 
-    /**
-     * Tablet mode provider
-     *
-     * @return true if the master-detail on tablet is on
-     */
-    @Override
-    public boolean isTwoPartMode() {
-        return (noteFragment != null && noteFragment.isInLayout());
+    private void loadNotes() {
+        mAllNotesFragment.refreshNotesList();
+        mUltraNotesFragment.refreshNotesList();
+        mImportantNotesFragment.refreshNotesList();
+        mNormalNotesFragment.refreshNotesList();
+        mUselessNotesFragment.refreshNotesList();
     }
 
     private void reloadWidgets() {

@@ -1,98 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/note_layout"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_alignParentTop="true">
 
-    <Button
-        android:id="@+id/validate"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/indigo_500"
-        android:text="@string/create_validate"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/validate"
-        android:layout_alignParentTop="true"
-        android:layout_margin="15dp">
-
-
-        <LinearLayout
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:padding="16dp">
 
             <EditText
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:hint="@string/create_title"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/primary_text"
+                android:textColorHint="@color/secondary_text"
+                android:textSize="22sp" />
+        </android.support.design.widget.TextInputLayout>
 
-            <RadioGroup
-                android:id="@+id/radios"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@drawable/card_divider" />
 
-                <RadioButton
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageButton
                     android:id="@+id/useless"
-                    style="@style/RadioButtonBlueTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:checked="true"
-                    android:text="@string/useless" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:padding="12dp"
+                    android:src="@drawable/blue_square_paper_small" />
+            </FrameLayout>
 
-                <RadioButton
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageButton
                     android:id="@+id/normal"
-                    style="@style/RadioButtonGreenTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/normal" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:padding="12dp"
+                    android:src="@drawable/green_square_paper_small" />
+            </FrameLayout>
 
-                <RadioButton
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageButton
                     android:id="@+id/important"
-                    style="@style/RadioButtonOrangeTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/important" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:padding="12dp"
+                    android:src="@drawable/orange_square_paper_small" />
+            </FrameLayout>
 
-                <RadioButton
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageButton
                     android:id="@+id/ultra"
-                    style="@style/RadioButtonRedTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/ultra" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:padding="12dp"
+                    android:src="@drawable/red_square_paper_small" />
+            </FrameLayout>
 
-            </RadioGroup>
+        </LinearLayout>
 
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/stick"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="15dp"
-                android:checked="true"
-                android:text="@string/create_notif" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@drawable/card_divider" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/stick"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:checked="true"
+            android:text="@string/create_notif"
+            android:textColor="@color/primary_text"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@drawable/card_divider" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
 
             <EditText
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:hint="@string/create_content" />
+                android:hint="@string/create_content"
+                android:textColor="@color/primary_text"
+                android:textColorHint="@color/secondary_text"
+                android:textSize="14sp" />
+        </android.support.design.widget.TextInputLayout>
 
-        </LinearLayout>
-    </ScrollView>
-
-</RelativeLayout>
+    </LinearLayout>
+</ScrollView>

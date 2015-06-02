@@ -5,8 +5,7 @@
 
     <item
         android:id="@+id/action_delete"
-        android:icon="@drawable/ic_menu_delete"
         android:title="@string/create_delete"
-        fr.quentinklein.stickynotifs:showAsAction="ifRoom|withText" />
+        fr.quentinklein.stickynotifs:showAsAction="never" />
 
 </menu>

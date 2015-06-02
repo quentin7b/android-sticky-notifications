@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     android:orientation="horizontal">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimaryDark" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,60 +22,114 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="15dp">
+            android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center_vertical"
-                android:text="@string/settings_notifications_title"
-                android:textAllCaps="true"
-                android:textSize="22sp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:drawableLeft="@drawable/settings_group"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/settings_group"
+                    android:gravity="center_vertical"
+                    android:text="@string/settings_notifications_title"
+                    android:textAllCaps="true"
+                    android:textSize="22sp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/concat_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:checked="false"
+                    android:text="@string/settings_notifications_switch"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_notifications_explain"
+                    android:textColor="@color/secondary_text" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/indigo_500" />
+                android:layout_height="0.5dp"
+                android:background="@drawable/card_divider" />
 
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/concat_switch"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:checked="false"
-                android:text="@string/settings_notifications_switch" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_notifications_explain" />
+                android:orientation="vertical"
+                android:padding="15dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="30dp"
-                android:gravity="center_vertical"
-                android:text="@string/settings_filter_title"
-                android:textAllCaps="true"
-                android:textSize="22sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:drawableLeft="@drawable/settings_priority"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/settings_priority"
+                    android:gravity="center_vertical"
+                    android:text="@string/settings_filter_title"
+                    android:textAllCaps="true"
+                    android:textSize="22sp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/filter_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:checked="false"
+                    android:text="@string/settings_filter_switch"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_filter_explain"
+                    android:textColor="@color/secondary_text" />
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/indigo_500" />
+                android:layout_height="0.5dp"
+                android:background="@drawable/card_divider" />
 
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/filter_switch"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:checked="false"
-                android:text="@string/settings_filter_switch" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_filter_explain" />
+                android:orientation="vertical"
+                android:padding="15dp">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:drawableLeft="@drawable/settings_analytics"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/settings_analytics"
+                    android:gravity="center_vertical"
+                    android:text="@string/settings_help_dev"
+                    android:textAllCaps="true"
+                    android:textSize="22sp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/dev_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:checked="false"
+                    android:text="@string/settings_help_dev_switch"
+                    android:textColor="@color/primary_text" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_help_dev_explain"
+                    android:textColor="@color/secondary_text" />
+            </LinearLayout>
 
         </LinearLayout>
 

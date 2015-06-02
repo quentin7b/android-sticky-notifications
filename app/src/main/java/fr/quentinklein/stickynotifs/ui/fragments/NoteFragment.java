@@ -5,6 +5,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -19,10 +20,13 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.sql.SQLException;
 
+import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.R;
+import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
 import fr.quentinklein.stickynotifs.model.StickyNotification;
 import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
 import fr.quentinklein.stickynotifs.ui.listeners.ChangeIconListener;
@@ -36,20 +40,27 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
  * Note creation/edition page
  */
 @EFragment(R.layout.fragment_note)
-public class NoteFragment extends Fragment implements NoteChanedListener, HideNoteListener {
+public class NoteFragment extends Fragment implements NoteChanedListener {
 
     @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
     Dao<StickyNotification, Integer> stickyNotificationDao;
-    @ViewById(R.id.radios)
-    RadioGroup radioGroup;
     @ViewById(R.id.stick)
     SwitchCompat noteSwitch;
     @ViewById(R.id.title)
     EditText noteTitle;
     @ViewById(R.id.content)
     EditText noteContent;
-    @ViewById(R.id.note_layout)
-    RelativeLayout layout;
+    @ViewById(R.id.useless)
+    ImageButton uselessButton;
+    @ViewById(R.id.normal)
+    ImageButton normalButton;
+    @ViewById(R.id.important)
+    ImageButton importantButton;
+    @ViewById(R.id.ultra)
+    ImageButton ultraButton;
+    StickyNotification.Defcon notificationDefcon;
+    @Pref
+    NotificationPreferences_ preferences;
     /**
      * Notification to use
      */
@@ -62,7 +73,6 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
 
     @AfterViews
     void refreshElements() {
-        layout.setVisibility(View.VISIBLE);
         if (notification != null) {
             Log.i(NoteFragment.class.getSimpleName(), "Note is not null");
             isEditing = true;
@@ -71,56 +81,45 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
             noteContent.setText(notification.getContent());
             noteContent.setSelection(notification.getContent().length());
             noteSwitch.setChecked(notification.isNotification());
-            switch (notification.getDefcon()) {
-                case USELESS:
-                    radioGroup.check(R.id.useless);
-                    break;
-                case NORMAL:
-                    radioGroup.check(R.id.normal);
-                    break;
-                case IMPORTANT:
-                    radioGroup.check(R.id.important);
-                    break;
-                case ULTRA:
-                    radioGroup.check(R.id.ultra);
-                    break;
-            }
-            defconChanged();
+            checkIcon(notification.getDefcon());
         } else {
             Log.i(NoteFragment.class.getSimpleName(), "Note is null");
             notification = new StickyNotification();
             noteTitle.setText(null);
             noteContent.setText(null);
             noteSwitch.setChecked(true);
-            radioGroup.check(R.id.normal);
+            checkIcon(StickyNotification.Defcon.NORMAL);
             isEditing = false;
         }
     }
 
-    @Click(R.id.validate)
-    void saveNote() {
+    private void checkIcon(StickyNotification.Defcon defcon) {
+        uselessButton.setBackgroundResource(R.drawable.circle_grey);
+        normalButton.setBackgroundResource(R.drawable.circle_grey);
+        importantButton.setBackgroundResource(R.drawable.circle_grey);
+        ultraButton.setBackgroundResource(R.drawable.circle_grey);
+        switch (defcon) {
+            case USELESS:
+                uselessButton.setBackgroundResource(R.drawable.circle_blue);
+                break;
+            case NORMAL:
+                normalButton.setBackgroundResource(R.drawable.circle_green);
+                break;
+            case IMPORTANT:
+                importantButton.setBackgroundResource(R.drawable.circle_orange);
+                break;
+            case ULTRA:
+                ultraButton.setBackgroundResource(R.drawable.circle_red);
+                break;
+        }
+        notificationDefcon = defcon;
+    }
+
+    public void saveNote() {
         String title = noteTitle.getText().toString();
         if (title != null && !title.trim().isEmpty()) {
             notification.setContent(noteContent.getText().toString());
-            StickyNotification.Defcon defcon;
-            switch (radioGroup.getCheckedRadioButtonId()) {
-                case R.id.useless:
-                    defcon = StickyNotification.Defcon.USELESS;
-                    break;
-                case R.id.normal:
-                    defcon = StickyNotification.Defcon.NORMAL;
-                    break;
-                case R.id.important:
-                    defcon = StickyNotification.Defcon.IMPORTANT;
-                    break;
-                case R.id.ultra:
-                    defcon = StickyNotification.Defcon.ULTRA;
-                    break;
-                default:
-                    defcon = StickyNotification.Defcon.NORMAL;
-                    break;
-            }
-            notification.setDefcon(defcon);
+            notification.setDefcon(notificationDefcon);
             notification.setTitle(noteTitle.getText().toString());
             notification.setNotification(noteSwitch.isChecked());
             notification.setDao(stickyNotificationDao);
@@ -137,16 +136,18 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
             } catch (SQLException exception) {
                 Log.e(NoteFragment.class.getSimpleName(), "Error while saving note", exception);
                 Toast.makeText(getActivity(), R.string.note_saved_error, Toast.LENGTH_SHORT).show();
-                EasyTracker.getInstance(getActivity().getApplicationContext()).send(
-                        MapBuilder.createException(
-                                new StandardExceptionParser(getActivity(), null)
-                                        // Context and optional collection of package names to be used in reporting the exception.
-                                        .getDescription(Thread.currentThread().getName(),
-                                                // The name of the thread on which the exception occurred.
-                                                exception),                                  // The exception.
-                                false
-                        ).build()
-                );
+                if (!BuildConfig.DEBUG && preferences.analytics().get()) {
+                    EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                            MapBuilder.createException(
+                                    new StandardExceptionParser(getActivity(), null)
+                                            // Context and optional collection of package names to be used in reporting the exception.
+                                            .getDescription(Thread.currentThread().getName(),
+                                                    // The name of the thread on which the exception occurred.
+                                                    exception),                                  // The exception.
+                                    false
+                            ).build()
+                    );
+                }
             }
         } else {
             String error = getActivity().getString(R.string.create_title_empty);
@@ -155,23 +156,20 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
     }
 
     @Click({R.id.useless, R.id.normal, R.id.important, R.id.ultra})
-    void defconChanged() {
-        if (getActivity() instanceof ChangeIconListener) {
-            ChangeIconListener listener = (ChangeIconListener) getActivity();
-            switch (radioGroup.getCheckedRadioButtonId()) {
-                case R.id.useless:
-                    listener.setActivityIcon(R.drawable.blue_square_paper);
-                    break;
-                case R.id.normal:
-                    listener.setActivityIcon(R.drawable.green_square_paper);
-                    break;
-                case R.id.important:
-                    listener.setActivityIcon(R.drawable.orange_square_paper);
-                    break;
-                case R.id.ultra:
-                    listener.setActivityIcon(R.drawable.red_square_paper);
-                    break;
-            }
+    void defconChanged(View view) {
+        switch (view.getId()) {
+            case R.id.useless:
+                checkIcon(StickyNotification.Defcon.USELESS);
+                break;
+            case R.id.normal:
+                checkIcon(StickyNotification.Defcon.NORMAL);
+                break;
+            case R.id.important:
+                checkIcon(StickyNotification.Defcon.IMPORTANT);
+                break;
+            case R.id.ultra:
+                checkIcon(StickyNotification.Defcon.ULTRA);
+                break;
         }
     }
 
@@ -190,27 +188,19 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
         } catch (SQLException e) {
             Log.e(NoteFragment.class.getSimpleName(), "Can't retrieve note", e);
             Toast.makeText(getActivity(), R.string.note_retrive_error, Toast.LENGTH_SHORT).show();
-            EasyTracker.getInstance(getActivity().getApplicationContext()).send(
-                    MapBuilder.createException(
-                            new StandardExceptionParser(getActivity(), null)
-                                    // Context and optional collection of package names to be used in reporting the exception.
-                                    .getDescription(Thread.currentThread().getName(),
-                                            // The name of the thread on which the exception occurred.
-                                            e),                                  // The exception.
-                            false
-                    ).build()
-            );
+            if (!BuildConfig.DEBUG && preferences.analytics().get()) {
+                EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                        MapBuilder.createException(
+                                new StandardExceptionParser(getActivity(), null)
+                                        // Context and optional collection of package names to be used in reporting the exception.
+                                        .getDescription(Thread.currentThread().getName(),
+                                                // The name of the thread on which the exception occurred.
+                                                e),                                  // The exception.
+                                false
+                        ).build()
+                );
+            }
         }
-    }
-
-    /**
-     * For tablet master-detail layout
-     *
-     * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#hideNote()
-     */
-    @Override
-    public void hideNote() {
-        layout.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -230,16 +220,19 @@ public class NoteFragment extends Fragment implements NoteChanedListener, HideNo
             } catch (SQLException e) {
                 Log.e(NoteFragment.class.getSimpleName(), "Error while deleting note", e);
                 Toast.makeText(getActivity(), R.string.note_deleted_error, Toast.LENGTH_SHORT).show();
-                EasyTracker.getInstance(getActivity().getApplicationContext()).send(
-                        MapBuilder.createException(
-                                new StandardExceptionParser(getActivity(), null)
-                                        // Context and optional collection of package names to be used in reporting the exception.
-                                        .getDescription(Thread.currentThread().getName(),
-                                                // The name of the thread on which the exception occurred.
-                                                e),                                  // The exception.
-                                false
-                        ).build()
-                );
+
+                if (!BuildConfig.DEBUG && preferences.analytics().get()) {
+                    EasyTracker.getInstance(getActivity().getApplicationContext()).send(
+                            MapBuilder.createException(
+                                    new StandardExceptionParser(getActivity(), null)
+                                            // Context and optional collection of package names to be used in reporting the exception.
+                                            .getDescription(Thread.currentThread().getName(),
+                                                    // The name of the thread on which the exception occurred.
+                                                    e),                                  // The exception.
+                                    false
+                            ).build()
+                    );
+                }
             }
         } else {
             // Delete note while creating

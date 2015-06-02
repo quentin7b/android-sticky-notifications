@@ -147,7 +147,6 @@ public class NotificationHelper {
                         .setContentText(context.getString(R.string.app_name))
                         .setSmallIcon(getSmallIconResource(notification))
                         .setOngoing(true)
-                        .setLargeIcon(getColorSquareResource(notification))
                         .setStyle(notificationCompat);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -164,6 +163,23 @@ public class NotificationHelper {
                 case USELESS:
                     mBuilder.setPriority(Notification.PRIORITY_LOW);
             }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            switch (notification.getDefcon()) {
+                case ULTRA:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_red));
+                    break;
+                case IMPORTANT:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_orange));
+                    break;
+                case NORMAL:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_green));
+                    break;
+                case USELESS:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_blue));
+            }
+        } else {
+            mBuilder.setLargeIcon(getColorSquareResource(notification));
         }
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, NotesListActivity_.class);
@@ -186,12 +202,7 @@ public class NotificationHelper {
                         .setContentText(notification.getContent())
                         .setSmallIcon(getSmallIconResource(notification))
                         .setOngoing(true)
-                        .setLargeIcon(getColorSquareResource(notification))
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(notification.getContent()));
-        /*
-                        .addAction(R.drawable.ic_action_edit_white, context.getString(R.string.action_edit), null)
-                        .addAction(R.drawable.ic_menu_delete_white, context.getString(R.string.create_delete), null);
-        */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             switch (notification.getDefcon()) {
                 case ULTRA:
@@ -207,6 +218,23 @@ public class NotificationHelper {
                     mBuilder.setPriority(Notification.PRIORITY_LOW);
             }
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            switch (notification.getDefcon()) {
+                case ULTRA:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_red));
+                    break;
+                case IMPORTANT:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_orange));
+                    break;
+                case NORMAL:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_green));
+                    break;
+                case USELESS:
+                    mBuilder.setColor(context.getResources().getColor(R.color.color_blue));
+            }
+        } else {
+            mBuilder.setLargeIcon(getColorSquareResource(notification));
+        }
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, NotesListActivity_.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -221,7 +249,7 @@ public class NotificationHelper {
         return mBuilder;
     }
 
-    private int getSmallIconResource(StickyNotification notification) {
+    public int getSmallIconResource(StickyNotification notification) {
         switch (notification.getDefcon()) {
             case USELESS:
                 return R.drawable.blue_square_paper_small;

@@ -14,4 +14,7 @@ public interface NotificationPreferences {
 
     @DefaultBoolean(false)
     boolean hideFilter();
+
+    @DefaultBoolean(false)
+    boolean analytics();
 }

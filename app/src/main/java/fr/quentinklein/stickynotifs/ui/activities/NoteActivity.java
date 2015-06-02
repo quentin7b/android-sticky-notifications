@@ -1,9 +1,6 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.google.analytics.tracking.android.EasyTracker;
@@ -15,9 +12,12 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.NotificationHelper;
 import fr.quentinklein.stickynotifs.R;
+import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
 import fr.quentinklein.stickynotifs.ui.fragments.NoteFragment;
 import fr.quentinklein.stickynotifs.ui.listeners.ChangeIconListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteDeletedListener;
@@ -29,9 +29,9 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
  *
  * @see fr.quentinklein.stickynotifs.ui.fragments.NoteFragment
  */
-@EActivity
+@EActivity(R.layout.activity_note)
 @OptionsMenu(R.menu.note)
-public class NoteActivity extends ActionBarActivity implements NoteSavedListener, NoteDeletedListener, ChangeIconListener {
+public class NoteActivity extends AppCompatActivity implements NoteSavedListener, NoteDeletedListener, ChangeIconListener {
 
     /**
      * Not used for now
@@ -39,27 +39,14 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
     @Extra
     int notificationId = -1;
 
+    @Pref
+    NotificationPreferences_ preferences;
+
     @FragmentById(R.id.note_fragment)
     NoteFragment fragment;
 
     @Bean
     NotificationHelper notificationHelper;
-
-    Toolbar toolbar;
-    ActionBar actionBar;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note);
-        EasyTracker.getInstance(this).activityStart(this);
-
-        toolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-    }
 
     /**
      * Functions
@@ -67,7 +54,18 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
 
     @AfterViews
     void init() {
-        if (notificationId != -1) {
+        if (!BuildConfig.DEBUG && preferences.analytics().get()) {
+            EasyTracker.getInstance(this).activityStart(this);
+        }
+        boolean edition = notificationId != -1;
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        toolbar.setTitle(edition ? R.string.edit_title : R.string.create_title);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_done_white_24dp);
+
+        if (edition) {
             fragment.noteSelected(notificationId);
         }
     }
@@ -78,8 +76,7 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
 
     @OptionsItem(android.R.id.home)
     void homeSelected() {
-        finish();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_right);
+        fragment.saveNote();
     }
 
     @OptionsItem(R.id.action_delete)
@@ -94,14 +91,12 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
     @Override
     public void noteSaved(int noteId) {
         finish();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom_right);
     }
 
     @Override
     public void noteDeleted(int noteId) {
         notificationHelper.hideNotification(noteId);
         finish();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_right);
     }
 
     @Override
@@ -112,7 +107,6 @@ public class NoteActivity extends ActionBarActivity implements NoteSavedListener
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.nothing, R.anim.go_to_bottom_right);
+        finish();
     }
 }
