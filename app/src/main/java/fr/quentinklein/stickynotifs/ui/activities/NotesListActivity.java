@@ -58,6 +58,7 @@ public class NotesListActivity extends AppCompatActivity
         assert viewPager != null;
         setupViewPager(viewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.setupWithViewPager(viewPager);
 
     }

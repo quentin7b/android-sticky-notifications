@@ -25,19 +25,15 @@
 
     <string name="about_author">Todo Notifications by Quentin KLEIN</string>
     <string name="about_version">Version : </string>
-    <string name="about_explain">If you like the app, please mark it and comment on the store. If you have any question/remark, feel free to send me a mail</string>
-    <string name="about_explain_rate">Mark the application ;)</string>
-    <string name="about_explain_complain">A question/remark ?</string>
     <string name="about_thanks">Special thanks, I use them</string>
     <string name="about_thanks_androidannotations">androidannotations.org</string>
     <string name="about_thanks_ormlite">ormlite.com</string>
-    <string name="about_thanks_cards">github.com/makovkastar/FloatingActionButton</string>
     <string name="about_graphics">Icons &amp; Pictures</string>
     <string name="about_graphics_flat">www.google.com/design/icons</string>
 
     <!-- Plurals -->
     <plurals name="grouped_notification_title">
-        <item quantity="one">1 todo notification</item>
+        <item quantity="one">%d todo notification</item>
         <item quantity="other">%d todo notifications</item>
     </plurals>
 
@@ -46,10 +42,6 @@
     <string name="settings_notifications_switch">Group notifications by priority</string>
     <string name="settings_notifications_explain">Group notifications with the same priority as one notification in the notification bar</string>
 
-
-    <string name="settings_filter_title">Priority filter</string>
-    <string name="settings_filter_switch">Show the filter</string>
-    <string name="settings_filter_explain">Show the priority filter in main screen if activated</string>
     <string name="settings">Settings</string>
     <string name="settings_help_dev">Help the developer</string>
     <string name="settings_help_dev_switch">Send anonymous data</string>

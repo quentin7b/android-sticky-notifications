@@ -13,8 +13,5 @@ public interface NotificationPreferences {
     boolean concatNotifications();
 
     @DefaultBoolean(false)
-    boolean hideFilter();
-
-    @DefaultBoolean(false)
     boolean analytics();
 }

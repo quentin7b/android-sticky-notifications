@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
     android:orientation="horizontal">
 
     <android.support.v7.widget.Toolbar
@@ -21,6 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/app_toolbar"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         tools:layout="@layout/fragment_note" />
 </RelativeLayout>

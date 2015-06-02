@@ -45,9 +45,6 @@ public class SettingsActivity extends AppCompatActivity {
     @ViewById(R.id.concat_switch)
     SwitchCompat concatSwitch;
 
-    @ViewById(R.id.filter_switch)
-    SwitchCompat filterSwitch;
-
     @ViewById(R.id.dev_switch)
     SwitchCompat devSwitch;
 
@@ -55,9 +52,6 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             switch (buttonView.getId()) {
-                case R.id.filter_switch:
-                    preferences.hideFilter().put(!isChecked);
-                    break;
                 case R.id.concat_switch:
                     if (isChecked != preferences.concatNotifications().get()) {
                         preferences.concatNotifications().put(isChecked);
@@ -93,9 +87,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
         concatSwitch.setOnCheckedChangeListener(checkedChangeListener);
         concatSwitch.setChecked(preferences.concatNotifications().get());
-
-        filterSwitch.setOnCheckedChangeListener(checkedChangeListener);
-        filterSwitch.setChecked(!preferences.hideFilter().get());
 
         devSwitch.setOnCheckedChangeListener(checkedChangeListener);
         devSwitch.setChecked(preferences.analytics().get());

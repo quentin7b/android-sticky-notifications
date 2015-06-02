@@ -36,3 +36,6 @@ local.properties
 *.ipr
 *~
 *.swp
+
+app/keystore
+gradle.properties

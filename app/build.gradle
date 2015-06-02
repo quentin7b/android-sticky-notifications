@@ -17,13 +17,26 @@ android {
         targetSdkVersion 22
         versionCode 11
         versionName "4.0-indev"
+    }
 
+    signingConfigs {
+        release {
+            storeFile file("keystore")
+            storePassword keystore_password
+            keyAlias "stickynotifs"
+            keyPassword alias_password
+        }
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
     android:orientation="horizontal">
 
     <android.support.v7.widget.Toolbar
@@ -33,9 +32,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:drawableLeft="@drawable/settings_group"
-                    android:drawablePadding="10dp"
-                    android:drawableStart="@drawable/settings_group"
                     android:gravity="center_vertical"
                     android:text="@string/settings_notifications_title"
                     android:textAllCaps="true"
@@ -71,46 +67,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:drawableLeft="@drawable/settings_priority"
-                    android:drawablePadding="10dp"
-                    android:drawableStart="@drawable/settings_priority"
-                    android:gravity="center_vertical"
-                    android:text="@string/settings_filter_title"
-                    android:textAllCaps="true"
-                    android:textSize="22sp" />
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/filter_switch"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:checked="false"
-                    android:text="@string/settings_filter_switch"
-                    android:textColor="@color/primary_text" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_filter_explain"
-                    android:textColor="@color/secondary_text" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@drawable/card_divider" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:drawableLeft="@drawable/settings_analytics"
-                    android:drawablePadding="10dp"
-                    android:drawableStart="@drawable/settings_analytics"
                     android:gravity="center_vertical"
                     android:text="@string/settings_help_dev"
                     android:textAllCaps="true"

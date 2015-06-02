@@ -11,6 +11,7 @@
         <item name="colorControlHighlight">@color/primary_color_light</item>
         <item name="colorControlNormal">@color/accent_color</item>
         <item name="android:textColor">@color/primary_text</item>
+        <item name="android:windowBackground">@color/background_color</item>
     </style>
 
 </resources>
