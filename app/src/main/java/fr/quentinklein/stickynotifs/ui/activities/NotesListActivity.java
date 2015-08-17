@@ -2,6 +2,7 @@ package fr.quentinklein.stickynotifs.ui.activities;
 
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.ArrayRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,21 +10,31 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.OrmLiteDao;
+import org.androidannotations.annotations.res.StringArrayRes;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import java.sql.SQLException;
+
+import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.R;
 import fr.quentinklein.stickynotifs.boot.StartUpService_;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
 import fr.quentinklein.stickynotifs.model.StickyNotification;
+import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
 import fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment;
 import fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment_;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
@@ -43,9 +54,13 @@ public class NotesListActivity extends AppCompatActivity
         implements NoteSavedListener, NoteChanedListener, NoteDeletedListener {
 
     public static final String EXTRA_NOTE_ID = "note_id";
+    private static final String TAG = "NotesListActivity";
 
     @Pref
     NotificationPreferences_ preferences;
+
+    @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
+    Dao<StickyNotification, Integer> stickyNotificationDao;
 
     private NotesListFragment
             mAllNotesFragment = NotesListFragment_.builder().defcon(null).build(),
@@ -82,6 +97,7 @@ public class NotesListActivity extends AppCompatActivity
                     .positiveText(R.string.help_me)
                     .negativeText(R.string.no_thanks)
                     .cancelable(false)
+                    .theme(Theme.LIGHT)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
@@ -98,6 +114,28 @@ public class NotesListActivity extends AppCompatActivity
                     .show();
         }
 
+        if (BuildConfig.DEBUG) {
+            addNotifications(R.array.ultra_notification, StickyNotification.Defcon.ULTRA);
+            addNotifications(R.array.important_notification, StickyNotification.Defcon.IMPORTANT);
+            addNotifications(R.array.normal_notification, StickyNotification.Defcon.NORMAL);
+            addNotifications(R.array.useless_notification, StickyNotification.Defcon.USELESS);
+        }
+
+    }
+
+    private void addNotifications(@ArrayRes int notificationRes, StickyNotification.Defcon defcon) {
+        String[] notificationsData = getResources().getStringArray(notificationRes);
+        StickyNotification notification = new StickyNotification();
+        notification.setTitle(notificationsData[0]);
+        notification.setContent(notificationsData[1]);
+        notification.setDefcon(defcon);
+        notification.setNotification(true);
+        try {
+            notification.setDao(stickyNotificationDao);
+            notification.create();
+        } catch (SQLException e) {
+            Log.w(TAG, "Cant insert notification", e);
+        }
     }
 
     @Override

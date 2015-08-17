@@ -15,8 +15,8 @@ android {
         applicationId "fr.quentinklein.stickynotifs"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 11
-        versionName "4.0-indev"
+        versionCode 12
+        versionName "4.0"
     }
 
     signingConfigs {
