@@ -1,7 +1,9 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Window;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -12,9 +14,11 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import fr.quentinklein.stickynotifs.BuildConfig;
+import fr.quentinklein.stickynotifs.DefconUtils;
 import fr.quentinklein.stickynotifs.NotificationHelper;
 import fr.quentinklein.stickynotifs.R;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
@@ -42,6 +46,9 @@ public class NoteActivity extends AppCompatActivity implements NoteSavedListener
     @Pref
     NotificationPreferences_ preferences;
 
+    @ViewById(R.id.app_toolbar)
+    Toolbar mToolbar;
+
     @FragmentById(R.id.note_fragment)
     NoteFragment fragment;
 
@@ -59,15 +66,15 @@ public class NoteActivity extends AppCompatActivity implements NoteSavedListener
         }
         boolean edition = notificationId != -1;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        toolbar.setTitle(edition ? R.string.edit_title : R.string.create_title);
-        setSupportActionBar(toolbar);
+        mToolbar.setTitle(edition ? R.string.edit_title : R.string.create_title);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_done_white_24dp);
 
         if (edition) {
             fragment.noteSelected(notificationId);
         }
+        fragment.getBus().register(this);
     }
 
     /**
@@ -82,6 +89,28 @@ public class NoteActivity extends AppCompatActivity implements NoteSavedListener
     @OptionsItem(R.id.action_delete)
     void deleteNote() {
         fragment.deleteNote();
+    }
+
+    /**
+     * Triggered when defcon change
+     *
+     * @param defcon the new defcon
+     */
+    public void onEvent(NoteFragment.DefconEvent defcon) {
+        // Change status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int color = getResources().getColor(DefconUtils.getDefconDarkColorResource(defcon.newDefcon));
+            Window window = getWindow();
+            window.setStatusBarColor(color);
+            window.setNavigationBarColor(color);
+        }
+        mToolbar.setBackgroundColor(getResources().getColor(DefconUtils.getDefconColorResource(defcon.newDefcon)));
+    }
+
+    @Override
+    protected void onDestroy() {
+        fragment.getBus().unregister(this);
+        super.onDestroy();
     }
 
     /**

@@ -1,43 +1,43 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
-import android.os.Bundle;
+import android.content.res.ColorStateList;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.CompoundButton;
 
 import com.google.analytics.tracking.android.EasyTracker;
-import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
-
-import java.sql.SQLException;
 
 import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.NotificationHelper;
 import fr.quentinklein.stickynotifs.R;
+import fr.quentinklein.stickynotifs.manager.StickyNotificationManager;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
-import fr.quentinklein.stickynotifs.model.StickyNotification;
-import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
+import fr.quentinklein.stickynotifs.ui.dialog.ColorDialog;
 
 /**
  * Created by quentin on 23/10/14.
  */
-@EActivity
+@EActivity(R.layout.activity_settings)
 public class SettingsActivity extends AppCompatActivity {
-
-    @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
-    Dao<StickyNotification, Integer> stickyNotificationDao;
 
     @Pref
     NotificationPreferences_ preferences;
+
+    @Bean
+    StickyNotificationManager mStickyNotificationManager;
 
     @Bean
     NotificationHelper notificationHelper;
@@ -48,6 +48,12 @@ public class SettingsActivity extends AppCompatActivity {
     @ViewById(R.id.dev_switch)
     SwitchCompat devSwitch;
 
+    @ViewById(R.id.theme_btn)
+    Button themeBtn;
+
+    @ViewById(R.id.app_toolbar)
+    Toolbar toolbar;
+
     CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -55,12 +61,8 @@ public class SettingsActivity extends AppCompatActivity {
                 case R.id.concat_switch:
                     if (isChecked != preferences.concatNotifications().get()) {
                         preferences.concatNotifications().put(isChecked);
-                        try {
-                            notificationHelper.hideGroupedNotifications();
-                            notificationHelper.showNotifications(stickyNotificationDao.queryForAll());
-                        } catch (SQLException e) {
-                            Log.e(SettingsActivity.class.getSimpleName(), "Taratata", e);
-                        }
+                        notificationHelper.hideGroupedNotifications();
+                        notificationHelper.showNotifications(mStickyNotificationManager.getNotifications());
                     }
                     break;
                 case R.id.dev_switch:
@@ -70,30 +72,61 @@ public class SettingsActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+    @AfterViews
+    void initScreen() {
         toolbar.setTitle(R.string.settings);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+        setWindowColors(preferences.colorPrimary().get(), preferences.colorPrimatyDark().get());
 
-    @AfterViews
-    void initSwitch() {
         if (!BuildConfig.DEBUG && preferences.analytics().get()) {
             EasyTracker.getInstance(this).activityStart(this);
         }
-        concatSwitch.setOnCheckedChangeListener(checkedChangeListener);
         concatSwitch.setChecked(preferences.concatNotifications().get());
+        concatSwitch.setOnCheckedChangeListener(checkedChangeListener);
 
-        devSwitch.setOnCheckedChangeListener(checkedChangeListener);
         devSwitch.setChecked(preferences.analytics().get());
+        devSwitch.setOnCheckedChangeListener(checkedChangeListener);
+    }
+
+    private void setWindowColors(int primaryColor, int primaryDarkColor) {
+        int color = getResources().getColor(primaryColor);
+        toolbar.setBackgroundColor(color);
+        themeBtn.setBackgroundColor(color);
+        // Change status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            color = getResources().getColor(primaryDarkColor);
+            Window window = getWindow();
+            window.setStatusBarColor(color);
+            window.setNavigationBarColor(color);
+        }
     }
 
     @OptionsItem(android.R.id.home)
     void goBack() {
         finish();
+    }
+
+    @Click(R.id.theme_btn)
+    void changeThemeClicked() {
+        ColorDialog.show(this, new ColorDialog.ColorListener() {
+            @Override
+            public void onColorChanged(final int primaryColor, final int secondaryColor) {
+                themeBtn.setBackgroundColor(getResources().getColor(primaryColor));
+                setWindowColors(primaryColor, secondaryColor);
+            }
+
+            @Override
+            public void onColorValidated(final int primaryColor, final int secondaryColor) {
+                preferences.colorPrimary().put(primaryColor);
+                preferences.colorPrimatyDark().put(secondaryColor);
+                setWindowColors(primaryColor, secondaryColor);
+            }
+
+            @Override
+            public void onCancel() {
+                setWindowColors(preferences.colorPrimary().get(), preferences.colorPrimatyDark().get());
+            }
+        }, preferences.colorPrimary().get(), preferences.colorPrimatyDark().get());
     }
 }

@@ -1,30 +1,30 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.support.annotation.ArrayRes;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.Window;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.OrmLiteDao;
-import org.androidannotations.annotations.res.StringArrayRes;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.sql.SQLException;
@@ -49,7 +49,6 @@ import fr.quentinklein.stickynotifs.widget.StickyWidgetProvider;
  * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment
  */
 @EActivity(R.layout.activity_list_notes)
-@OptionsMenu(R.menu.notes)
 public class NotesListActivity extends AppCompatActivity
         implements NoteSavedListener, NoteChanedListener, NoteDeletedListener {
 
@@ -62,33 +61,35 @@ public class NotesListActivity extends AppCompatActivity
     @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
     Dao<StickyNotification, Integer> stickyNotificationDao;
 
-    private NotesListFragment
-            mAllNotesFragment = NotesListFragment_.builder().defcon(null).build(),
-            mUltraNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.ULTRA).build(),
-            mImportantNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.IMPORTANT).build(),
-            mNormalNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.NORMAL).build(),
-            mUselessNotesFragment = NotesListFragment_.builder().defcon(StickyNotification.Defcon.USELESS).build();
+    @ViewById(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @ViewById(R.id.fab)
+    FloatingActionButton mFloatingActionButton;
+
+    private NotesListFragment mAllNotesFragment = NotesListFragment_.builder().build();
+
+    private SearchView.OnQueryTextListener mQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String s) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String s) {
+            mAllNotesFragment.onNewTextFilter(s);
+            return true;
+        }
+    };
 
     @AfterViews
     void init() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        assert viewPager != null;
-        setupViewPager(viewPager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabLayout.setupWithViewPager(viewPager);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-            tabLayout.setElevation(px);
-            fab.setElevation(px);
-        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, mAllNotesFragment)
+                .commit();
 
         if (!preferences.askedForHelp().get()) {
             new MaterialDialog.Builder(this)
@@ -144,63 +145,35 @@ public class NotesListActivity extends AppCompatActivity
         loadNotes();
         startService(new Intent(this, StartUpService_.class));
         reloadWidgets();
+        int primaryColor = getResources().getColor(preferences.colorPrimary().get());
+        int primaryDarkColor = getResources().getColor(preferences.colorPrimatyDark().get());
+        mToolbar.setBackgroundColor(primaryColor);
+        // Change status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.setStatusBarColor(primaryDarkColor);
+            window.setNavigationBarColor(primaryDarkColor);
+        }
+        // Change fab color
+        mFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(primaryColor));
     }
 
-    /**
-     * Initialize the viewpager with the levels
-     *
-     * @param viewPager the view pager to init
-     */
-    private void setupViewPager(ViewPager viewPager) {
-        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-
-            @Override
-            public Fragment getItem(int position) {
-                switch (position) {
-                    case 0:
-                        return mAllNotesFragment;
-                    case 1:
-                        return mUltraNotesFragment;
-                    case 2:
-                        return mImportantNotesFragment;
-                    case 3:
-                        return mNormalNotesFragment;
-                    case 4:
-                        return mUselessNotesFragment;
-                    default:
-                        return null;
-                }
-            }
-
-            @Override
-            public int getCount() {
-                return 5;
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                int textRes = 0;
-                switch (position) {
-                    case 0:
-                        textRes = R.string.all;
-                        break;
-                    case 1:
-                        textRes = R.string.ultra;
-                        break;
-                    case 2:
-                        textRes = R.string.important;
-                        break;
-                    case 3:
-                        textRes = R.string.normal;
-                        break;
-                    case 4:
-                        textRes = R.string.useless;
-                        break;
-
-                }
-                return getString(textRes);
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.notes, menu);
+        // Handle the search menu
+        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        SearchView searchView = null;
+        if (searchMenuItem != null) {
+            searchView = (SearchView) searchMenuItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            searchView.setOnQueryTextListener(mQueryTextListener);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -244,10 +217,6 @@ public class NotesListActivity extends AppCompatActivity
 
     private void loadNotes() {
         mAllNotesFragment.refreshNotesList();
-        mUltraNotesFragment.refreshNotesList();
-        mImportantNotesFragment.refreshNotesList();
-        mNormalNotesFragment.refreshNotesList();
-        mUselessNotesFragment.refreshNotesList();
     }
 
     private void reloadWidgets() {

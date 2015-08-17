@@ -43,6 +43,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:padding="16dp"
                 android:text="@string/about_author"
@@ -54,10 +55,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/about_version"
-                android:textColor="@color/primary_color" />
+                android:textColor="@color/colorPrimary" />
 
             <View
                 android:layout_width="match_parent"
@@ -67,6 +69,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
                 android:padding="16dp"
                 android:text="@string/about_thanks"
                 android:textSize="18sp"
@@ -83,6 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:autoLink="web"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/about_thanks_androidannotations" />
 
                 <TextView
@@ -90,6 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:autoLink="web"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/about_thanks_ormlite" />
 
                 <TextView
@@ -97,6 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:autoLink="web"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/about_thanks_material_dialogs" />
 
             </LinearLayout>
@@ -110,6 +116,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
                 android:padding="16dp"
                 android:text="@string/about_graphics"
                 android:textSize="18sp"
@@ -120,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:autoLink="web"
+                android:fontFamily="sans-serif-light"
                 android:padding="16dp"
                 android:text="@string/about_graphics_flat" />
 

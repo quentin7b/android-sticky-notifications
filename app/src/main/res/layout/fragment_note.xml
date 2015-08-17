@@ -18,17 +18,13 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:fontFamily="sans-serif-light"
                 android:hint="@string/create_title"
                 android:singleLine="true"
-                android:textColor="@color/primary_text"
-                android:textColorHint="@color/secondary_text"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="@color/textColorSecondary"
                 android:textSize="22sp" />
         </android.support.design.widget.TextInputLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@drawable/card_divider" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,25 +91,16 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@drawable/card_divider" />
-
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/stick"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_margin="16dp"
             android:checked="true"
+            android:fontFamily="sans-serif-light"
             android:text="@string/create_notif"
-            android:textColor="@color/primary_text"
+            android:textColor="@color/textColorPrimary"
             android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@drawable/card_divider" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -124,10 +111,13 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
                 android:hint="@string/create_content"
-                android:textColor="@color/primary_text"
-                android:textColorHint="@color/secondary_text"
-                android:textSize="14sp" />
+                android:minHeight="48dp"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="@color/textColorSecondary"
+                android:textSize="18sp" />
+
         </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
