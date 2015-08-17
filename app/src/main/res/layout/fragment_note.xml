@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentTop="true">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,15 +20,10 @@
                 android:layout_height="48dp"
                 android:hint="@string/create_title"
                 android:singleLine="true"
-                android:textColor="@color/primary_text"
-                android:textColorHint="@color/secondary_text"
-                android:textSize="22sp" />
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="@color/textColorSecondary"
+                android:textSize="22sp"/>
         </android.support.design.widget.TextInputLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@drawable/card_divider" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,7 +43,7 @@
                     android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:padding="12dp"
-                    android:src="@drawable/blue_square_paper_small" />
+                    android:src="@drawable/blue_square_paper_small"/>
             </FrameLayout>
 
             <FrameLayout
@@ -62,7 +57,7 @@
                     android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:padding="12dp"
-                    android:src="@drawable/green_square_paper_small" />
+                    android:src="@drawable/green_square_paper_small"/>
             </FrameLayout>
 
             <FrameLayout
@@ -76,7 +71,7 @@
                     android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:padding="12dp"
-                    android:src="@drawable/orange_square_paper_small" />
+                    android:src="@drawable/orange_square_paper_small"/>
             </FrameLayout>
 
             <FrameLayout
@@ -90,15 +85,10 @@
                     android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:padding="12dp"
-                    android:src="@drawable/red_square_paper_small" />
+                    android:src="@drawable/red_square_paper_small"/>
             </FrameLayout>
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@drawable/card_divider" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/stick"
@@ -107,13 +97,8 @@
             android:layout_margin="16dp"
             android:checked="true"
             android:text="@string/create_notif"
-            android:textColor="@color/primary_text"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@drawable/card_divider" />
+            android:textColor="@color/textColorPrimary"
+            android:textSize="16sp"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -125,9 +110,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_content"
-                android:textColor="@color/primary_text"
-                android:textColorHint="@color/secondary_text"
-                android:textSize="14sp" />
+                android:minHeight="48dp"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="@color/textColorSecondary"
+                android:textSize="18sp"/>
+
         </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>

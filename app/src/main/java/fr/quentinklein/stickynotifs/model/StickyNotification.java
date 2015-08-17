@@ -24,10 +24,17 @@ public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integ
     private boolean isNotification;
 
     public StickyNotification() {
-        title = "Default title";
-        content = "Default content";
+        title = "";
+        content = "";
         defcon = Defcon.NORMAL;
         isNotification = false;
+    }
+
+    public StickyNotification(StickyNotification stickyNotification) {
+        setTitle(stickyNotification.title);
+        setContent(stickyNotification.content);
+        setDefcon(stickyNotification.defcon);
+        setNotification(stickyNotification.isNotification());
     }
 
     public int getId() {
@@ -52,10 +59,6 @@ public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integ
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getHexColor() {
-        return Defcon.getColor(this.defcon);
     }
 
     public boolean isNotification() {
@@ -83,22 +86,7 @@ public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integ
      * Level of the notification
      * //TODO improvement : use xml values
      */
-    public static enum Defcon {
+    public enum Defcon {
         USELESS, NORMAL, IMPORTANT, ULTRA;
-
-        public static String getColor(Defcon defcon) {
-            switch (defcon) {
-                case USELESS:
-                    return "#33B5E5";
-                case NORMAL:
-                    return "#99CC00";
-                case IMPORTANT:
-                    return "#FFBB33";
-                case ULTRA:
-                    return "#FF4444";
-                default:
-                    return "#AA66CC";
-            }
-        }
     }
 }

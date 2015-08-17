@@ -167,16 +167,16 @@ public class NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             switch (notification.getDefcon()) {
                 case ULTRA:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_red));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorUltra));
                     break;
                 case IMPORTANT:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_orange));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorImportant));
                     break;
                 case NORMAL:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_green));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorNormal));
                     break;
                 case USELESS:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_blue));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorUseless));
             }
         } else {
             mBuilder.setLargeIcon(getColorSquareResource(notification));
@@ -221,16 +221,16 @@ public class NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             switch (notification.getDefcon()) {
                 case ULTRA:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_red));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorUltra));
                     break;
                 case IMPORTANT:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_orange));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorImportant));
                     break;
                 case NORMAL:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_green));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorNormal));
                     break;
                 case USELESS:
-                    mBuilder.setColor(context.getResources().getColor(R.color.color_blue));
+                    mBuilder.setColor(context.getResources().getColor(R.color.colorUseless));
             }
         } else {
             mBuilder.setLargeIcon(getColorSquareResource(notification));

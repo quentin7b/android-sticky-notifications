@@ -4,7 +4,7 @@
     android:id="@+id/widget_row"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="@color/dark_transparency">
+    android:background="@color/widgetBackground">
 
     <FrameLayout
         android:id="@+id/color_layout"
@@ -65,7 +65,7 @@
             android:gravity="center_vertical"
             android:singleLine="true"
             android:text="This is a test fomr the description of a Notication"
-            android:textColor="@color/dark_grey"
+            android:textColor="@color/textColorWidget"
             android:textIsSelectable="false"
             android:textSize="16sp"
             android:textStyle="italic" />

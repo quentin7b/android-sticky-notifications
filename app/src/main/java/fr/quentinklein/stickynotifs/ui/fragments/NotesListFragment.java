@@ -1,59 +1,41 @@
 package fr.quentinklein.stickynotifs.ui.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
+import android.graphics.Paint;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
-import com.google.analytics.tracking.android.StandardExceptionParser;
-import com.j256.ormlite.dao.Dao;
-
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.FragmentArg;
-import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
-import org.w3c.dom.Text;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
-import fr.quentinklein.stickynotifs.BuildConfig;
+import fr.quentinklein.stickynotifs.DefconUtils;
 import fr.quentinklein.stickynotifs.NotificationHelper;
 import fr.quentinklein.stickynotifs.R;
+import fr.quentinklein.stickynotifs.manager.StickyNotificationManager;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
 import fr.quentinklein.stickynotifs.model.StickyNotification;
-import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
-import fr.quentinklein.stickynotifs.ui.DividerItemDecoration;
-import fr.quentinklein.stickynotifs.ui.activities.NotesListActivity;
 import fr.quentinklein.stickynotifs.ui.listeners.HideNoteListener;
 import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
-import fr.quentinklein.stickynotifs.ui.listeners.NoteDeletedListener;
 
 /**
  * Created by quentin on 20/07/2014.
@@ -61,15 +43,12 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteDeletedListener;
  */
 @EFragment(R.layout.fragment_list_notes)
 public class NotesListFragment extends Fragment {
-    private static final String TAG = "NotesListFragment";
-    @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
-    Dao<StickyNotification, Integer> stickyNotificationDao;
+
+    @Bean
+    StickyNotificationManager mStickyNotificationManager;
 
     @ViewById(R.id.recyclerview)
     RecyclerView recyclerView;
-
-    @FragmentArg
-    StickyNotification.Defcon defcon;
 
     @Pref
     NotificationPreferences_ preferences;
@@ -77,9 +56,9 @@ public class NotesListFragment extends Fragment {
     @Bean
     NotificationHelper notificationHelper;
 
-
     StickyNotificationAdapter adapter;
     List<StickyNotification> notifications;
+    List<StickyNotification> visibleNotifications;
 
     @AfterViews
     void initLayout() {
@@ -87,20 +66,75 @@ public class NotesListFragment extends Fragment {
         notifications = new ArrayList<>(0);
         adapter = new StickyNotificationAdapter();
         recyclerView.setAdapter(adapter);
-        Drawable divider;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            divider = getResources().getDrawable(R.drawable.card_divider, getActivity().getTheme());
-        } else {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(
+                        ItemTouchHelper.LEFT, ItemTouchHelper.LEFT) {
 
-            divider = getResources().getDrawable(R.drawable.card_divider);
-        }
-        recyclerView.addItemDecoration(new DividerItemDecoration(divider));
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_done_white_24dp);
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        // callback for drag-n-drop, false to skip this feature
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        // callback for swipe to dismiss, removing item from data and adapter
+                        removeVisual(viewHolder.getAdapterPosition());
+                    }
+
+                    @Override
+                    public void onChildDraw(final Canvas c, final RecyclerView recyclerView, final RecyclerView.ViewHolder viewHolder, final float dX, final float dY, final int actionState, final boolean isCurrentlyActive) {
+                        Log.i("Swipe", dX + ", " + dY + ", " + actionState + ", " + isCurrentlyActive);
+                        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                            View itemView = viewHolder.itemView;
+                            Paint paint = new Paint();
+                            paint.setColor(getResources().getColor(DefconUtils.getDefconColorResource(visibleNotifications.get(viewHolder.getAdapterPosition()).getDefcon())));
+                            float height = (itemView.getHeight() / 2) - (bitmap.getHeight() / 2);
+                            float bitmapWidth = bitmap.getWidth();
+                            c.drawRect(
+                                    (float) itemView.getRight() + dX,
+                                    (float) itemView.getTop(),
+                                    (float) itemView.getRight(),
+                                    (float) itemView.getBottom(), paint);
+                            c.drawBitmap(bitmap, ((float) itemView.getRight() - bitmapWidth) - 72f, (float) itemView.getTop() + height, paint);
+                            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                        }
+                    }
+
+                });
+        swipeToDismissTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        refreshNotesList();
+    private void removeVisual(final int adapterPosition) {
+        // Copy the item
+        StickyNotification removedNotification = visibleNotifications.get(adapterPosition);
+        final StickyNotification copyNotification = new StickyNotification(removedNotification);
+        notifications.remove(adapterPosition);
+        visibleNotifications.remove(adapterPosition);
+        // adapter.notifyItemRemoved(adapterPosition);
+        mStickyNotificationManager.deleteNotification(removedNotification);
+        adapter.notifyDataSetChanged();
+        Snackbar snackbar = Snackbar
+                .make(recyclerView, "Notification has been removed", Snackbar.LENGTH_LONG)
+                .setAction("cancel ?", new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        mStickyNotificationManager.saveNotification(copyNotification);
+                        visibleNotifications.add(copyNotification);
+                        notifications.add(copyNotification);
+                        Collections.sort(visibleNotifications);
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .setActionTextColor(Color.WHITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(DefconUtils.getDefconColorResource(copyNotification.getDefcon())));
+        TextView snackBarTextView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        snackBarTextView.setTextColor(Color.WHITE);
+        snackbar.show(); // Don’t forget to show!
     }
 
     /**
@@ -110,48 +144,52 @@ public class NotesListFragment extends Fragment {
      * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#onResume()
      */
     public void refreshNotesList() {
-        if (stickyNotificationDao == null) {
-            return;
-        } else {
-            try {
-                if (notifications == null) {
-                    notifications = new ArrayList<>();
-                }
-                notifications.clear();
-                List<StickyNotification> allNotifications = stickyNotificationDao.queryForAll();
-                if (defcon == null) {
-                    notifications.addAll(allNotifications);
-                } else {
-                    notifications.addAll(NotificationHelper.getDefconNotifications(allNotifications, defcon));
-                }
-                Collections.sort(notifications);
-                adapter.notifyDataSetChanged();
-            } catch (SQLException e) {
-                Log.e(NotesListFragment.class.getSimpleName(), "Error while requesting notes", e);
-                if (!BuildConfig.DEBUG && preferences.analytics().get()) {
-                    EasyTracker.getInstance(getActivity().getApplicationContext()).send(
-                            MapBuilder.createException(
-                                    new StandardExceptionParser(getActivity(), null)
-                                            // Context and optional collection of package names to be used in reporting the exception.
-                                            .getDescription(Thread.currentThread().getName(),
-                                                    // The name of the thread on which the exception occurred.
-                                                    e),                                  // The exception.
-                                    false
-                            ).build()
-                    );
-                }
-            }
-            if (notifications.isEmpty()) {
-                // hide detail
-                if (getActivity() instanceof HideNoteListener) {
-                    ((HideNoteListener) getActivity()).hideNote();
-                }
+        if (notifications == null) {
+            notifications = new ArrayList<>();
+        }
+        if (visibleNotifications == null) {
+            visibleNotifications = new ArrayList<>();
+        }
+        notifications.clear();
+        visibleNotifications.clear();
+        notifications.addAll(mStickyNotificationManager.getNotifications());
+        Collections.sort(notifications);
+        visibleNotifications.addAll(notifications);
+        adapter.notifyDataSetChanged();
+        if (notifications.isEmpty()) {
+            // hide detail
+            if (getActivity() instanceof HideNoteListener) {
+                ((HideNoteListener) getActivity()).hideNote();
             }
         }
     }
 
-    private class StickyNotificationAdapter extends RecyclerView.Adapter<StickyNotificationAdapter.ViewHolder> {
+    public void onNewTextFilter(String filter) {
+        if (filter != null) {
+            filter = filter.trim().toLowerCase(Locale.getDefault());
+            if (!filter.isEmpty()) {
+                visibleNotifications.clear();
+                for (StickyNotification notification : notifications) {
+                    if (notification.getTitle().toLowerCase(Locale.getDefault()).contains(filter)
+                            || notification.getContent().toLowerCase(Locale.getDefault()).contains(filter)) {
+                        visibleNotifications.add(notification);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            } else {
+                visibleNotifications.clear();
+                visibleNotifications.addAll(notifications);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
 
+    private class StickyNotificationAdapter
+            extends RecyclerView.Adapter<StickyNotificationAdapter.ViewHolder> {
+
+        //***
+        // Items
+        //***
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -160,12 +198,7 @@ public class NotesListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int i) {
-            viewHolder.bind(notifications.get(i));
-        }
-
-        @Override
-        public int getItemCount() {
-            return notifications.size();
+            viewHolder.bind(visibleNotifications.get(i));
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -222,21 +255,14 @@ public class NotesListFragment extends Fragment {
             }
         }
 
-        private int getIconResource(StickyNotification notification) {
-            switch (notification.getDefcon()) {
-                case USELESS:
-                    return R.drawable.blue_square_paper;
-                case NORMAL:
-                    return R.drawable.green_square_paper;
-                case IMPORTANT:
-                    return R.drawable.orange_square_paper;
-                case ULTRA:
-                    return R.drawable.red_square_paper;
-                default:
-                    return R.drawable.ic_launcher;
-            }
+        //***
+        // Global
+        //***
+
+        @Override
+        public int getItemCount() {
+            return visibleNotifications.size();
         }
 
     }
-
 }

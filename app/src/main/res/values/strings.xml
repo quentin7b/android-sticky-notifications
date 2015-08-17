@@ -50,5 +50,10 @@
     <string name="help_me">Agree to send anonymous data</string>
     <string name="no_thanks">No thanks</string>
     <string name="about_thanks_material_dialogs">github.com/afollestad/material-dialogs</string>
+    <string name="settings_header_title">Header</string>
+    <string name="settings_header_switch">Show the headers in the main screen</string>
+    <string name="search_hint">Search notification</string>
+    <string name="settings_theme">Change the theme</string>
+    <string name="settings_theme_explain">Change the base color of the application</string>
 
 </resources>

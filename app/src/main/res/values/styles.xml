@@ -2,16 +2,37 @@
 
 <resources>
 
-    <style name="Theme.Sticky" parent="Base.Theme.Sticky" />
+    <style name="Theme.Sticky" parent="Base.Theme.Sticky"/>
 
     <style name="Base.Theme.Sticky" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_dark_color</item>
-        <item name="colorAccent">@color/accent_color</item>
-        <item name="colorControlHighlight">@color/primary_color_light</item>
-        <item name="colorControlNormal">@color/accent_color</item>
-        <item name="android:textColor">@color/primary_text</item>
-        <item name="android:windowBackground">@color/background_color</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorControlHighLight</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+
+        <item name="actionOverflowMenuStyle">@style/Base.Theme.Sticky.ActionOverflowMenu</item>
     </style>
 
+    <style name="Base.Theme.Sticky.ActionOverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/windowBackground</item>
+    </style>
+
+    <style name="Base.Theme.Sticky.Switch.Blue" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorUseless</item>
+    </style>
+
+    <style name="Base.Theme.Sticky.Switch.Green" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorNormal</item>
+    </style>
+
+    <style name="Base.Theme.Sticky.Switch.Orange" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorImportant</item>
+    </style>
+
+    <style name="Base.Theme.Sticky.Switch.Red" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorUltra</item>
+    </style>
 </resources>
