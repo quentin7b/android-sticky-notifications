@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/app_toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="2dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/app_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:elevation="@dimen/toolbar_elevation"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/about_rate"
@@ -26,8 +32,11 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="@dimen/half_action_bar"
-        android:elevation="10dp"
-        android:src="@drawable/ic_star_rate_white_18dp" />
+        android:src="@drawable/ic_star_rate_white_18dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="@dimen/floating_button_elevation"
+        app:rippleColor="@color/colorNormal"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -43,37 +52,34 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:padding="16dp"
                 android:text="@string/about_author"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/about_version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/about_version"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorPrimary"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@drawable/card_divider" />
+                android:background="@drawable/card_divider"/>
             <!-- libs -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
                 android:padding="16dp"
                 android:text="@string/about_thanks"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -82,28 +88,39 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:autoLink="web"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@string/about_thanks_androidannotations" />
+                    android:text="@string/about_thanks_androidannotations"/>
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:autoLink="web"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@string/about_thanks_ormlite" />
+                    android:text="@string/about_thanks_ormlite"/>
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:autoLink="web"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@string/about_thanks_material_dialogs" />
+                    android:text="@string/about_thanks_material_dialogs"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:autoLink="web"
+                    android:text="@string/about_thanks_material_colors"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:autoLink="web"
+                    android:text="@string/about_thanks_event_bus"/>
 
             </LinearLayout>
 
@@ -111,25 +128,23 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@drawable/card_divider" />
+                android:background="@drawable/card_divider"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
                 android:padding="16dp"
                 android:text="@string/about_graphics"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:autoLink="web"
-                android:fontFamily="sans-serif-light"
                 android:padding="16dp"
-                android:text="@string/about_graphics_flat" />
+                android:text="@string/about_graphics_flat"/>
 
         </LinearLayout>
 

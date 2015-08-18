@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- https://www.google.com/design/spec/what-is-material/elevation-shadows.html#elevation-shadows-elevation-android- -->
     <dimen name="half_action_bar">28dp</dimen>
     <dimen name="base_recycler_margin">0dp</dimen>
-    <dimen name="floating_button_elevation">16dp</dimen>
-    <dimen name="toolbar_elevation">16sp</dimen>
+    <dimen name="floating_button_elevation">12dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
 </resources>

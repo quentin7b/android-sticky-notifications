@@ -26,10 +26,8 @@
     <string name="about_author">Todo Notifications by Quentin KLEIN</string>
     <string name="about_version">Version : </string>
     <string name="about_thanks">Special thanks, I use them</string>
-    <string name="about_thanks_androidannotations">androidannotations.org</string>
-    <string name="about_thanks_ormlite">ormlite.com</string>
+
     <string name="about_graphics">Icons &amp; Pictures</string>
-    <string name="about_graphics_flat">www.google.com/design/icons</string>
 
     <!-- Plurals -->
     <plurals name="grouped_notification_title">
@@ -45,11 +43,11 @@
     <string name="settings">Settings</string>
     <string name="settings_help_dev">Help the developer</string>
     <string name="settings_help_dev_switch">Send anonymous data</string>
-    <string name="settings_help_dev_explain">This app uses an analytics tools to helps its improvement. By checking this, you agree to send anonymous data to improve the app! (Thanks :-))</string>
+    <string name="settings_help_dev_explain">By activating this, you agree to send anonymous data to improve the app!</string>
     <string name="edit_title">Edit</string>
     <string name="help_me">Agree to send anonymous data</string>
     <string name="no_thanks">No thanks</string>
-    <string name="about_thanks_material_dialogs">github.com/afollestad/material-dialogs</string>
+
     <string name="settings_header_title">Header</string>
     <string name="settings_header_switch">Show the headers in the main screen</string>
     <string name="search_hint">Search notification</string>

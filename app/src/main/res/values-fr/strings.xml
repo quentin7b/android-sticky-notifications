@@ -27,10 +27,7 @@
     <string name="about_author">Todo Notifications par Quentin KLEIN</string>
     <string name="about_version">Version : </string>
     <string name="about_thanks">Merci à eux, je les utilise</string>
-    <string name="about_thanks_androidannotations">androidannotations.org</string>
-    <string name="about_thanks_ormlite">ormlite.com</string>
     <string name="about_graphics">Icônes &amp; Images</string>
-    <string name="about_graphics_flat">www.google.com/design/icons</string>
 
     <!-- Plurals -->
     <plurals name="grouped_notification_title">
@@ -45,13 +42,12 @@
     <string name="settings_notifications_explain">Grouper les notifications avec la même priorité dans une seule dans la barre de notifications</string>
 
     <string name="settings">Paramètres</string>
-    <string name="settings_help_dev">Aider le dévelppeur</string>
+    <string name="settings_help_dev">Aider le développeur</string>
     <string name="settings_help_dev_switch">Envoyer des données anonymes</string>
-    <string name="settings_help_dev_explain">Cette application utilise un sytème de remontées d\'informations anonymes. En activant cela, vous acceptez l\'envoie de données anonymes pour aider à améliorer l\'application (Merci :-))</string>
+    <string name="settings_help_dev_explain">En activant cela, vous acceptez l\'envoi de données anonymes pour aider à améliorer l\'application</string>
     <string name="edit_title">Edition</string>
     <string name="help_me">J\'accepte d\'envoyer des données anonymes</string>
     <string name="no_thanks">Non merci</string>
-    <string name="about_thanks_material_dialogs">github.com/afollestad/material-dialogs</string>
     <string name="settings_header_title">Entêtes</string>
     <string name="settings_header_switch">Afficher les entêtes sur l\'écran principal</string>
     <string name="search_hint">Rechercher une notification</string>

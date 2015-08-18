@@ -29,7 +29,6 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.sql.SQLException;
 
-import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.R;
 import fr.quentinklein.stickynotifs.boot.StartUpService_;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
@@ -114,14 +113,6 @@ public class NotesListActivity extends AppCompatActivity
                     })
                     .show();
         }
-
-        if (BuildConfig.DEBUG) {
-            addNotifications(R.array.ultra_notification, StickyNotification.Defcon.ULTRA);
-            addNotifications(R.array.important_notification, StickyNotification.Defcon.IMPORTANT);
-            addNotifications(R.array.normal_notification, StickyNotification.Defcon.NORMAL);
-            addNotifications(R.array.useless_notification, StickyNotification.Defcon.USELESS);
-        }
-
     }
 
     private void addNotifications(@ArrayRes int notificationRes, StickyNotification.Defcon defcon) {

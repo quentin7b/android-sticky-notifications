@@ -32,7 +32,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:fontFamily="sans-serif-light"
                     android:gravity="center_vertical"
                     android:text="@string/settings_notifications_title"
                     android:textAllCaps="true"
@@ -43,14 +42,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:checked="false"
-                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_notifications_switch"
                     android:textColor="@color/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_notifications_explain"
                     android:textColor="@color/textColorSecondary" />
 
@@ -65,7 +62,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:fontFamily="sans-serif-light"
                     android:gravity="center_vertical"
                     android:text="@string/settings_theme"
                     android:textAllCaps="true"
@@ -92,7 +88,6 @@
                         android:layout_marginRight="10dp"
                         android:layout_toLeftOf="@id/theme_btn"
                         android:layout_toStartOf="@+id/theme_btn"
-                        android:fontFamily="sans-serif-light"
                         android:text="@string/settings_theme_explain"
                         android:textColor="@color/textColorSecondary" />
 
@@ -109,7 +104,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:fontFamily="sans-serif-light"
                     android:gravity="center_vertical"
                     android:text="@string/settings_help_dev"
                     android:textAllCaps="true"
@@ -120,14 +114,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:checked="false"
-                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_help_dev_switch"
                     android:textColor="@color/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_help_dev_explain"
                     android:textColor="@color/textColorSecondary" />
             </LinearLayout>

@@ -11,6 +11,7 @@
         <item name="colorControlHighlight">@color/colorControlHighLight</item>
         <item name="colorControlNormal">@color/colorAccent</item>
         <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:fontFamily">@string/font_fontFamily_medium</item>
         <item name="android:windowBackground">@color/windowBackground</item>
 
         <item name="actionOverflowMenuStyle">@style/Base.Theme.Sticky.ActionOverflowMenu</item>

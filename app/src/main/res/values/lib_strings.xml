@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_thanks_androidannotations">androidannotations.org</string>
+    <string name="about_thanks_ormlite">ormlite.com</string>
+    <string name="about_graphics_flat">www.google.com/design/icons</string>
+    <string name="about_thanks_material_dialogs">github.com/afollestad/material-dialogs</string>
+    <string name="about_thanks_material_colors">github.com/mcginty/material-colors</string>
+    <string name="about_thanks_event_bus">github.com/greenrobot/EventBus</string>
+</resources>
