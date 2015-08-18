@@ -1,7 +1,9 @@
 package fr.quentinklein.stickynotifs.ui.activities;
 
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Window;
@@ -85,15 +87,15 @@ public class SettingsActivity extends AppCompatActivity {
 
         devSwitch.setChecked(preferences.analytics().get());
         devSwitch.setOnCheckedChangeListener(checkedChangeListener);
-
-        themeBtn.setBackgroundColor(getResources().getColor(preferences.colorPrimary().get()));
     }
 
     private void setWindowColors(int primaryColor, int primaryDarkColor) {
-        toolbar.setBackgroundColor(getResources().getColor(primaryColor));
+        int color = getResources().getColor(primaryColor);
+        toolbar.setBackgroundColor(color);
+        themeBtn.setBackgroundColor(color);
         // Change status bar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int color = getResources().getColor(primaryDarkColor);
+            color = getResources().getColor(primaryDarkColor);
             Window window = getWindow();
             window.setStatusBarColor(color);
             window.setNavigationBarColor(color);
@@ -110,7 +112,7 @@ public class SettingsActivity extends AppCompatActivity {
         ColorDialog.show(this, new ColorDialog.ColorListener() {
             @Override
             public void onColorChanged(final int primaryColor, final int secondaryColor) {
-                themeBtn.setBackgroundColor(primaryColor);
+                themeBtn.setBackgroundColor(getResources().getColor(primaryColor));
                 setWindowColors(primaryColor, secondaryColor);
             }
 

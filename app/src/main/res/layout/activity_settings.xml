@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_toolbar"
@@ -11,7 +11,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,24 +32,27 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
+                    android:fontFamily="sans-serif-light"
                     android:gravity="center_vertical"
                     android:text="@string/settings_notifications_title"
                     android:textAllCaps="true"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp" />
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/concat_switch"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:checked="false"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_notifications_switch"
-                    android:textColor="@color/textColorPrimary"/>
+                    android:textColor="@color/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_notifications_explain"
-                    android:textColor="@color/textColorSecondary"/>
+                    android:textColor="@color/textColorSecondary" />
 
             </LinearLayout>
 
@@ -62,10 +65,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
+                    android:fontFamily="sans-serif-light"
                     android:gravity="center_vertical"
                     android:text="@string/settings_theme"
                     android:textAllCaps="true"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -77,7 +81,7 @@
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"/>
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -88,8 +92,9 @@
                         android:layout_marginRight="10dp"
                         android:layout_toLeftOf="@id/theme_btn"
                         android:layout_toStartOf="@+id/theme_btn"
+                        android:fontFamily="sans-serif-light"
                         android:text="@string/settings_theme_explain"
-                        android:textColor="@color/textColorSecondary"/>
+                        android:textColor="@color/textColorSecondary" />
 
 
                 </RelativeLayout>
@@ -104,24 +109,27 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
+                    android:fontFamily="sans-serif-light"
                     android:gravity="center_vertical"
                     android:text="@string/settings_help_dev"
                     android:textAllCaps="true"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp" />
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/dev_switch"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:checked="false"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_help_dev_switch"
-                    android:textColor="@color/textColorPrimary"/>
+                    android:textColor="@color/textColorPrimary" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/settings_help_dev_explain"
-                    android:textColor="@color/textColorSecondary"/>
+                    android:textColor="@color/textColorSecondary" />
             </LinearLayout>
 
         </LinearLayout>

@@ -55,5 +55,7 @@
     <string name="search_hint">Search notification</string>
     <string name="settings_theme">Change the theme</string>
     <string name="settings_theme_explain">Change the base color of the application</string>
+    <string name="note_has_been_removed">%s has been removed</string>
+    <string name="note_has_been_removed_cancel">Cancel ?</string>
 
 </resources>

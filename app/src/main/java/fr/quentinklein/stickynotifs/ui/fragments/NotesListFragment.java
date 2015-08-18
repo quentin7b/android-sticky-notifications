@@ -59,6 +59,7 @@ public class NotesListFragment extends Fragment {
     StickyNotificationAdapter adapter;
     List<StickyNotification> notifications;
     List<StickyNotification> visibleNotifications;
+    private String mCurrentFilter;
 
     @AfterViews
     void initLayout() {
@@ -118,15 +119,13 @@ public class NotesListFragment extends Fragment {
         mStickyNotificationManager.deleteNotification(removedNotification);
         adapter.notifyDataSetChanged();
         Snackbar snackbar = Snackbar
-                .make(recyclerView, "Notification has been removed", Snackbar.LENGTH_LONG)
-                .setAction("cancel ?", new View.OnClickListener() {
+                .make(recyclerView, getString(R.string.note_has_been_removed, copyNotification.getTitle()), Snackbar.LENGTH_LONG)
+                .setAction(R.string.note_has_been_removed_cancel, new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
                         mStickyNotificationManager.saveNotification(copyNotification);
-                        visibleNotifications.add(copyNotification);
-                        notifications.add(copyNotification);
-                        Collections.sort(visibleNotifications);
-                        adapter.notifyDataSetChanged();
+                        refreshNotesList();
+                        onNewTextFilter(mCurrentFilter);
                     }
                 })
                 .setActionTextColor(Color.WHITE);
@@ -165,6 +164,7 @@ public class NotesListFragment extends Fragment {
     }
 
     public void onNewTextFilter(String filter) {
+        mCurrentFilter = filter;
         if (filter != null) {
             filter = filter.trim().toLowerCase(Locale.getDefault());
             if (!filter.isEmpty()) {

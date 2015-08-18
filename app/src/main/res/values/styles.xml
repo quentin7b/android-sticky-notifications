@@ -2,7 +2,7 @@
 
 <resources>
 
-    <style name="Theme.Sticky" parent="Base.Theme.Sticky"/>
+    <style name="Theme.Sticky" parent="Base.Theme.Sticky" />
 
     <style name="Base.Theme.Sticky" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -14,10 +14,17 @@
         <item name="android:windowBackground">@color/windowBackground</item>
 
         <item name="actionOverflowMenuStyle">@style/Base.Theme.Sticky.ActionOverflowMenu</item>
+        <item name="android:actionOverflowButtonStyle">
+            @style/Base.Theme.Sticky.ActionOverflowButton
+        </item>
     </style>
 
     <style name="Base.Theme.Sticky.ActionOverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:popupBackground">@color/windowBackground</item>
+    </style>
+
+    <style name="Base.Theme.Sticky.ActionOverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_more_vert_white_32dp</item>
     </style>
 
     <style name="Base.Theme.Sticky.Switch.Blue" parent="Theme.AppCompat.Light">

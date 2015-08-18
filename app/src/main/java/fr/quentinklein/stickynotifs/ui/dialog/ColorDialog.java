@@ -2,6 +2,8 @@ package fr.quentinklein.stickynotifs.ui.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
@@ -69,6 +71,7 @@ public class ColorDialog {
         MaterialDialog show = new MaterialDialog.Builder(context)
                 .customView(R.layout.color_dialog, false)
                 .positiveText(android.R.string.ok)
+                .positiveColor(ColorStateList.valueOf(context.getResources().getColor(basePrimary)))
                 .cancelable(true)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
@@ -138,7 +141,11 @@ public class ColorDialog {
             } else {
                 button = (Button) convertView;
             }
-            button.setBackgroundColor(mContext.getResources().getColor(PRIMARY_COLORS[position]));
+            int color = mContext.getResources().getColor(PRIMARY_COLORS[position]);
+            button.setBackgroundColor(color);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                button.setBackgroundTintList(ColorStateList.valueOf(color));
+            }
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
