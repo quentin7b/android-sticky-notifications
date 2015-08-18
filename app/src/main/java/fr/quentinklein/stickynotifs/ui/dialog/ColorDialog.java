@@ -91,9 +91,9 @@ public class ColorDialog {
     }
 
     public interface ColorListener {
-        void onColorChanged(int primaryColor, int secondaryColor);
+        void onColorChanged(@ColorRes int primaryColor, @ColorRes int secondaryColor);
 
-        void onColorValidated(int primaryColor, int secondaryColor);
+        void onColorValidated(@ColorRes int primaryColor, @ColorRes int secondaryColor);
 
         void onCancel();
     }
