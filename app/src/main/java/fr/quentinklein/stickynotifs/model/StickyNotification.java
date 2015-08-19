@@ -37,6 +37,13 @@ public class StickyNotification extends BaseDaoEnabled<StickyNotification, Integ
         setNotification(stickyNotification.isNotification());
     }
 
+    public StickyNotification(final String title, final String content, final Defcon defcon, final boolean isNotification) {
+        this.title = title;
+        this.content = content;
+        this.defcon = defcon;
+        this.isNotification = isNotification;
+    }
+
     public int getId() {
         return id;
     }

@@ -36,13 +36,13 @@ public class NoteFragment extends Fragment implements NoteChanedListener {
     StickyNotificationManager mStickyNotificationManager;
     @ViewById(R.id.stick)
     SwitchCompat noteSwitch;
-    @ViewById(R.id.title)
+    @ViewById(R.id.note_title)
     EditText noteTitle;
     @ViewById(R.id.content)
     EditText noteContent;
     @ViewById(R.id.useless)
     ImageButton uselessButton;
-    @ViewById(R.id.normal)
+    @ViewById(R.id.normal_btn)
     ImageButton normalButton;
     @ViewById(R.id.important)
     ImageButton importantButton;

@@ -1,0 +1,71 @@
+<manifest
+    package="fr.quentinklein.stickynotifs"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- special spoon -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <permission-group android:name="android.permission-group.STORAGE"/>
+
+    <!-- debuggable should be in gradle but when production apk is generated it fails on play store -->
+    <application
+        android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sticky">
+        <!-- Activities -->
+        <activity
+            android:name=".ui.activities.NotesListActivity_"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activities.NoteActivity_"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".ui.activities.SettingsActivity_"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".ui.activities.AboutActivity_"
+            android:configChanges="orientation|screenSize"/>
+        <!-- Services -->
+        <service android:name=".boot.StartUpService_"/>
+        <!-- Receivers -->
+        <receiver
+            android:name=".boot.StartUpReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <!-- widgets -->
+        <!-- Widget -->
+        <receiver android:name=".widget.StickyWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="fr.quentinklein.stickynotifs.UPDATE_LIST"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_infos"/>
+        </receiver>
+        <service
+            android:name=".widget.StickyWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+
+    </application>
+
+</manifest>

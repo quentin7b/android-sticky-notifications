@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.DefconUtils;
 import fr.quentinklein.stickynotifs.NotificationHelper;
 import fr.quentinklein.stickynotifs.R;
@@ -91,6 +92,7 @@ public class NotesListFragment extends Fragment {
                         Log.i("Swipe", dX + ", " + dY + ", " + actionState + ", " + isCurrentlyActive);
                         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                             View itemView = viewHolder.itemView;
+                            // Draw the background
                             Paint paint = new Paint();
                             paint.setColor(getResources().getColor(DefconUtils.getDefconColorResource(visibleNotifications.get(viewHolder.getAdapterPosition()).getDefcon())));
                             float height = (itemView.getHeight() / 2) - (bitmap.getHeight() / 2);
@@ -99,8 +101,39 @@ public class NotesListFragment extends Fragment {
                                     (float) itemView.getRight() + dX,
                                     (float) itemView.getTop(),
                                     (float) itemView.getRight(),
-                                    (float) itemView.getBottom(), paint);
+                                    (float) itemView.getBottom(),
+                                    paint);
+                            // Draw the icon
                             c.drawBitmap(bitmap, ((float) itemView.getRight() - bitmapWidth) - 72f, (float) itemView.getTop() + height, paint);
+                            // Draw the shadow
+                            Paint shwdowPaint = new Paint();
+                            shwdowPaint.setColor(Color.BLACK);
+                            shwdowPaint.setAlpha(25);
+                            // on top
+                            c.drawRect(
+                                    (float) itemView.getRight() + dX,
+                                    (float) itemView.getTop(),
+                                    (float) itemView.getRight(),
+                                    (float) itemView.getTop() + 5f,
+                                    shwdowPaint
+                            );
+                            // on left
+                            c.drawRect(
+                                    (float) itemView.getRight() + dX,
+                                    (float) itemView.getTop() + 5, // prevent collapse with top shadow
+                                    (float) itemView.getRight() + dX + 5f,
+                                    (float) itemView.getBottom() - 5, // prevent collapse with bottom shadow
+                                    shwdowPaint
+                            );
+                            // on bottom
+                            c.drawRect(
+                                    (float) itemView.getRight() + dX,
+                                    (float) itemView.getBottom() - 5f,
+                                    (float) itemView.getRight(),
+                                    (float) itemView.getBottom(),
+                                    shwdowPaint
+                            );
+
                             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                         }
                     }
@@ -152,6 +185,21 @@ public class NotesListFragment extends Fragment {
         notifications.clear();
         visibleNotifications.clear();
         notifications.addAll(mStickyNotificationManager.getNotifications());
+
+        if (BuildConfig.DEBUG && notifications.isEmpty()) {
+            String[] notif = getResources().getStringArray(R.array.normal_notification);
+            mStickyNotificationManager.saveNotification(new StickyNotification(notif[0], notif[1], StickyNotification.Defcon.NORMAL, true));
+            notif = getResources().getStringArray(R.array.useless_notification);
+            mStickyNotificationManager.saveNotification(new StickyNotification(notif[0], notif[1], StickyNotification.Defcon.USELESS, true));
+            notif = getResources().getStringArray(R.array.important_notification);
+            mStickyNotificationManager.saveNotification(new StickyNotification(notif[0], notif[1], StickyNotification.Defcon.IMPORTANT, true));
+            notif = getResources().getStringArray(R.array.ultra_notification);
+            mStickyNotificationManager.saveNotification(new StickyNotification(notif[0], notif[1], StickyNotification.Defcon.ULTRA, true));
+
+            notifications.addAll(mStickyNotificationManager.getNotifications());
+        }
+
+
         Collections.sort(notifications);
         visibleNotifications.addAll(notifications);
         adapter.notifyDataSetChanged();
