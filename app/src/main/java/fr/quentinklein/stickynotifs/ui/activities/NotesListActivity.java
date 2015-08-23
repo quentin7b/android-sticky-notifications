@@ -4,12 +4,11 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Build;
-import android.support.annotation.ArrayRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,28 +16,22 @@ import android.view.Window;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.j256.ormlite.dao.Dao;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OrmLiteDao;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
-import java.sql.SQLException;
-
+import fr.quentinklein.stickynotifs.APIUtils;
 import fr.quentinklein.stickynotifs.R;
 import fr.quentinklein.stickynotifs.boot.StartUpService_;
+import fr.quentinklein.stickynotifs.manager.StickyNotificationManager;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
-import fr.quentinklein.stickynotifs.model.StickyNotification;
-import fr.quentinklein.stickynotifs.model.database.DatabaseHelper;
 import fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment;
 import fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment_;
-import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
-import fr.quentinklein.stickynotifs.ui.listeners.NoteDeletedListener;
-import fr.quentinklein.stickynotifs.ui.listeners.NoteSavedListener;
 import fr.quentinklein.stickynotifs.widget.StickyWidgetProvider;
 
 /**
@@ -48,17 +41,15 @@ import fr.quentinklein.stickynotifs.widget.StickyWidgetProvider;
  * @see fr.quentinklein.stickynotifs.ui.fragments.NotesListFragment
  */
 @EActivity(R.layout.activity_list_notes)
-public class NotesListActivity extends AppCompatActivity
-        implements NoteSavedListener, NoteChanedListener, NoteDeletedListener {
+public class NotesListActivity extends AppCompatActivity {
 
     public static final String EXTRA_NOTE_ID = "note_id";
-    private static final String TAG = "NotesListActivity";
 
     @Pref
     NotificationPreferences_ preferences;
 
-    @OrmLiteDao(helper = DatabaseHelper.class, model = StickyNotification.class)
-    Dao<StickyNotification, Integer> stickyNotificationDao;
+    @Bean
+    StickyNotificationManager mStickyNotificationsManager;
 
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
@@ -76,7 +67,9 @@ public class NotesListActivity extends AppCompatActivity
 
         @Override
         public boolean onQueryTextChange(String s) {
-            mAllNotesFragment.onNewTextFilter(s);
+            LocalBroadcastManager.getInstance(NotesListActivity.this).sendBroadcast(
+                    new Intent(NotesListFragment.FILTER_EVENT).putExtra("extra_filter", s)
+            );
             return true;
         }
     };
@@ -84,50 +77,9 @@ public class NotesListActivity extends AppCompatActivity
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.container, mAllNotesFragment)
-                .commit();
-
-        if (!preferences.askedForHelp().get()) {
-            new MaterialDialog.Builder(this)
-                    .title(R.string.settings_help_dev)
-                    .content(R.string.settings_help_dev_explain)
-                    .positiveText(R.string.help_me)
-                    .negativeText(R.string.no_thanks)
-                    .cancelable(false)
-                    .theme(Theme.LIGHT)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            preferences.askedForHelp().put(true);
-                            preferences.analytics().put(true);
-                        }
-
-                        @Override
-                        public void onNegative(MaterialDialog dialog) {
-                            preferences.askedForHelp().put(true);
-                            preferences.analytics().put(false);
-                        }
-                    })
-                    .show();
-        }
-    }
-
-    private void addNotifications(@ArrayRes int notificationRes, StickyNotification.Defcon defcon) {
-        String[] notificationsData = getResources().getStringArray(notificationRes);
-        StickyNotification notification = new StickyNotification();
-        notification.setTitle(notificationsData[0]);
-        notification.setContent(notificationsData[1]);
-        notification.setDefcon(defcon);
-        notification.setNotification(true);
-        try {
-            notification.setDao(stickyNotificationDao);
-            notification.create();
-        } catch (SQLException e) {
-            Log.w(TAG, "Cant insert notification", e);
-        }
+        getSupportFragmentManager().beginTransaction().add(R.id.container, mAllNotesFragment).commit();
+        showHelpDialog();
+        mAllNotesFragment.getBus().register(this);
     }
 
     @Override
@@ -136,8 +88,8 @@ public class NotesListActivity extends AppCompatActivity
         loadNotes();
         startService(new Intent(this, StartUpService_.class));
         reloadWidgets();
-        int primaryColor = getResources().getColor(preferences.colorPrimary().get());
-        int primaryDarkColor = getResources().getColor(preferences.colorPrimatyDark().get());
+        int primaryColor = APIUtils.getColor(this, preferences.colorPrimary().get());
+        int primaryDarkColor = APIUtils.getColor(this, preferences.colorPrimatyDark().get());
         mToolbar.setBackgroundColor(primaryColor);
         // Change status bar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -185,25 +137,46 @@ public class NotesListActivity extends AppCompatActivity
         startActivity(new Intent(this, SettingsActivity_.class));
     }
 
-    /**
-     * Interfaces.
-     */
-
-    @Override
-    public void noteSaved(int noteId) {
-        loadNotes();
+    public void onEvent(NotesListFragment.NoteSavedEvent event) {
         reloadWidgets();
     }
 
-    @Override
-    public void noteSelected(int noteId) {
-        startActivity(new Intent(this, NoteActivity_.class).putExtra(NoteActivity_.NOTIFICATION_ID_EXTRA, noteId));
+    public void onEvent(NotesListFragment.NoteAddedEvent event) {
+        reloadWidgets();
     }
 
-    @Override
-    public void noteDeleted(int noteId) {
-        // fragment.refreshNotesList();
+    public void onEvent(NotesListFragment.NoteDeletedEvent event) {
         reloadWidgets();
+    }
+
+    public void onEvent(NotesListFragment.NoteSelectedEvent event) {
+        startActivity(new Intent(this, NoteActivity_.class).putExtra(NoteActivity_.NOTIFICATION_ID_EXTRA, event.noteId));
+    }
+
+    private void showHelpDialog() {
+        if (!preferences.askedForHelp().get()) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.settings_help_dev)
+                    .content(R.string.settings_help_dev_explain)
+                    .positiveText(R.string.help_me)
+                    .negativeText(R.string.no_thanks)
+                    .cancelable(false)
+                    .theme(Theme.LIGHT)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            preferences.askedForHelp().put(true);
+                            preferences.analytics().put(true);
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            preferences.askedForHelp().put(true);
+                            preferences.analytics().put(false);
+                        }
+                    })
+                    .show();
+        }
     }
 
     private void loadNotes() {
@@ -211,14 +184,6 @@ public class NotesListActivity extends AppCompatActivity
     }
 
     private void reloadWidgets() {
-        /*Log.i(NotesListActivity.class.getSimpleName(), "ReloadWidgets");
-        // Refresh widgets
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
-        final int[] stickyWidgetIds =
-                appWidgetManager.getAppWidgetIds(
-                        new ComponentName(getApplicationContext(), StickyWidgetProvider.class));
-        // Notify dataset changed
-        appWidgetManager.notifyAppWidgetViewDataChanged(stickyWidgetIds, R.layout.widget_sticky);*/
         sendBroadcast(new Intent(this, StickyWidgetProvider.class)
                 .setAction(StickyWidgetProvider.UPDATE_LIST));
     }

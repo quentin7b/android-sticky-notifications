@@ -1,12 +1,18 @@
 package fr.quentinklein.stickynotifs.ui.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -28,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import de.greenrobot.event.EventBus;
 import fr.quentinklein.stickynotifs.BuildConfig;
 import fr.quentinklein.stickynotifs.DefconUtils;
 import fr.quentinklein.stickynotifs.NotificationHelper;
@@ -35,8 +42,6 @@ import fr.quentinklein.stickynotifs.R;
 import fr.quentinklein.stickynotifs.manager.StickyNotificationManager;
 import fr.quentinklein.stickynotifs.model.NotificationPreferences_;
 import fr.quentinklein.stickynotifs.model.StickyNotification;
-import fr.quentinklein.stickynotifs.ui.listeners.HideNoteListener;
-import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
 
 /**
  * Created by quentin on 20/07/2014.
@@ -44,6 +49,8 @@ import fr.quentinklein.stickynotifs.ui.listeners.NoteChanedListener;
  */
 @EFragment(R.layout.fragment_list_notes)
 public class NotesListFragment extends Fragment {
+
+    public static final String FILTER_EVENT = "fr.quentinklein.stickynotifs.filter";
 
     @Bean
     StickyNotificationManager mStickyNotificationManager;
@@ -61,6 +68,23 @@ public class NotesListFragment extends Fragment {
     List<StickyNotification> notifications;
     List<StickyNotification> visibleNotifications;
     private String mCurrentFilter;
+    private EventBus mUpdateBus;
+
+    public NotesListFragment() {
+        mUpdateBus = new EventBus();
+    }
+
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                String filter = intent.getStringExtra("extra_filter");
+                onNewTextFilter(filter);
+            }
+        }, new IntentFilter(FILTER_EVENT));
+    }
 
     @AfterViews
     void initLayout() {
@@ -150,6 +174,8 @@ public class NotesListFragment extends Fragment {
         visibleNotifications.remove(adapterPosition);
         // adapter.notifyItemRemoved(adapterPosition);
         mStickyNotificationManager.deleteNotification(removedNotification);
+        notificationHelper.showNotifications(notifications);
+        mUpdateBus.post(new NoteDeletedEvent());
         adapter.notifyDataSetChanged();
         Snackbar snackbar = Snackbar
                 .make(recyclerView, getString(R.string.note_has_been_removed, copyNotification.getTitle()), Snackbar.LENGTH_LONG)
@@ -157,6 +183,7 @@ public class NotesListFragment extends Fragment {
                     @Override
                     public void onClick(final View v) {
                         mStickyNotificationManager.saveNotification(copyNotification);
+                        mUpdateBus.post(new NoteAddedEvent());
                         refreshNotesList();
                         onNewTextFilter(mCurrentFilter);
                     }
@@ -169,12 +196,6 @@ public class NotesListFragment extends Fragment {
         snackbar.show(); // Don’t forget to show!
     }
 
-    /**
-     * Reload the list of notifications to display
-     *
-     * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#noteSaved(int)
-     * @see fr.quentinklein.stickynotifs.ui.activities.NotesListActivity#onResume()
-     */
     public void refreshNotesList() {
         if (notifications == null) {
             notifications = new ArrayList<>();
@@ -198,20 +219,13 @@ public class NotesListFragment extends Fragment {
 
             notifications.addAll(mStickyNotificationManager.getNotifications());
         }
-
-
         Collections.sort(notifications);
         visibleNotifications.addAll(notifications);
         adapter.notifyDataSetChanged();
-        if (notifications.isEmpty()) {
-            // hide detail
-            if (getActivity() instanceof HideNoteListener) {
-                ((HideNoteListener) getActivity()).hideNote();
-            }
-        }
+        notificationHelper.showNotifications(notifications);
     }
 
-    public void onNewTextFilter(String filter) {
+    private void onNewTextFilter(String filter) {
         mCurrentFilter = filter;
         if (filter != null) {
             filter = filter.trim().toLowerCase(Locale.getDefault());
@@ -230,6 +244,10 @@ public class NotesListFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         }
+    }
+
+    public EventBus getBus() {
+        return mUpdateBus;
     }
 
     private class StickyNotificationAdapter
@@ -280,9 +298,7 @@ public class NotesListFragment extends Fragment {
                 baseView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (getActivity() instanceof NoteChanedListener) {
-                            ((NoteChanedListener) getActivity()).noteSelected(notification.getId());
-                        }
+                        mUpdateBus.post(new NoteSelectedEvent(notification.getId()));
                     }
                 });
             }
@@ -312,5 +328,22 @@ public class NotesListFragment extends Fragment {
             return visibleNotifications.size();
         }
 
+    }
+
+    public class NoteSavedEvent {
+    }
+
+    public class NoteDeletedEvent {
+    }
+
+    public class NoteAddedEvent {
+    }
+
+    public class NoteSelectedEvent {
+        public final int noteId;
+
+        public NoteSelectedEvent(int noteId) {
+            this.noteId = noteId;
+        }
     }
 }
