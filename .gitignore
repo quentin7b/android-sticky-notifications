@@ -37,5 +37,5 @@ local.properties
 *~
 *.swp
 
-app/keystore
+#app/keystore
 gradle.properties
