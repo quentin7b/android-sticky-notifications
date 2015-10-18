@@ -16,18 +16,18 @@ android {
         applicationId "fr.quentinklein.stickynotifs"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 12
-        versionName "4.1-indev"
+        versionCode 13
+        versionName "4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
-        /*release {
+        release {
             storeFile file("keystore")
             storePassword keystore_password
             keyAlias "stickynotifs"
             keyPassword alias_password
-        }*/
+        }
     }
 
     buildTypes {
@@ -39,7 +39,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
     }
 
