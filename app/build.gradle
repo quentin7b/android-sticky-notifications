@@ -3,22 +3,20 @@ apply plugin: 'android-apt'
 apply plugin: 'spoon'
 
 repositories {
-    maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
     maven { url 'https://jitpack.io' }
-    mavenCentral()
+    jcenter()
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "fr.quentinklein.stickynotifs"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 13
         versionName "4.1"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -56,17 +54,15 @@ apt {
     }
 }
 
-def supportVersion = '23.0.0'
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Support
-    compile "com.android.support:support-annotations:${supportVersion}"
-    compile "com.android.support:support-v4:${supportVersion}"
-    compile "com.android.support:appcompat-v7:${supportVersion}"
-    compile "com.android.support:cardview-v7:${supportVersion}"
-    compile "com.android.support:recyclerview-v7:${supportVersion}"
-    compile "com.android.support:design:${supportVersion}"
+    compile "com.android.support:support-annotations:25.1.0"
+    compile "com.android.support:support-v4:25.1.0"
+    compile "com.android.support:appcompat-v7:25.1.0"
+    compile "com.android.support:cardview-v7:25.1.0"
+    compile "com.android.support:recyclerview-v7:25.1.0"
+    compile "com.android.support:design:25.1.0"
     // Android Annotations
     apt 'org.androidannotations:androidannotations:3.3.2'
     compile 'org.androidannotations:androidannotations-api:3.3.2'
@@ -74,30 +70,15 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     // Dialog
-    compile 'com.afollestad:material-dialogs:0.7.8.1'
+    compile 'com.afollestad.material-dialogs:core:0.9.2.3'
     // Header
     compile 'com.timehop.stickyheadersrecyclerview:library:0.4.1@aar'
     // Colors
-    compile 'com.github.mcginty:material-colors:1.0.1'
+    compile 'com.github.mcginty:material-colors:1.1.0'
     //Eb
     compile 'de.greenrobot:eventbus:2.4.0'
-
-    // Tests
-    androidTestCompile 'com.android.support.test:runner:0.3'
-    // Set this dependency to use JUnit 4 rules
-    androidTestCompile 'com.android.support.test:rules:0.3'
-    // Set this dependency to build and run Espresso tests
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2')
-    androidTestCompile 'com.squareup.spoon:spoon-client:1.1.10'
-    androidTestCompile 'junit:junit:4.12'
 }
 
 configurations.all {
-    resolutionStrategy.force "com.android.support:support-annotations:${supportVersion}"
-}
-
-// This section is optional
-spoon {
-    // for debug output
-    debug = true
+    resolutionStrategy.force "com.android.support:support-annotations:25.1.0"
 }
