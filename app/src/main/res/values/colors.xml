@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/material_green500</color>
-    <color name="colorPrimaryDark">@color/material_green800</color>
-    <color name="textColorPrimary">@color/material_grey800</color>
-    <color name="navigationBarColor">@color/material_green800</color>
-    <color name="windowBackground">@color/material_white</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryDark">#388E3C</color>
+    <color name="colorPrimaryLight">#C8E6C9</color>
 
-    <color name="colorAccent">@color/material_grey800</color>
-    <color name="colorControlHighLight">@color/material_grey700</color>
-    <color name="textColorSecondary">@color/material_grey600</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
 
-    <color name="textColorWidget">#1e1e1e</color>
+    <color name="divider">#BDBDBD</color>
+
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="textColorWhite">#FFFFFF</color>
+
+    <color name="textColorWidget">#1E1E1E</color>
     <color name="widgetBackground">#77FFFFFF</color>
-
-    <color name="colorNormal">@color/material_green500</color>
-    <color name="colorUseless">@color/material_blue500</color>
-    <color name="colorImportant">@color/material_orange500</color>
-    <color name="colorUltra">@color/material_red500</color>
-
-    <color name="colorNormalDark">@color/material_green800</color>
-    <color name="colorUselessDark">@color/material_blue800</color>
-    <color name="colorImportantDark">@color/material_orange800</color>
-    <color name="colorUltraDark">@color/material_red800</color>
-
-    <color name="color_grey">@color/material_grey400</color>
 </resources>

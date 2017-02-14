@@ -1,59 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Todo Notifications</string>
-
-    <string name="create_title">Titre</string>
-    <string name="create_content">Description</string>
-    <string name="create_notif">Afficher une notification</string>
-    <string name="create_delete">Supprimer</string>
-    <string name="create_validate">Enregistrer</string>
-    <string name="create_title_empty">Entrez au moins un titre</string>
-
-    <string name="action_about">A propos</string>
-
-    <string name="all">Tout</string>
-    <string name="useless">Bas</string>
-    <string name="normal">Normal</string>
-    <string name="important">Important</string>
-    <string name="ultra">Ultra</string>
-
-
-    <string name="note_deleted">Note supprimée</string>
-    <string name="note_deleted_error">Erreur lors de la suppression de la note</string>
-    <string name="note_retrive_error">Erreur lors de la récupération de la note</string>
-    <string name="note_saved">Note enregistrée</string>
-    <string name="note_saved_error">Erreur lors de l\'enregistrement de la note</string>
-
-    <!-- About -->
-    <string name="about_author">Todo Notifications par Quentin KLEIN</string>
-    <string name="about_version">Version : </string>
-    <string name="about_thanks">Merci à eux, je les utilise</string>
-    <string name="about_graphics">Icônes &amp; Images</string>
-
-    <!-- Plurals -->
-    <plurals name="grouped_notification_title">
-        <item quantity="one">%d todo notification</item>
-        <item quantity="other">%d todo notifications</item>
-    </plurals>
-
-
-    <!-- Settings -->
-    <string name="settings_notifications_title">Notifications</string>
-    <string name="settings_notifications_switch">Grouper par priorité</string>
-    <string name="settings_notifications_explain">Grouper les notifications avec la même priorité dans une seule dans la barre de notifications</string>
-
-    <string name="settings">Paramètres</string>
-    <string name="settings_help_dev">Aider le développeur</string>
-    <string name="settings_help_dev_switch">Envoyer des données anonymes</string>
-    <string name="settings_help_dev_explain">En activant cela, vous acceptez l\'envoi de données anonymes pour aider à améliorer l\'application</string>
-    <string name="edit_title">Edition</string>
-    <string name="help_me">J\'accepte d\'envoyer des données anonymes</string>
-    <string name="no_thanks">Non merci</string>
-    <string name="settings_header_title">Entêtes</string>
-    <string name="settings_header_switch">Afficher les entêtes sur l\'écran principal</string>
-    <string name="search_hint">Rechercher une notification</string>
-    <string name="settings_theme">Changer le thème</string>
-    <string name="settings_theme_explain">Changer la couleur de base de l\'application</string>
-    <string name="note_has_been_removed">%s a été supprimée</string>
-    <string name="note_has_been_removed_cancel">Annuler ?</string>
-
+    <string name="action_delete">Supprimer</string>
+    <string name="hint_title">Titre</string>
+    <string name="hint_notification">Afficher une notification</string>
+    <string name="hint_color">Couleur</string>
+    <string name="hint_details">Details</string>
 </resources>
