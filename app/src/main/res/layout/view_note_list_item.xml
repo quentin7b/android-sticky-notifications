@@ -45,4 +45,11 @@
             tools:text="Content" />
 
     </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/note_notif_iv"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:src="@drawable/ic_attach_file_24dp" />
+
 </LinearLayout>

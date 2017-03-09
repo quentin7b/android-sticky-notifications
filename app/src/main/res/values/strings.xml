@@ -8,4 +8,11 @@
     <string name="hint_notification">Show notification</string>
     <string name="hint_color">Color</string>
     <string name="hint_details">Details</string>
+    <string name="notification_deleted">Notification has been deleted</string>
+    <string name="notification_restored">Notification has been restored!</string>
+    <string name="action_about">About</string>
+    <plurals name="grouped_notification_title">
+        <item quantity="one">%d todo notification</item>
+        <item quantity="other">%d todo notifications</item>
+    </plurals>
 </resources>

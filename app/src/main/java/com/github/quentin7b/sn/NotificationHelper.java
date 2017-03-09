@@ -4,16 +4,23 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 
 import com.github.quentin7b.sn.database.model.StickyNotification;
+import com.github.quentin7b.sn.ui.MainActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,132 +28,91 @@ import java.util.List;
  */
 public class NotificationHelper {
 
-    private Context context;
-    private NotificationManager androidNotificationManager;
-    private Bitmap uselessBitmap, normalBitmap, importantBitmap, ultraBitmap;
+    private static final Integer ID = 14628;
 
-    public NotificationHelper(Context context) {
-        this.context = context.getApplicationContext();
-        this.androidNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    }
-
-    /**
-     * Show notifications in action bar
-     *
-     * @param notifications the full list of notifications
-     */
-    public void showNotifications(final List<StickyNotification> notifications) {
-        hideAll();
-        // Concat the notifications
-        List<StickyNotification> ultra = getDefconNotifications(notifications, StickyNotification.Defcon.ULTRA);
-        List<StickyNotification> important = getDefconNotifications(notifications, StickyNotification.Defcon.IMPORTANT);
-        List<StickyNotification> normal = getDefconNotifications(notifications, StickyNotification.Defcon.NORMAL);
-        List<StickyNotification> useless = getDefconNotifications(notifications, StickyNotification.Defcon.USELESS);
-
-        for (StickyNotification s : ultra) {
-            showNotification(s);
-        }
-
-        for (StickyNotification s : important) {
-            showNotification(s);
-        }
-        for (StickyNotification s : normal) {
-            showNotification(s);
-        }
-        for (StickyNotification s : useless) {
-            showNotification(s);
+    public static void showNotifications(Context context, final List<StickyNotification> notifications) {
+        List<StickyNotification> toShowNotifications = filterAndSortNotifications(notifications);
+        if (!toShowNotifications.isEmpty()) {
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+                    .notify(ID, (toShowNotifications.size() > 1)
+                            ? getListBuilder(context, toShowNotifications).build()
+                            : getSingleBuilder(context, toShowNotifications.get(0)).build());
         }
     }
 
-    private void showNotification(StickyNotification stick) {
-        NotificationCompat.Builder mBuilder =
-                getBaseBuilder(stick);
-        androidNotificationManager.notify(stick.getId(), mBuilder.build());
+    private static List<StickyNotification> filterAndSortNotifications(List<StickyNotification> notifications) {
+        List<StickyNotification> toShow = new ArrayList<>();
+        for (StickyNotification notification : notifications) {
+            if (notification.isNotification()) {
+                toShow.add(notification);
+            }
+        }
+        Collections.sort(toShow);
+        return toShow;
     }
 
-    private void hideAll() {
-        androidNotificationManager.cancelAll();
+    private static NotificationCompat.Builder getSingleBuilder(Context context, StickyNotification notification) {
+        NotificationCompat.Builder builder = generateBuilder(
+                context,
+                notification.getTitle(),
+                notification.getContent(),
+                new NotificationCompat.BigTextStyle().bigText(notification.getContent()));
+
+        builder.setContentIntent(PendingIntent.getActivity(
+                context,
+                0,
+                new Intent(context, MainActivity.class)
+                        .setAction(MainActivity.ACTION_NOTIFICATION)
+                        .putExtra(MainActivity.EXTRA_NOTIFICATION, notification),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        ));
+
+        return builder;
     }
 
-    private NotificationCompat.Builder getBaseBuilder(StickyNotification notification) {
+    private static NotificationCompat.Builder getListBuilder(Context context, List<StickyNotification> notifications) {
+        NotificationCompat.InboxStyle notificationCompat = new NotificationCompat.InboxStyle();
+        for (StickyNotification note : notifications) {
+            String suffix = (!note.getContent().isEmpty() ? " - " + note.getContent() : "");
+            Spannable wordToSpan = new SpannableString(note.getTitle() + suffix);
+            wordToSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, ColorHelper.getDefconColor(note.getDefcon()))), 0, note.getTitle().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            wordToSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, note.getTitle().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            notificationCompat.addLine(wordToSpan);
+        }
+        notificationCompat.setSummaryText(context.getString(R.string.app_name));
+
+        NotificationCompat.Builder builder = generateBuilder(
+                context,
+                context.getResources().getQuantityString(R.plurals.grouped_notification_title, notifications.size(), notifications.size()),
+                context.getString(R.string.app_name),
+                notificationCompat);
+
+        builder.setContentIntent(PendingIntent.getActivity(
+                context,
+                0,
+                new Intent(context, MainActivity.class),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        ));
+
+        return builder;
+    }
+
+    private static NotificationCompat.Builder generateBuilder(Context context, String title, String text, NotificationCompat.Style style) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setContentTitle(notification.getTitle())
-                        .setContentText(notification.getContent())
-                        .setSmallIcon(getSmallIconResource(notification))
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setSmallIcon(R.drawable.small_icon)
                         .setOngoing(true)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(notification.getContent()));
+                        .setStyle(style);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            switch (notification.getDefcon()) {
-                case ULTRA:
-                    mBuilder.setPriority(Notification.PRIORITY_MAX);
-                    break;
-                case IMPORTANT:
-                    mBuilder.setPriority(Notification.PRIORITY_HIGH);
-                    break;
-                case NORMAL:
-                    mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
-                    break;
-                case USELESS:
-                    mBuilder.setPriority(Notification.PRIORITY_LOW);
-            }
+            mBuilder.setPriority(Notification.PRIORITY_MAX);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            switch (notification.getDefcon()) {
 
-            }
-        } else {
-            mBuilder.setLargeIcon(getColorSquareResource(notification));
-        }
-        // Creates an explicit intent for an Activity in your app
-        //Intent resultIntent = new Intent(context, NotesListActivity_.class);
-        //resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        //stackBuilder.addParentStack(NotesListActivity_.class);
-        //stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
         mBuilder.setOngoing(true);
-
         return mBuilder;
-    }
-
-    private int getSmallIconResource(StickyNotification notification) {
-        return -1;
-    }
-
-    /**
-     * Return a special square for action bar icon (big icon)
-     * Prevent from reloading bitmap each time
-     *
-     * @param notification the notification to use (square is defcon relative)
-     * @return the Bitmap to show on screen
-     */
-    private Bitmap getColorSquareResource(StickyNotification notification) {
-        int width = (int) context.getResources().getDimension(android.R.dimen.notification_large_icon_width);
-        int height = (int) context.getResources().getDimension(android.R.dimen.notification_large_icon_height);
-        return null;
-    }
-
-
-    /**
-     * Return notifications with a particular defcon.
-     *
-     * @param notifications the full list of notifications
-     * @param defcon        the defcon needed
-     * @return the filtered list
-     */
-    private static List<StickyNotification> getDefconNotifications(
-            List<StickyNotification> notifications, StickyNotification.Defcon defcon) {
-        ArrayList<StickyNotification> defconNotifications = new ArrayList<>();
-        for (StickyNotification notification : notifications) {
-            if (defcon.equals(notification.getDefcon())) {
-                defconNotifications.add(notification);
-            }
-        }
-        return defconNotifications;
     }
 
 }

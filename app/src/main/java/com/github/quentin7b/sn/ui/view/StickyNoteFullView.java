@@ -1,12 +1,10 @@
 package com.github.quentin7b.sn.ui.view;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -19,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.github.quentin7b.sn.ColorHelper;
 import com.github.quentin7b.sn.R;
@@ -67,6 +64,7 @@ public class StickyNoteFullView extends LinearLayout {
         setOrientation(LinearLayout.VERTICAL);
         LayoutInflater.from(getContext()).inflate(R.layout.view_note_full, this, true);
         ButterKnife.bind(this);
+        setSaveEnabled(true);
     }
 
     @Override
@@ -84,10 +82,10 @@ public class StickyNoteFullView extends LinearLayout {
     protected void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-            this.setTitle(bundle.getString(EXTRA.TITLE, ""));
-            this.setContent(bundle.getString(EXTRA.CONTENT, ""));
-            this.setNotification(bundle.getBoolean(EXTRA.NOTIFICATION, true));
-            this.setDefcon(StickyNotification.Defcon.from(bundle.getInt(EXTRA.DEFCON, StickyNotification.Defcon.NORMAL.describe())));
+            setTitle(bundle.getString(EXTRA.TITLE, ""));
+            setContent(bundle.getString(EXTRA.CONTENT, ""));
+            setNotification(bundle.getBoolean(EXTRA.NOTIFICATION, true));
+            setDefcon(StickyNotification.Defcon.from(bundle.getInt(EXTRA.DEFCON, StickyNotification.Defcon.NORMAL.describe())));
             state = bundle.getParcelable(EXTRA.SUPER);
         }
         super.onRestoreInstanceState(state);
@@ -154,44 +152,44 @@ public class StickyNoteFullView extends LinearLayout {
     }
 
     public String getTitle() {
-        if (this.noteTitleEt != null) {
-            return this.noteTitleEt.getText().toString();
+        if (noteTitleEt != null) {
+            return noteTitleEt.getText().toString();
         } else {
             return null;
         }
     }
 
     public void setTitle(String title) {
-        if (this.noteTitleEt != null) {
-            this.noteTitleEt.setText(title);
-            this.noteTitleEt.setSelection(title.length());
+        if (noteTitleEt != null) {
+            noteTitleEt.setText(title);
+            noteTitleEt.setSelection(title.length());
         }
     }
 
     public StickyNotification.Defcon getDefcon() {
-        return ColorHelper.getColorDefcon(this.colorRes);
+        return ColorHelper.getColorDefcon(colorRes);
     }
 
     public void setDefcon(StickyNotification.Defcon defcon) {
-        this.colorRes = ColorHelper.getDefconColor(defcon);
-        this.levelImageBtn.setColorRes(colorRes);
+        colorRes = ColorHelper.getDefconColor(defcon);
+        levelImageBtn.setColorRes(colorRes);
     }
 
     public String getContent() {
-        return this.noteContentEt.getText().toString();
+        return noteContentEt.getText().toString();
     }
 
     public void setContent(String content) {
-        this.noteContentEt.setText(content);
-        this.noteContentEt.setSelection(content.length());
+        noteContentEt.setText(content);
+        noteContentEt.setSelection(content.length());
     }
 
     public boolean isNotification() {
-        return this.showNotificationCb.isChecked();
+        return showNotificationCb.isChecked();
     }
 
     public void setNotification(boolean isNotification) {
-        this.showNotificationCb.setChecked(isNotification);
+        showNotificationCb.setChecked(isNotification);
     }
 
     private static final class EXTRA {

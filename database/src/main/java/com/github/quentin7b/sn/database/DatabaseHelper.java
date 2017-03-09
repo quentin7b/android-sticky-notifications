@@ -35,7 +35,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             // Create table
             TableUtils.createTable(connectionSource, StickyNotification.class);
         } catch (SQLException e) {
-            Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
+            Log.e("Database", "Can't create database", e);
             throw new RuntimeException(e);
         }
     }
@@ -49,9 +49,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      * Get the Sticky Database
      *
      * @return the sticky database
-     * @throws SQLException if something goes wrong
      */
-    public StickyDao getDatabase() throws SQLException {
+    public StickyDao getDatabase() {
         if (database == null) {
             database = new StickyDao();
         }
@@ -61,9 +60,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public class StickyDao {
         private Dao<StickyNotification, Integer> dao;
 
-        StickyDao() throws SQLException {
+        StickyDao() {
             if (dao == null) {
-                dao = getDao(StickyNotification.class);
+                try {
+                    dao = getDao(StickyNotification.class);
+                } catch (SQLException e) {
+                    Log.e("Database", "Can't get DAO", e);
+                    dao = null;
+                }
             }
         }
 
@@ -71,6 +75,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             try {
                 return dao.queryForAll();
             } catch (Exception e) {
+                Log.e("Database", "Can't get all notifications", e);
                 return Collections.emptyList();
             }
         }
@@ -85,6 +90,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
                 }
                 return stickyNotification;
             } catch (Exception e) {
+                Log.e("Database", "Can't save notification", e);
                 return stickyNotification;
             }
         }
@@ -93,6 +99,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             try {
                 dao.delete(notification);
             } catch (Exception e) {
+                Log.e("Database", "Can't delete notification", e);
             }
         }
 

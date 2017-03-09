@@ -1,73 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_row"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:background="@color/widgetBackground">
+    android:layout_height="wrap_content"
+    android:background="@color/widgetBackground"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="16dp">
 
-    <FrameLayout
-        android:id="@+id/color_layout"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp">
-
-        <ImageView
-            android:id="@+id/color_view"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
-
-        <ImageView
-            android:id="@+id/color_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@id/color_layout"
-        android:layout_toRightOf="@id/color_layout">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@android:id/text1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:text="Hello text"
-            android:textColor="@android:color/black"
-            android:textIsSelectable="false"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@android:id/text2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@android:id/text1"
-            android:layout_toRightOf="@android:id/text1"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:text="This is a test fomr the description of a Notication"
-            android:textColor="@color/textColorWidget"
-            android:textIsSelectable="false"
+            android:id="@+id/note_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorPrimary"
             android:textSize="16sp"
-            android:textStyle="italic" />
+            tools:text="Titre" />
 
-    </RelativeLayout>
-</RelativeLayout>
+        <TextView
+            android:id="@+id/note_description_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="14sp"
+            tools:text="Content" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/note_notif_iv"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:src="@drawable/ic_attach_file_24dp" />
+
+</LinearLayout>

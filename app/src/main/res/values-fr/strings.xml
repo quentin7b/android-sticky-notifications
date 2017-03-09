@@ -5,4 +5,8 @@
     <string name="hint_notification">Afficher une notification</string>
     <string name="hint_color">Couleur</string>
     <string name="hint_details">Details</string>
+    <plurals name="grouped_notification_title">
+        <item quantity="one">%d todo notification</item>
+        <item quantity="other">%d todo notifications</item>
+    </plurals>
 </resources>

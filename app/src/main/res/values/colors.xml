@@ -13,6 +13,5 @@
     <color name="windowBackground">#FFFFFF</color>
     <color name="textColorWhite">#FFFFFF</color>
 
-    <color name="textColorWidget">#1E1E1E</color>
-    <color name="widgetBackground">#77FFFFFF</color>
+    <color name="widgetBackground">#65FFFFFF</color>
 </resources>
