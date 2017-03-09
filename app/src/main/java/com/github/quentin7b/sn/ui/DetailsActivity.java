@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,7 +24,8 @@ import butterknife.OnClick;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    private static final String EXTRA_NOTE = "fr.quentinklein.stickynotifs.EXTRA_NOTE";
+    private static final String EXTRA_NOTE = "com.github.quentin7b.sn.EXTRA_NOTE";
+    private static final String EXTRA_TRANSITION = "com.github.quentin7b.sn.EXTRA_TRANSITION";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -39,12 +40,15 @@ public class DetailsActivity extends AppCompatActivity {
     FloatingActionButton fab;
 
     private StickyNotification notification;
+    private DatabaseHelper.StickyDao databaseHelper;
+    private boolean showTransition;
 
-    public static Intent getIntent(Context context, @Nullable StickyNotification notification) {
+    public static Intent getIntent(Context context, @Nullable StickyNotification notification, boolean withTransition) {
         Intent intent = new Intent(context, DetailsActivity.class);
         if (notification != null) {
             intent.putExtra(EXTRA_NOTE, notification);
         }
+        intent.putExtra(EXTRA_TRANSITION, withTransition);
         return intent;
     }
 
@@ -54,16 +58,19 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        this.notification = getIntent().getParcelableExtra(EXTRA_NOTE);
-        if (this.notification == null) {
-            this.notification = new StickyNotification();
+        notification = getIntent().getParcelableExtra(EXTRA_NOTE);
+        showTransition = getIntent().getBooleanExtra(EXTRA_TRANSITION, false);
+        if (notification == null) {
+            notification = new StickyNotification();
         }
 
-        setSupportActionBar(this.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
-        ViewCompat.setTransitionName(this.fab, getString(R.string.transition_fab));
+        ViewCompat.setTransitionName(fab, getString(R.string.transition_fab));
+
+        databaseHelper = new DatabaseHelper(this).getDatabase();
 
         initViews();
     }
@@ -80,50 +87,49 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.action_delete:
                 onDeleteNote();
             case android.R.id.home:
-                supportFinishAfterTransition();
-                // NavUtils.navigateUpFromSameTask(this);
+                setResult(MainActivity.RESULT_CANCELED);
+                goMain();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void initViews() {
-        this.noteTitle.setText(this.notification.getTitle());
-        this.noteTitle.setSelection(this.notification.getTitle().length());
+        noteTitle.setText(notification.getTitle());
+        noteTitle.setSelection(notification.getTitle().length());
 
-        this.noteFullView.setContent(this.notification.getContent());
-        this.noteFullView.setNotification(this.notification.isNotification());
-        this.noteFullView.setDefcon(this.notification.getDefcon());
+        noteFullView.setContent(notification.getContent());
+        noteFullView.setNotification(notification.isNotification());
+        noteFullView.setDefcon(notification.getDefcon());
     }
 
     @OnClick(R.id.fab)
     void onSaveNote() {
-        try {
-            this.notification.setTitle(this.noteTitle.getText().toString());
-            this.notification.setContent(this.noteFullView.getContent());
-            this.notification.setNotification(this.noteFullView.isNotification());
-            this.notification.setDefcon(this.noteFullView.getDefcon());
-            new DatabaseHelper(this).getDatabase().save(this.notification);
-            setResult(MainActivity.RESULT_CODES.NOTE_CREATED);
-        } catch (Exception e) {
-            Log.e("", "", e);
-        }
-        supportFinishAfterTransition();
+        notification.setTitle(noteTitle.getText().toString());
+        notification.setContent(noteFullView.getContent());
+        notification.setNotification(noteFullView.isNotification());
+        notification.setDefcon(noteFullView.getDefcon());
+        databaseHelper.save(notification);
+        setResult(MainActivity.RESULT_OK);
+        goMain();
     }
 
     void onDeleteNote() {
-        if (this.notification.getId() > 0) {
-            final StickyNotification cloneNotification = new StickyNotification(this.notification);
-            try {
-                new DatabaseHelper(this).getDatabase().delete(this.notification);
-
-                setResult(MainActivity.RESULT_CODES.NOTE_DELETED,
-                        new Intent().putExtra(MainActivity.EXTRA_NOTE, cloneNotification));
-            } catch (Exception e) {
-                Log.e("", "", e);
-            }
+        if (notification.getId() > 0) {
+            final StickyNotification cloneNotification = new StickyNotification(notification);
+            databaseHelper.delete(notification);
+            setResult(MainActivity.RESULT_DELETED,
+                    new Intent().putExtra(MainActivity.EXTRA_NOTIFICATION, cloneNotification));
         }
-        supportFinishAfterTransition();
+        goMain();
+    }
+
+    private void goMain() {
+        if (showTransition) {
+            supportFinishAfterTransition();
+        } else {
+            NavUtils.navigateUpFromSameTask(this);
+        }
     }
 
 }

@@ -11,10 +11,6 @@ public class StickyWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        try {
-            return new StickyWidgetRemoteViewsFactory(getApplicationContext());
-        } catch (SQLException e) {
-            return null;
-        }
+        return new StickyWidgetRemoteViewsFactory(getApplicationContext());
     }
 }

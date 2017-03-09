@@ -2,6 +2,7 @@ package com.github.quentin7b.sn.database.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -109,8 +110,8 @@ public class StickyNotification
     }
 
     @Override
-    public int compareTo(StickyNotification another) {
-        return defcon.compareTo(another.defcon);
+    public int compareTo(@NonNull StickyNotification another) {
+        return another.defcon.describe() - defcon.describe();
     }
 
     @Override

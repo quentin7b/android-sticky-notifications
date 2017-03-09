@@ -3,6 +3,7 @@ package com.github.quentin7b.sn.ui.view;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,21 +22,21 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 
-public class StickyNoteListView extends RecyclerView {
+public class StickyNoteRecyclerView extends RecyclerView {
 
     private StickyAdapter adapter;
 
-    public StickyNoteListView(Context context) {
+    public StickyNoteRecyclerView(Context context) {
         super(context);
         initLayout();
     }
 
-    public StickyNoteListView(Context context, @Nullable AttributeSet attrs) {
+    public StickyNoteRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initLayout();
     }
 
-    public StickyNoteListView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public StickyNoteRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initLayout();
     }
@@ -120,6 +121,7 @@ public class StickyNoteListView extends RecyclerView {
             private AppCompatTextView titleTextView;
             private AppCompatTextView contentTextView;
             private LabelImageView colorIv;
+            private AppCompatImageView isNotificationIv;
 
             Holder(View itemView) {
                 super(itemView);
@@ -127,6 +129,7 @@ public class StickyNoteListView extends RecyclerView {
                 this.titleTextView = ButterKnife.findById(itemView, R.id.note_title_tv);
                 this.contentTextView = ButterKnife.findById(itemView, R.id.note_description_tv);
                 this.colorIv = ButterKnife.findById(itemView, R.id.note_color);
+                this.isNotificationIv = ButterKnife.findById(itemView, R.id.note_notif_iv);
             }
 
             void bind(final StickyNotification stickyNotification,
@@ -141,6 +144,12 @@ public class StickyNoteListView extends RecyclerView {
                 });
 
                 this.colorIv.setColorRes(ColorHelper.getDefconColor(stickyNotification.getDefcon()));
+
+                if (!stickyNotification.isNotification()) {
+                    this.isNotificationIv.setImageDrawable(null);
+                } else {
+                    this.isNotificationIv.setImageResource(R.drawable.ic_attach_file_24dp);
+                }
             }
         }
     }

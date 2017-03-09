@@ -2,13 +2,16 @@ package com.github.quentin7b.sn.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.github.quentin7b.sn.ColorHelper;
 import com.github.quentin7b.sn.R;
 import com.github.quentin7b.sn.database.DatabaseHelper;
 import com.github.quentin7b.sn.database.model.StickyNotification;
+import com.github.quentin7b.sn.ui.MainActivity;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
@@ -19,31 +22,22 @@ import java.util.List;
 public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private Context context;
-    private Dao<StickyNotification, Integer> database;
+    private DatabaseHelper.StickyDao database;
     private List<StickyNotification> notificationList;
 
     /**
      * Create a widget factory and return it
      *
      * @param context the app context
-     * @throws SQLException an exception if dao hasn't been created
      */
-    public StickyWidgetRemoteViewsFactory(Context context) throws SQLException {
+    public StickyWidgetRemoteViewsFactory(Context context) {
         this.context = context;
-        database = new DatabaseHelper(context).getDao(StickyNotification.class);
+        database = new DatabaseHelper(context).getDatabase();
     }
 
     private void updateWidgetListView() {
-        // Update list
-        try {
-            notificationList = database.queryForAll();
-            Collections.sort(notificationList);
-        } catch (SQLException e) {
-            Log.e(StickyWidgetRemoteViewsFactory.class.getSimpleName(), "Error while retrieving list", e);
-            if (notificationList == null) {
-                notificationList = new ArrayList<>(0);
-            }
-        }
+        notificationList = database.getAll();
+        Collections.sort(notificationList);
     }
 
     @Override
@@ -53,7 +47,6 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
 
     @Override
     public void onDataSetChanged() {
-        Log.i(StickyWidgetRemoteViewsFactory.class.getSimpleName(), "Dataset changed");
         updateWidgetListView();
     }
 
@@ -64,26 +57,28 @@ public class StickyWidgetRemoteViewsFactory implements RemoteViewsService.Remote
 
     @Override
     public int getCount() {
-        if (notificationList != null) {
-            return notificationList.size();
-        } else {
-            return 0;
-        }
+        return (notificationList != null)
+                ? notificationList.size()
+                : 0;
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews remoteView = new RemoteViews(context.getPackageName(),
-                R.layout.widget_row);
+        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.widget_row);
         StickyNotification notification = notificationList.get(position);
-        remoteView.setTextViewText(android.R.id.text1, notification.getTitle());
-        remoteView.setTextViewText(android.R.id.text2, notification.getContent());
-        /*remoteView.setImageViewResource(R.id.color_icon, getIconResource(notification));
-        remoteView.setImageViewResource(R.id.color_view, getColorResource(notification));*/
-        remoteView.setOnClickFillInIntent(
-                R.id.widget_row,
-                new Intent().putExtra(StickyWidgetProvider.EXTRA_ID, notification.getId())
-        );
+        remoteView.setTextViewText(R.id.note_title_tv, notification.getTitle());
+        remoteView.setTextColor(R.id.note_title_tv, ContextCompat.getColor(context, ColorHelper.getDefconColor(notification.getDefcon())));
+        remoteView.setTextViewText(R.id.note_description_tv, notification.getContent());
+
+        if (!notification.isNotification()) {
+            remoteView.setImageViewBitmap(R.id.note_notif_iv, null);
+        }
+
+        Intent fillInIntent = new Intent()
+                .setAction(MainActivity.ACTION_NOTIFICATION)
+                .putExtra(MainActivity.EXTRA_NOTIFICATION, notification);
+        remoteView.setOnClickFillInIntent(R.id.widget_row, fillInIntent);
+
         return remoteView;
     }
 
