@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,10 @@ import android.view.ViewGroup;
 
 import com.github.quentin7b.sn.ColorHelper;
 import com.github.quentin7b.sn.R;
+import com.github.quentin7b.sn.Tool;
 import com.github.quentin7b.sn.database.model.StickyNotification;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,9 +120,12 @@ public class StickyNoteRecyclerView extends RecyclerView {
 
         static class Holder extends RecyclerView.ViewHolder {
 
+            private SimpleDateFormat dateFormat;
+
             private View rootView;
             private AppCompatTextView titleTextView;
             private AppCompatTextView contentTextView;
+            private AppCompatTextView dateTextView;
             private LabelImageView colorIv;
             private AppCompatImageView isNotificationIv;
 
@@ -130,6 +136,12 @@ public class StickyNoteRecyclerView extends RecyclerView {
                 this.contentTextView = ButterKnife.findById(itemView, R.id.note_description_tv);
                 this.colorIv = ButterKnife.findById(itemView, R.id.note_color);
                 this.isNotificationIv = ButterKnife.findById(itemView, R.id.note_notif_iv);
+                this.dateTextView = ButterKnife.findById(itemView, R.id.note_date_tv);
+
+
+                Context context = itemView.getContext();
+                dateFormat = new SimpleDateFormat(context.getString(R.string.date_format),
+                        Tool.getLocale(context));
             }
 
             void bind(final StickyNotification stickyNotification,
@@ -149,6 +161,13 @@ public class StickyNoteRecyclerView extends RecyclerView {
                     this.isNotificationIv.setImageDrawable(null);
                 } else {
                     this.isNotificationIv.setImageResource(R.drawable.ic_attach_file_24dp);
+                }
+
+                if (stickyNotification.getDeadLine() == null) {
+                    dateTextView.setVisibility(INVISIBLE);
+                } else {
+                    dateTextView.setVisibility(VISIBLE);
+                    dateTextView.setText(dateFormat.format(stickyNotification.getDeadLine()));
                 }
             }
         }

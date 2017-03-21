@@ -20,7 +20,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application -- change to something appropriate for your app
     private static final String DATABASE_NAME = "stickynotes.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     // dao for notifications
     private StickyDao database;
 
@@ -42,7 +42,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        // For now do nothing
+        try {
+            if (oldVersion < 2) {
+                getDatabase().dao.executeRaw("ALTER TABLE `StickyNotification` ADD COLUMN deadLine VARCHAR;");
+            }
+        } catch (Exception e) {
+            Log.e("Database", "Can't upgrade database", e);
+        }
+
     }
 
     /**

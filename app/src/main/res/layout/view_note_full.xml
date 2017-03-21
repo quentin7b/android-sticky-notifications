@@ -149,4 +149,45 @@
 
     </RelativeLayout>
 
+    <!-- STA : Desc TXT -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp">
+
+        <ImageView
+            android:id="@+id/date_ico"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:paddingEnd="48dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="48dp"
+            android:paddingStart="0dp"
+            android:src="@drawable/ic_schedule_24dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/date_ico"
+            android:layout_toRightOf="@id/date_ico">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/note_content_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:hint="@string/hint_date"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 </merge>

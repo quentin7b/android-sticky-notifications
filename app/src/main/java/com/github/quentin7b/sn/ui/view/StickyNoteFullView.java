@@ -3,6 +3,7 @@ package com.github.quentin7b.sn.ui.view;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -12,6 +13,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +23,14 @@ import android.widget.LinearLayout;
 
 import com.github.quentin7b.sn.ColorHelper;
 import com.github.quentin7b.sn.R;
+import com.github.quentin7b.sn.Tool;
 import com.github.quentin7b.sn.database.model.StickyNotification;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +48,11 @@ public class StickyNoteFullView extends LinearLayout {
     LabelImageButton levelImageBtn;
     @BindView(R.id.note_content_et)
     TextInputEditText noteContentEt;
+    @BindView(R.id.note_content_tv)
+    AppCompatTextView dateTextView;
+
+    private SimpleDateFormat dateFormat;
+
 
     public StickyNoteFullView(Context context) {
         super(context);
@@ -61,6 +76,10 @@ public class StickyNoteFullView extends LinearLayout {
     }
 
     private void initLayout() {
+        Context context = getContext();
+        dateFormat = new SimpleDateFormat(context.getString(R.string.long_date_format),
+                Tool.getLocale(context));
+
         setOrientation(LinearLayout.VERTICAL);
         LayoutInflater.from(getContext()).inflate(R.layout.view_note_full, this, true);
         ButterKnife.bind(this);
@@ -75,6 +94,7 @@ public class StickyNoteFullView extends LinearLayout {
         instanceState.putString(EXTRA.CONTENT, getContent());
         instanceState.putBoolean(EXTRA.NOTIFICATION, isNotification());
         instanceState.putInt(EXTRA.DEFCON, getDefcon().describe());
+        instanceState.putLong(EXTRA.DATE, getDate() != null ? getDate().getTime() : -1);
         return super.onSaveInstanceState();
     }
 
@@ -87,6 +107,10 @@ public class StickyNoteFullView extends LinearLayout {
             setNotification(bundle.getBoolean(EXTRA.NOTIFICATION, true));
             setDefcon(StickyNotification.Defcon.from(bundle.getInt(EXTRA.DEFCON, StickyNotification.Defcon.NORMAL.describe())));
             state = bundle.getParcelable(EXTRA.SUPER);
+            long dateLong = bundle.getLong(EXTRA.DATE);
+            if (dateLong != -1) {
+                setDate(new Date(dateLong));
+            }
         }
         super.onRestoreInstanceState(state);
     }
@@ -151,6 +175,31 @@ public class StickyNoteFullView extends LinearLayout {
         alertDialog.show();
     }
 
+    @OnClick(R.id.note_content_tv)
+    void onDateClick() {
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = getDate();
+        if (currentDate != null) {
+            calendar.setTime(currentDate);
+        }
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        Calendar setCalendar = Calendar.getInstance();
+                        setCalendar.set(Calendar.YEAR, year);
+                        setCalendar.set(Calendar.MONTH, monthOfYear);
+                        setCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        setDate(setCalendar.getTime());
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.show(((Activity) getContext()).getFragmentManager(), "Datepickerdialog");
+    }
+
     public String getTitle() {
         if (noteTitleEt != null) {
             return noteTitleEt.getText().toString();
@@ -192,12 +241,31 @@ public class StickyNoteFullView extends LinearLayout {
         showNotificationCb.setChecked(isNotification);
     }
 
+    public Date getDate() {
+        if (!TextUtils.isEmpty(dateTextView.getText())) {
+            try {
+                return dateFormat.parse(dateTextView.getText().toString());
+            } catch (ParseException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public void setDate(Date date) {
+        if (date != null) {
+            dateTextView.setText(dateFormat.format(date));
+        }
+    }
+
     private static final class EXTRA {
         private static final String SUPER = "superState";
         private static final String TITLE = "titleState";
         private static final String CONTENT = "contentState";
         private static final String DEFCON = "defconState";
         private static final String NOTIFICATION = "notificationState";
+        private static final String DATE = "dateState";
     }
 
 }

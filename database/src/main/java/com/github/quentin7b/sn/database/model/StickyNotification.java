@@ -8,6 +8,8 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.misc.BaseDaoEnabled;
 
+import java.util.Date;
+
 /**
  * Model class for the notification
  *
@@ -39,33 +41,40 @@ public class StickyNotification
     private Defcon defcon;
     @DatabaseField
     private boolean isNotification;
+    @DatabaseField(dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss")
+    private Date deadLine;
 
     public StickyNotification() {
         title = "";
         content = "";
         defcon = Defcon.NORMAL;
         isNotification = true;
+        deadLine = null;
     }
 
     public StickyNotification(StickyNotification stickyNotification) {
-        this(stickyNotification.title, stickyNotification.content, stickyNotification.defcon, stickyNotification.isNotification());
+        this(stickyNotification.title, stickyNotification.content, stickyNotification.defcon, stickyNotification.isNotification(), stickyNotification.getDeadLine());
     }
 
-    public StickyNotification(final String title, final String content, final Defcon defcon, final boolean isNotification) {
+    public StickyNotification(final String title, final String content, final Defcon defcon, final boolean isNotification, final Date deadLine) {
         this.title = title;
         this.content = content;
         this.defcon = defcon;
         this.isNotification = isNotification;
+        this.deadLine = deadLine;
     }
 
     private StickyNotification(Parcel source) {
-        this(
-                source.readString(),
-                source.readString(),
-                Defcon.from(source.readInt()),
-                source.readInt() == 1
-        );
-        setId(source.readInt());
+        super();
+        this.id = source.readInt();
+        this.title = source.readString();
+        this.content = source.readString();
+        this.defcon = Defcon.from(source.readInt());
+        this.isNotification = source.readInt() == 1;
+        long parcelDate = source.readLong();
+        if (parcelDate != -1) {
+            this.deadLine = new Date(parcelDate);
+        }
     }
 
 
@@ -109,6 +118,14 @@ public class StickyNotification
         this.defcon = defcon;
     }
 
+    public Date getDeadLine() {
+        return deadLine;
+    }
+
+    public void setDeadLine(Date deadLine) {
+        this.deadLine = deadLine;
+    }
+
     @Override
     public int compareTo(@NonNull StickyNotification another) {
         return another.defcon.describe() - defcon.describe();
@@ -121,11 +138,12 @@ public class StickyNotification
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(content);
         dest.writeInt(defcon.describe());
         dest.writeInt(isNotification ? 1 : 0);
-        dest.writeInt(id);
+        dest.writeLong(deadLine != null ? deadLine.getTime() : -1L);
     }
 
     /**

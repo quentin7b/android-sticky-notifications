@@ -8,6 +8,7 @@
     <string name="hint_notification">Show notification</string>
     <string name="hint_color">Color</string>
     <string name="hint_details">Details</string>
+    <string name="hint_date">Due date ?</string>
     <string name="notification_deleted">Notification has been deleted</string>
     <string name="notification_restored">Notification has been restored!</string>
     <string name="action_about">About</string>
@@ -15,4 +16,8 @@
         <item quantity="one">%d todo notification</item>
         <item quantity="other">%d todo notifications</item>
     </plurals>
+
+    <string name="date_format">yyyy MM dd</string>
+    <string name="long_date_format">EEEE, MMMM dd yyyy (dd/MM/yyyy)</string>
+    <string name="error_title_empty">Title can\'t be empty</string>
 </resources>
