@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity
         implements StickyNoteRecyclerView.NoteSelectedListener {
 
     private static final int DETAIL_RC = 8471;
-    public static final int RESULT_DELETED = 4726181;
+    public static final int RESULT_DELETED = 1234;
+    public static final int RESULT_FINISH = 5678;
     public static final String ACTION_NOTIFICATION = "com.github.quentin7b.sn.ACTION_NOTIFICATION";
     public static final String EXTRA_NOTIFICATION = "com.github.quentin7b.sn.EXTRA_NOTE";
 
@@ -120,6 +121,8 @@ public class MainActivity extends AppCompatActivity
                                     loadNotifications();
                                 }
                             }).show();
+                } else if (resultCode == RESULT_FINISH) {
+                    finish();
                 }
         }
         super.onActivityResult(requestCode, resultCode, data);

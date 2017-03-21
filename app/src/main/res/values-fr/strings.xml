@@ -4,7 +4,11 @@
     <string name="hint_title">Titre</string>
     <string name="hint_notification">Afficher une notification</string>
     <string name="hint_color">Couleur</string>
-    <string name="hint_details">Details</string>
+    <string name="hint_details">Détails</string>
+    <string name="hint_date">Une date ?</string>
+    <string name="date_format">dd MM yyyy</string>
+    <string name="long_date_format">EEEE dd MMMM yyyy (dd/MM/yyyy)</string>
+    <string name="error_title_empty">Il faut au moins un titre</string>
     <plurals name="grouped_notification_title">
         <item quantity="one">%d todo notification</item>
         <item quantity="other">%d todo notifications</item>

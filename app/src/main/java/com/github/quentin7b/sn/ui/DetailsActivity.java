@@ -10,10 +10,12 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.quentin7b.sn.R;
+import com.github.quentin7b.sn.Tool;
 import com.github.quentin7b.sn.database.DatabaseHelper;
 import com.github.quentin7b.sn.database.model.StickyNotification;
 import com.github.quentin7b.sn.ui.view.StickyNoteFullView;
@@ -94,6 +96,16 @@ public class DetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (showTransition) {
+            supportFinishAfterTransition();
+        } else {
+            setResult(MainActivity.RESULT_FINISH);
+            finish();
+        }
+    }
+
     private void initViews() {
         noteTitle.setText(notification.getTitle());
         noteTitle.setSelection(notification.getTitle().length());
@@ -101,6 +113,8 @@ public class DetailsActivity extends AppCompatActivity {
         noteFullView.setContent(notification.getContent());
         noteFullView.setNotification(notification.isNotification());
         noteFullView.setDefcon(notification.getDefcon());
+
+        noteFullView.setDate(notification.getDeadLine());
     }
 
     @OnClick(R.id.fab)
@@ -109,9 +123,14 @@ public class DetailsActivity extends AppCompatActivity {
         notification.setContent(noteFullView.getContent());
         notification.setNotification(noteFullView.isNotification());
         notification.setDefcon(noteFullView.getDefcon());
-        databaseHelper.save(notification);
-        setResult(MainActivity.RESULT_OK);
-        goMain();
+        notification.setDeadLine(noteFullView.getDate());
+        if (Tool.notificationIsValid(notification)) {
+            databaseHelper.save(notification);
+            setResult(MainActivity.RESULT_OK);
+            goMain();
+        } else {
+            noteTitle.setError(getString(R.string.error_title_empty));
+        }
     }
 
     void onDeleteNote() {
