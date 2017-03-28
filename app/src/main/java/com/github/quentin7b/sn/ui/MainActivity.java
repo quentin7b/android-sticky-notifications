@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.github.quentin7b.sn.NotificationHelper;
 import com.github.quentin7b.sn.R;
+import com.github.quentin7b.sn.Tool;
 import com.github.quentin7b.sn.database.DatabaseHelper;
 import com.github.quentin7b.sn.database.model.StickyNotification;
 import com.github.quentin7b.sn.ui.view.StickyNoteFullView;
@@ -31,7 +32,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 public class MainActivity extends AppCompatActivity
-        implements StickyNoteRecyclerView.NoteSelectedListener {
+        implements StickyNoteRecyclerView.NoteListener {
 
     private static final int DETAIL_RC = 8471;
     public static final int RESULT_DELETED = 1234;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        noteListView.setNoteSelectionListener(this);
+        noteListView.setNoteListener(this);
         setSupportActionBar(toolbar);
 
         databaseHelper = new DatabaseHelper(this).getDatabase();
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_about:
+                startActivity(new Intent(this, AboutActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -107,25 +109,30 @@ public class MainActivity extends AppCompatActivity
             case DETAIL_RC:
                 if (resultCode == RESULT_DELETED) {
                     final StickyNotification note = data.getParcelableExtra(EXTRA_NOTIFICATION);
-                    Snackbar
-                            .make(cla, R.string.notification_deleted, Snackbar.LENGTH_LONG)
-                            .setAction(android.R.string.cancel, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    databaseHelper.save(note);
-                                    Snackbar
-                                            .make(cla,
-                                                    R.string.notification_restored,
-                                                    Snackbar.LENGTH_SHORT)
-                                            .show();
-                                    loadNotifications();
-                                }
-                            }).show();
+                    confirmNoteDeleted(note);
                 } else if (resultCode == RESULT_FINISH) {
                     finish();
                 }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void confirmNoteDeleted(final StickyNotification note) {
+        Tool.showSnackbar(
+                cla,
+                R.string.notification_deleted,
+                Snackbar.LENGTH_LONG, android.R.string.cancel,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        databaseHelper.save(note);
+                        Tool.showSnackbar(
+                                cla,
+                                R.string.notification_restored,
+                                Snackbar.LENGTH_SHORT, -1, null);
+                        loadNotifications();
+                    }
+                });
     }
 
     private void loadNotifications() {
@@ -137,6 +144,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNoteSelected(StickyNotification note) {
         showNote(note, true);
+    }
+
+    @Override
+    public void onNoteSwiped(StickyNotification note) {
+        databaseHelper.delete(note);
+        loadNotifications();
+        confirmNoteDeleted(new StickyNotification(note)); // As a new one
     }
 
     @Optional

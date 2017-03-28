@@ -141,7 +141,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:hint="@string/hint_details"
-                    android:textColor="@color/textColorPrimary" />
+                    android:textColor="@color/primary_text" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -183,7 +183,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:hint="@string/hint_date"
-                android:textColor="@color/textColorPrimary"
+                android:textColor="@color/primary_text"
                 android:textSize="16sp" />
 
         </RelativeLayout>

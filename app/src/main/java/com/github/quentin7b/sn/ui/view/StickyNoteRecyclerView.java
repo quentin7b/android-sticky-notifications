@@ -8,16 +8,19 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.quentin7b.sn.ColorHelper;
 import com.github.quentin7b.sn.R;
 import com.github.quentin7b.sn.Tool;
 import com.github.quentin7b.sn.database.model.StickyNotification;
+import com.github.quentin7b.sn.ui.MainActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,20 +59,33 @@ public class StickyNoteRecyclerView extends RecyclerView {
         setAdapter(this.adapter);
     }
 
-    public void setNoteSelectionListener(NoteSelectedListener listener) {
+    public void setNoteListener(final NoteListener listener) {
         this.adapter.setNoteSelectionListener(listener);
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                listener.onNoteSwiped(adapter.getItemAt(viewHolder.getAdapterPosition()));
+            }
+        }).attachToRecyclerView(this);
     }
 
     public void setNotificationsList(List<StickyNotification> notificationsList) {
         this.adapter.setNotificationList(notificationsList);
     }
 
-    public interface NoteSelectedListener {
+    public interface NoteListener {
         void onNoteSelected(StickyNotification note);
+
+        void onNoteSwiped(StickyNotification note);
     }
 
     private interface NoteSelectedListenerProvider {
-        NoteSelectedListener getListener();
+        NoteListener getListener();
     }
 
     private static class StickyAdapter
@@ -77,7 +93,7 @@ public class StickyNoteRecyclerView extends RecyclerView {
             implements NoteSelectedListenerProvider {
 
         private List<StickyNotification> notificationList;
-        private NoteSelectedListener noteSelectionListener;
+        private NoteListener noteSelectionListener;
 
         StickyAdapter() {
             this.notificationList = new ArrayList<>(0);
@@ -95,12 +111,16 @@ public class StickyNoteRecyclerView extends RecyclerView {
 
         @Override
         public void onBindViewHolder(Holder holder, int position) {
-            holder.bind(notificationList.get(position), this);
+            holder.bind(getItemAt(position), this);
         }
 
         @Override
         public int getItemCount() {
             return notificationList.size();
+        }
+
+        private StickyNotification getItemAt(int position) {
+            return notificationList.get(position);
         }
 
         void setNotificationList(List<StickyNotification> stickyNotifications) {
@@ -109,12 +129,12 @@ public class StickyNoteRecyclerView extends RecyclerView {
             notifyDataSetChanged();
         }
 
-        void setNoteSelectionListener(NoteSelectedListener noteSelectionListener) {
+        void setNoteSelectionListener(NoteListener noteSelectionListener) {
             this.noteSelectionListener = noteSelectionListener;
         }
 
         @Override
-        public NoteSelectedListener getListener() {
+        public NoteListener getListener() {
             return noteSelectionListener;
         }
 
@@ -146,25 +166,31 @@ public class StickyNoteRecyclerView extends RecyclerView {
 
             void bind(final StickyNotification stickyNotification,
                       final NoteSelectedListenerProvider listenerProvider) {
-                this.titleTextView.setText(stickyNotification.getTitle());
-                this.contentTextView.setText(stickyNotification.getContent());
-                this.rootView.setOnClickListener(new OnClickListener() {
+                titleTextView.setText(stickyNotification.getTitle());
+                rootView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         listenerProvider.getListener().onNoteSelected(stickyNotification);
                     }
                 });
 
-                this.colorIv.setColorRes(ColorHelper.getDefconColor(stickyNotification.getDefcon()));
+                colorIv.setColorRes(ColorHelper.getDefconColor(stickyNotification.getDefcon()));
 
                 if (!stickyNotification.isNotification()) {
-                    this.isNotificationIv.setImageDrawable(null);
+                    isNotificationIv.setImageDrawable(null);
                 } else {
-                    this.isNotificationIv.setImageResource(R.drawable.ic_attach_file_24dp);
+                    isNotificationIv.setImageResource(R.drawable.ic_attach_file_24dp);
+                }
+
+                if (stickyNotification.getContent().isEmpty()) {
+                    contentTextView.setVisibility(GONE);
+                } else {
+                    contentTextView.setVisibility(VISIBLE);
+                    contentTextView.setText(stickyNotification.getContent());
                 }
 
                 if (stickyNotification.getDeadLine() == null) {
-                    dateTextView.setVisibility(INVISIBLE);
+                    dateTextView.setVisibility(GONE);
                 } else {
                     dateTextView.setVisibility(VISIBLE);
                     dateTextView.setText(dateFormat.format(stickyNotification.getDeadLine()));

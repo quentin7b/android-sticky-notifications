@@ -3,8 +3,8 @@
 
     <style name="Theme.Sticky" parent="Base.Theme.Sticky">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/primary_dark</item>
+        <item name="android:statusBarColor">@color/primary_dark</item>
         <item name="android:windowContentTransitions">true</item>
 
         <!-- enable overlapping of exiting and entering activities-->

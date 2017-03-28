@@ -4,14 +4,16 @@
     <string name="transition_cb">cb</string>
 
     <string name="action_delete">Delete</string>
+    <string name="action_about">About</string>
+
     <string name="hint_title">Title</string>
     <string name="hint_notification">Show notification</string>
     <string name="hint_color">Color</string>
     <string name="hint_details">Details</string>
     <string name="hint_date">Due date ?</string>
+
     <string name="notification_deleted">Notification has been deleted</string>
     <string name="notification_restored">Notification has been restored!</string>
-    <string name="action_about">About</string>
     <plurals name="grouped_notification_title">
         <item quantity="one">%d todo notification</item>
         <item quantity="other">%d todo notifications</item>
@@ -20,4 +22,8 @@
     <string name="date_format">yyyy MM dd</string>
     <string name="long_date_format">EEEE, MMMM dd yyyy (dd/MM/yyyy)</string>
     <string name="error_title_empty">Title can\'t be empty</string>
+
+    <string name="about_app">About</string>
+    <string name="about_version">Version: %s</string>
+    <string name="about_licenses">Open Source Licenses</string>
 </resources>
