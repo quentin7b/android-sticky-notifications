@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="action_delete">Supprimer</string>
+    <string name="action_about">A propos</string>
+
     <string name="hint_title">Titre</string>
     <string name="hint_notification">Afficher une notification</string>
     <string name="hint_color">Couleur</string>
     <string name="hint_details">Détails</string>
     <string name="hint_date">Une date ?</string>
-    <string name="date_format">dd MM yyyy</string>
-    <string name="long_date_format">EEEE dd MMMM yyyy (dd/MM/yyyy)</string>
-    <string name="error_title_empty">Il faut au moins un titre</string>
+
+    <string name="notification_deleted">Notification supprimée</string>
+    <string name="notification_restored">Notification restaurée!</string>
     <plurals name="grouped_notification_title">
         <item quantity="one">%d todo notification</item>
         <item quantity="other">%d todo notifications</item>
     </plurals>
+
+    <string name="date_format">dd MM yyyy</string>
+    <string name="long_date_format">EEEE dd MMMM yyyy (dd/MM/yyyy)</string>
+    <string name="error_title_empty">Il faut au moins un titre</string>
+
+
+    <string name="about_app">A propos</string>
+    <string name="about_version">Version: %s</string>
+    <string name="about_licenses">Licences Open Source</string>
 </resources>

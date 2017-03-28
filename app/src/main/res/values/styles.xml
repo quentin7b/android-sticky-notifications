@@ -5,19 +5,28 @@
     <style name="Theme.Sticky" parent="Base.Theme.Sticky" />
 
     <style name="Base.Theme.Sticky" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorPrimaryLight</item>
-        <item name="colorControlNormal">@color/colorAccent</item>
-        <item name="android:textColor">@color/textColorPrimary</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlHighlight">@color/primary_light</item>
+        <item name="colorControlNormal">@color/accent</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:windowBackground">@color/window_background</item>
 
         <item name="actionOverflowMenuStyle">@style/Base.Theme.Sticky.ActionOverflowMenu</item>
     </style>
 
     <style name="Base.Theme.Sticky.ActionOverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <item name="android:popupBackground">@color/windowBackground</item>
+        <item name="android:popupBackground">@color/window_background</item>
+    </style>
+
+    <style name="Base.Theme.Sticky.TitleTextLabel" parent="TextAppearance.AppCompat">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">@color/primary_text</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/primary_text</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/primary_text</item>
     </style>
 
 </resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<notices>
+    <notice>
+        <name>Butterknife</name>
+        <url>http://jakewharton.github.io/butterknife/</url>
+        <copyright>Copyright 2013 Jake Wharton</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+    <notice>
+        <name>Material DateTime Picker</name>
+        <url>https://github.com/wdullaer/MaterialDateTimePicker/</url>
+        <copyright>Copyright (c) 2015 Wouter Dullaert</copyright>
+        <license>Apache Software License 2.0</license>
+    </notice>
+</notices>

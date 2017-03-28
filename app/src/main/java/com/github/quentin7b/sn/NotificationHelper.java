@@ -37,6 +37,9 @@ public class NotificationHelper {
                     .notify(ID, (toShowNotifications.size() > 1)
                             ? getListBuilder(context, toShowNotifications).build()
                             : getSingleBuilder(context, toShowNotifications.get(0)).build());
+        } else {
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+                    .cancelAll();
         }
     }
 

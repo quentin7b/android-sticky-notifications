@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +35,9 @@ public class DetailsActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     @BindView(R.id.note_title_et)
-    AppCompatEditText noteTitle;
+    TextInputEditText noteTitle;
+    @BindView(R.id.note_title_et_parent)
+    TextInputLayout noteTitleParent;
 
     @BindView(R.id.sticky_nfv)
     StickyNoteFullView noteFullView;
@@ -88,6 +92,7 @@ public class DetailsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_delete:
                 onDeleteNote();
+                return true;
             case android.R.id.home:
                 setResult(MainActivity.RESULT_CANCELED);
                 goMain();
@@ -119,17 +124,19 @@ public class DetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     void onSaveNote() {
+        Log.d("DA", "save");
         notification.setTitle(noteTitle.getText().toString());
         notification.setContent(noteFullView.getContent());
         notification.setNotification(noteFullView.isNotification());
         notification.setDefcon(noteFullView.getDefcon());
         notification.setDeadLine(noteFullView.getDate());
         if (Tool.notificationIsValid(notification)) {
+            noteTitleParent.setError(null);
             databaseHelper.save(notification);
             setResult(MainActivity.RESULT_OK);
             goMain();
         } else {
-            noteTitle.setError(getString(R.string.error_title_empty));
+            noteTitleParent.setError(getString(R.string.error_title_empty));
         }
     }
 

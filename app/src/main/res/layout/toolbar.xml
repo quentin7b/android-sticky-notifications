@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:tabGravity="center"
-            app:tabIndicatorColor="@color/textColorWhite"
+            app:tabIndicatorColor="@color/white"
             app:tabMode="fixed" />
 
     </android.support.design.widget.AppBarLayout>

@@ -31,7 +31,7 @@
             android:id="@+id/note_title_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="@color/primary_text"
             android:textSize="16sp"
             tools:text="Titre" />
 
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="@color/secondary_text"
             android:textSize="14sp"
             tools:text="Content" />
 
@@ -48,7 +48,7 @@
             android:id="@+id/note_date_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="@color/secondary_text"
             android:textSize="14sp"
             android:textStyle="italic"
             tools:text="09/03/2017" />
