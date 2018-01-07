@@ -37,7 +37,7 @@
         android:background="@color/divider" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/about_version_tv"
+        android:id="@+id/versionTV"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/white"
