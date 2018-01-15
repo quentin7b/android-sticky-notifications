@@ -7,6 +7,7 @@ import android.util.Log
 import com.github.quentin7b.sn.R
 import de.psdev.licensesdialog.LicensesDialog
 import kotlinx.android.synthetic.main.activity_about.*
+
 class AboutActivity : AppCompatActivity() {
 
     private var licensesDialog: LicensesDialog? = null

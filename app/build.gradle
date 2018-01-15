@@ -16,6 +16,11 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
 
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+
     defaultConfig {
         applicationId "fr.quentinklein.stickynotifs"
         minSdkVersion 17
