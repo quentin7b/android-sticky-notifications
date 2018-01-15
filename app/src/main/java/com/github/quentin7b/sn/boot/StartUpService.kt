@@ -11,15 +11,12 @@ import com.github.quentin7b.sn.database.DatabaseHelper
 
 /**
  * Show notifications (called by receiver when boot is done)
- *
- * @see com.github.quentin7b.sn.boot.StartUpReceiver
  */
 class StartUpService : Service() {
 
     companion object {
         fun newIntent(context: Context): Intent {
-            val intent = Intent(context, StartUpService::class.java)
-            return intent
+            return Intent(context, StartUpService::class.java)
         }
     }
 

@@ -30,7 +30,8 @@ object NotificationHelper {
     private val ID = 14628
 
     fun showNotifications(context: Context, notifications: List<StickyNotification>) {
-        val toShowNotifications = filterAndSortNotifications(notifications)
+        val toShowNotifications = notifications.filter { it.isNotification }
+        Collections.sort(toShowNotifications)
         if (!toShowNotifications.isEmpty()) {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .notify(ID, if (toShowNotifications.size > 1)
@@ -41,17 +42,6 @@ object NotificationHelper {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .cancelAll()
         }
-    }
-
-    private fun filterAndSortNotifications(notifications: List<StickyNotification>): List<StickyNotification> {
-        val toShow = ArrayList<StickyNotification>()
-        for (notification in notifications) {
-            if (notification.isNotification) {
-                toShow.add(notification)
-            }
-        }
-        Collections.sort(toShow)
-        return toShow
     }
 
     private fun getSingleBuilder(context: Context, notification: StickyNotification): NotificationCompat.Builder {
@@ -107,13 +97,15 @@ object NotificationHelper {
                 .setSmallIcon(R.drawable.small_icon)
                 .setOngoing(true)
                 .setStyle(style)
+                .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
+                .setOngoing(true)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mBuilder.priority = NotificationManager.IMPORTANCE_MAX
+        } else {
             mBuilder.priority = Notification.PRIORITY_MAX
         }
 
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
-        mBuilder.setOngoing(true)
         return mBuilder
     }
 

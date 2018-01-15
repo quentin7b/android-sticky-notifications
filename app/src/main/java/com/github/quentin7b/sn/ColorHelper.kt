@@ -19,8 +19,7 @@ object ColorHelper {
 
     @ColorRes
     fun getDefconColor(defcon: StickyNotification.Defcon): Int {
-        val defconColor = DEFCON_COLORS[defcon]
-        return defconColor!!
+        return DEFCON_COLORS.item(defcon)
     }
 
     fun getColorDefcon(@ColorRes colorRes: Int?): StickyNotification.Defcon {
@@ -36,6 +35,15 @@ object ColorHelper {
                 }
             }
             throw IllegalArgumentException("No value for this integer")
+        }
+
+        fun item(defcon: StickyNotification.Defcon?): Int {
+            for ((key, value) in entries) {
+                if (key == defcon) {
+                    return value
+                }
+            }
+            throw IllegalArgumentException("No value for this defcon")
         }
 
     }

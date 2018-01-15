@@ -5,8 +5,6 @@ import android.widget.RemoteViewsService
 
 import java.sql.SQLException
 
-/**
- */
 class StickyWidgetService : RemoteViewsService() {
 
     override fun onGetViewFactory(intent: Intent): RemoteViewsService.RemoteViewsFactory {

@@ -6,11 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.AppCompatCheckBox
-import android.support.v7.widget.AppCompatTextView
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +20,6 @@ import com.github.quentin7b.sn.database.model.StickyNotification
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.view_note_full.view.*
 
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -32,57 +27,37 @@ import java.util.Date
 
 class StickyNoteFullView : LinearLayout {
 
-    internal var colorRes: Int? = null
-
+    private var date: Date? = null
     private var dateFormat: SimpleDateFormat? = null
 
-    var title: String?
-        get() = if (note_title_et != null) {
-            note_title_et!!.text.toString()
-        } else {
-            null
-        }
-        set(title) {
-            if (note_title_et != null) {
-                note_title_et!!.setText(title)
-                note_title_et!!.setSelection(title!!.length)
-            }
-        }
+    var notification: StickyNotification?
+        get() {
+            val title = if (note_title_et !== null)
+                note_title_et?.text?.toString()
+            else
+                ""
 
-    var defcon: StickyNotification.Defcon?
-        get() = ColorHelper.getColorDefcon(colorRes)
-        set(defcon) {
-            colorRes = ColorHelper.getDefconColor(defcon!!)
-            level_btn!!.setColorRes(colorRes!!)
+            return StickyNotification(
+                    title,
+                    note_content_et?.text!!.toString(),
+                    ColorHelper.getColorDefcon(level_btn?.colorResIdentifier),
+                    notification_cb!!.isChecked,
+                    date
+            )
         }
+        set(notification) {
+            note_title_et?.setText(notification!!.title)
+            note_title_et?.setSelection(notification?.title!!.length)
 
-    var content: String
-        get() = note_content_et!!.text.toString()
-        set(content) {
-            note_content_et!!.setText(content)
-            note_content_et!!.setSelection(content.length)
-        }
+            level_btn?.colorResIdentifier = ColorHelper.getDefconColor(notification!!.defcon)
 
-    var isNotification: Boolean
-        get() = notification_cb!!.isChecked
-        set(isNotification) {
-            notification_cb!!.isChecked = isNotification
-        }
+            note_content_et?.setText(notification.content)
+            note_content_et?.setSelection(notification.content!!.length)
 
-    var date: Date?
-        get() = if (!TextUtils.isEmpty(note_content_tv!!.text)) {
-            try {
-                dateFormat!!.parse(note_content_tv!!.text.toString())
-            } catch (e: ParseException) {
-                null
-            }
+            notification_cb?.isChecked = notification.isNotification
 
-        } else {
-            null
-        }
-        set(date) {
-            if (date != null) {
-                note_content_tv!!.text = dateFormat!!.format(date)
+            if (notification.deadLine !== null) {
+                note_content_tv?.text = dateFormat?.format(notification.deadLine)
             }
         }
 
@@ -120,38 +95,71 @@ class StickyNoteFullView : LinearLayout {
     override fun onSaveInstanceState(): Parcelable? {
         val instanceState = Bundle()
         instanceState.putParcelable(EXTRA.SUPER, super.onSaveInstanceState())
-        instanceState.putString(EXTRA.TITLE, title)
-        instanceState.putString(EXTRA.CONTENT, content)
-        instanceState.putBoolean(EXTRA.NOTIFICATION, isNotification)
-        instanceState.putInt(EXTRA.DEFCON, defcon!!.describe())
+        instanceState.putString(EXTRA.TITLE, note_title_et?.text.toString())
+        instanceState.putString(EXTRA.CONTENT, note_content_et?.text.toString())
+        instanceState.putBoolean(EXTRA.NOTIFICATION, notification_cb!!.isChecked)
+        instanceState.putInt(EXTRA.DEFCON, ColorHelper.getColorDefcon(level_btn?.colorResIdentifier).describe())
         instanceState.putLong(EXTRA.DATE, if (date != null) date!!.time else -1)
         return super.onSaveInstanceState()
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        var state = state
         if (state is Bundle) {
             val bundle = state as Bundle?
-            title = bundle!!.getString(EXTRA.TITLE, "")
-            content = bundle.getString(EXTRA.CONTENT, "")
-            isNotification = bundle.getBoolean(EXTRA.NOTIFICATION, true)
-            defcon = StickyNotification.Defcon.from(bundle.getInt(EXTRA.DEFCON, StickyNotification.Defcon.NORMAL.describe()))
-            state = bundle.getParcelable(EXTRA.SUPER)
+            val notification = StickyNotification(
+                    bundle!!.getString(EXTRA.TITLE, ""),
+                    bundle.getString(EXTRA.CONTENT, ""),
+                    StickyNotification.Defcon.from(bundle.getInt(EXTRA.DEFCON, StickyNotification.Defcon.NORMAL.describe())),
+                    bundle.getBoolean(EXTRA.NOTIFICATION, true),
+                    Date()
+            )
             val dateLong = bundle.getLong(EXTRA.DATE)
             if (dateLong != -1L) {
-                date = Date(dateLong)
+                notification.deadLine = Date(dateLong)
             }
+            this.notification = notification
+            super.onRestoreInstanceState(bundle.getParcelable(EXTRA.SUPER))
+        } else {
+            super.onRestoreInstanceState(state)
         }
-        super.onRestoreInstanceState(state)
     }
 
-    internal fun onDefconClick() {
+    private fun onDefconClick() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_color_picker, null)
         val alertDialog = AlertDialog.Builder(context)
                 .setView(dialogView)
                 .create()
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        addRevealAnimation(alertDialog, dialogView)
+
+        val uselessBtn = dialogView.findViewById<View>(R.id.useless_btn) as LabelImageButton
+        val normalBtn = dialogView.findViewById<View>(R.id.normal_btn) as LabelImageButton
+        val importantBtn = dialogView.findViewById<View>(R.id.important_btn) as LabelImageButton
+        val ultraBtn = dialogView.findViewById<View>(R.id.ultra_btn) as LabelImageButton
+
+        uselessBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.USELESS)
+        normalBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.NORMAL)
+        importantBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.IMPORTANT)
+        ultraBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.ULTRA)
+
+        val colorClickListener = OnClickListener { v ->
+            val imageButton = v as LabelImageButton
+            level_btn.colorResIdentifier = imageButton.colorResIdentifier
+            alertDialog.dismiss()
+        }
+
+        uselessBtn.setOnClickListener(colorClickListener)
+        normalBtn.setOnClickListener(colorClickListener)
+        importantBtn.setOnClickListener(colorClickListener)
+        ultraBtn.setOnClickListener(colorClickListener)
+
+        alertDialog.setCancelable(true)
+        alertDialog.show()
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun addRevealAnimation(alertDialog: AlertDialog, dialogView: View) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alertDialog.setOnShowListener {
                 val view = dialogView.findViewById<View>(R.id.reveal_view)
                 val w = view.width
@@ -163,35 +171,9 @@ class StickyNoteFullView : LinearLayout {
                 revealAnimator.start()
             }
         }
-
-        val uselessBtn = dialogView.findViewById<View>(R.id.useless_btn) as LabelImageButton
-        val normalBtn = dialogView.findViewById<View>(R.id.normal_btn) as LabelImageButton
-        val importantBtn = dialogView.findViewById<View>(R.id.important_btn) as LabelImageButton
-        val ultraBtn = dialogView.findViewById<View>(R.id.ultra_btn) as LabelImageButton
-
-        uselessBtn.setColorRes(ColorHelper.getDefconColor(StickyNotification.Defcon.USELESS))
-        normalBtn.setColorRes(ColorHelper.getDefconColor(StickyNotification.Defcon.NORMAL))
-        importantBtn.setColorRes(ColorHelper.getDefconColor(StickyNotification.Defcon.IMPORTANT))
-        ultraBtn.setColorRes(ColorHelper.getDefconColor(StickyNotification.Defcon.ULTRA))
-
-        val colorClickListener = OnClickListener { v ->
-            val imageButton = v as LabelImageButton
-            this@StickyNoteFullView.colorRes = imageButton.getColorRes()
-            alertDialog.dismiss()
-        }
-
-        uselessBtn.setOnClickListener(colorClickListener)
-        normalBtn.setOnClickListener(colorClickListener)
-        importantBtn.setOnClickListener(colorClickListener)
-        ultraBtn.setOnClickListener(colorClickListener)
-
-        alertDialog.setOnDismissListener { this@StickyNoteFullView.level_btn!!.setColorRes(this@StickyNoteFullView.colorRes!!) }
-
-        alertDialog.setCancelable(true)
-        alertDialog.show()
     }
 
-    internal fun onDateClick() {
+    private fun onDateClick() {
         val calendar = Calendar.getInstance()
         val currentDate = date
         if (currentDate != null) {

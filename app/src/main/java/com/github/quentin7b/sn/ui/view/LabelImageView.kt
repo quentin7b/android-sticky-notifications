@@ -27,13 +27,13 @@ class LabelImageView : AppCompatImageView {
         initView()
     }
 
-    internal fun initView() {
+    private fun initView() {
         setImageResource(R.drawable.circle)
         itemDrawable = ContextCompat.getDrawable(context, R.drawable.circle)
     }
 
     fun setColorRes(@ColorRes color: Int) {
-        itemDrawable!!.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC)
+        itemDrawable?.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC)
         setImageDrawable(itemDrawable)
     }
 }

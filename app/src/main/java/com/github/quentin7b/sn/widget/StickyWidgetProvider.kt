@@ -17,7 +17,7 @@ class StickyWidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (UPDATE_LIST.equals(intent.action!!, ignoreCase = true) || ACTION_APPWIDGET_UPDATE.equals(intent.action!!, ignoreCase = true)) {
+        if (UPDATE_LIST == intent.action || ACTION_APPWIDGET_UPDATE == intent.action) {
             updateWidget(context)
         }
     }
@@ -47,7 +47,6 @@ class StickyWidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
-
         val UPDATE_LIST = "UPDATE_LIST"
     }
 }
