@@ -25,12 +25,9 @@ class StickyWidgetRemoteViewsFactory
  * @param context the app context
  */
 (private val context: Context) : RemoteViewsService.RemoteViewsFactory {
-    private val database: DatabaseHelper.StickyDao
-    private var notificationList: MutableList<StickyNotification>? = null
 
-    init {
-        database = DatabaseHelper(context).database
-    }
+    private val database: DatabaseHelper.StickyDao = DatabaseHelper(context).database
+    private var notificationList: MutableList<StickyNotification>? = null
 
     private fun updateWidgetListView() {
         notificationList = database.all

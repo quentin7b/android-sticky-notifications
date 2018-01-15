@@ -42,11 +42,10 @@ class StickyNoteRecyclerView : RecyclerView {
     }
 
     private fun initLayout() {
-        val context = getContext()
         val manager = LinearLayoutManager(context)
-        manager.setOrientation(LinearLayoutManager.VERTICAL)
+        manager.orientation = LinearLayoutManager.VERTICAL
         super.setLayoutManager(manager)
-        val divider = DividerItemDecoration(context, manager.getOrientation())
+        val divider = DividerItemDecoration(context, manager.orientation)
         divider.setDrawable(ContextCompat.getDrawable(context, R.drawable.divider_grey)!!)
         super.addItemDecoration(divider)
         this.adapter = StickyAdapter()
@@ -54,14 +53,14 @@ class StickyNoteRecyclerView : RecyclerView {
     }
 
     fun setNoteListener(listener: NoteListener) {
-        this.adapter!!.setNoteSelectionListener(listener)
+        this.adapter?.setNoteSelectionListener(listener)
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                listener.onNoteSwiped(adapter!!.getItemAt(viewHolder.getAdapterPosition()))
+                listener.onNoteSwiped(adapter!!.getItemAt(viewHolder.adapterPosition))
             }
         }).attachToRecyclerView(this)
     }

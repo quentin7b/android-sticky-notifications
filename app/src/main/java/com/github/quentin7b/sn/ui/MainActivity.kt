@@ -17,7 +17,6 @@ import android.view.View
 import android.widget.TextView
 import com.github.quentin7b.sn.NotificationHelper
 import com.github.quentin7b.sn.R
-import com.github.quentin7b.sn.Tool
 import com.github.quentin7b.sn.database.DatabaseHelper
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.github.quentin7b.sn.ui.view.StickyNoteRecyclerView
@@ -46,12 +45,9 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
             showNote(intent.getParcelableExtra<Parcelable>(EXTRA_NOTIFICATION) as StickyNotification, false)
         } else {
             loadNotifications()
-            refreshWidgets()
+            // refresh widgets
+            sendBroadcast(Intent().setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
         }
-    }
-
-    private fun refreshWidgets() {
-        sendBroadcast(Intent().setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -124,12 +120,11 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
                     else
                         null)
         } else {
-            note_snfv!!.title = note.title
-            note_snfv!!.content = note.content
+            note_snfv?.notification = note
         }
     }
 
-    fun showSnackbar(anchor: View, @StringRes message: Int, duration: Int, @StringRes actionMessage: Int, actionListener: ((View) -> Unit)?) {
+    private fun showSnackbar(anchor: View, @StringRes message: Int, duration: Int, @StringRes actionMessage: Int, actionListener: ((View) -> Unit)?) {
         val snackbar = Snackbar
                 .make(anchor, message, duration)
         if (actionMessage != -1) {

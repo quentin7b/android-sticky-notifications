@@ -16,6 +16,18 @@ import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailsActivity : AppCompatActivity() {
 
+    companion object {
+
+        private val EXTRA_NOTE = "com.github.quentin7b.sn.EXTRA_NOTE"
+        private val EXTRA_TRANSITION = "com.github.quentin7b.sn.EXTRA_TRANSITION"
+
+        fun newIntent(context: Context, notification: StickyNotification, withTransition: Boolean): Intent {
+            return Intent(context, DetailsActivity::class.java)
+                    .putExtra(EXTRA_NOTE, notification)
+                    .putExtra(EXTRA_TRANSITION, withTransition)
+        }
+    }
+
     private var notification: StickyNotification? = null
     private var databaseHelper: DatabaseHelper.StickyDao? = null
     private var showTransition: Boolean = false
@@ -23,32 +35,34 @@ class DetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-
-        notification = intent.getParcelableExtra(EXTRA_NOTE)
-        showTransition = intent.getBooleanExtra(EXTRA_TRANSITION, false)
-        if (notification == null) {
-            notification = StickyNotification()
-        }
-
         setSupportActionBar(toolbar)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
 
         ViewCompat.setTransitionName(fab, getString(R.string.transition_fab))
 
+
+        notification = intent.getParcelableExtra(EXTRA_NOTE)
+        if (notification == null) {
+            notification = StickyNotification()
+        }
+
+        showTransition = intent.getBooleanExtra(EXTRA_TRANSITION, false)
+
+
         fab.setOnClickListener {
+            val notificationId = notification?.id
+            notification = sticky_nfv.notification
+            notification?.id = notificationId!!
             notification?.title = note_title_et?.text.toString()
-            notification?.content = sticky_nfv?.content
-            notification?.isNotification = sticky_nfv!!.isNotification
-            notification?.defcon = sticky_nfv?.defcon
-            notification?.deadLine = sticky_nfv?.date
             if (notificationIsValid(notification!!)) {
                 // note_title_et_parent.error = null
                 databaseHelper?.save(notification)
                 setResult(RESULT_OK)
                 goMain()
             } else {
-                // note_title_et_parent.error = getString(R.string.error_title_empty)
+                note_title_et_parent?.error = getString(R.string.error_title_empty)
             }
         }
 
@@ -65,7 +79,13 @@ class DetailsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_delete -> {
-                onDeleteNote()
+                if (notification!!.id > 0) {
+                    val cloneNotification = StickyNotification(notification)
+                    databaseHelper?.delete(notification)
+                    setResult(MainActivity.RESULT_DELETED,
+                            Intent().putExtra(MainActivity.EXTRA_NOTIFICATION, cloneNotification))
+                }
+                goMain()
                 return true
             }
             android.R.id.home -> {
@@ -90,21 +110,7 @@ class DetailsActivity : AppCompatActivity() {
         note_title_et?.setText(notification?.title)
         note_title_et?.setSelection(notification?.title!!.length)
 
-        sticky_nfv.content = notification!!.content
-        sticky_nfv.isNotification = notification!!.isNotification
-        sticky_nfv.defcon = notification!!.defcon
-
-        sticky_nfv.date = notification!!.deadLine
-    }
-
-    internal fun onDeleteNote() {
-        if (notification!!.id > 0) {
-            val cloneNotification = StickyNotification(notification)
-            databaseHelper?.delete(notification)
-            setResult(MainActivity.RESULT_DELETED,
-                    Intent().putExtra(MainActivity.EXTRA_NOTIFICATION, cloneNotification))
-        }
-        goMain()
+        sticky_nfv.notification = notification
     }
 
     private fun goMain() {
@@ -117,19 +123,6 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun notificationIsValid(notification: StickyNotification): Boolean {
         return !notification.title.trim { it <= ' ' }.isEmpty()
-    }
-
-    companion object {
-
-        private val EXTRA_NOTE = "com.github.quentin7b.sn.EXTRA_NOTE"
-        private val EXTRA_TRANSITION = "com.github.quentin7b.sn.EXTRA_TRANSITION"
-
-        fun newIntent(context: Context, notification: StickyNotification, withTransition: Boolean): Intent {
-            val intent = Intent(context, DetailsActivity::class.java)
-            intent.putExtra(EXTRA_NOTE, notification)
-            intent.putExtra(EXTRA_TRANSITION, withTransition)
-            return intent
-        }
     }
 
 }

@@ -13,8 +13,14 @@ import com.github.quentin7b.sn.R
 
 class LabelImageButton : AppCompatImageButton {
 
-    var itemDrawable: Drawable? = null
-    var colorResIdentifier: Int = 0
+    private var itemDrawable: Drawable? = null
+
+    var colorResIdentifier: Int = R.color.color_normal
+        set(colorRes) {
+            field = colorRes
+            itemDrawable?.setColorFilter(ContextCompat.getColor(context, colorRes), PorterDuff.Mode.SRC)
+            setImageDrawable(itemDrawable)
+        }
 
     constructor(context: Context) : super(context) {
         initView()
@@ -28,20 +34,10 @@ class LabelImageButton : AppCompatImageButton {
         initView()
     }
 
-    internal fun initView() {
+    private fun initView() {
         setImageResource(R.drawable.circle)
         this.colorResIdentifier = R.color.color_normal
         itemDrawable = ContextCompat.getDrawable(context, R.drawable.circle)
     }
 
-    fun setColorRes(@ColorRes color: Int) {
-        this.colorResIdentifier = color
-        itemDrawable!!.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC)
-        setImageDrawable(itemDrawable)
-    }
-
-    @ColorRes
-    fun getColorRes(): Int {
-        return this.colorResIdentifier
-    }
 }
