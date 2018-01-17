@@ -5,4 +5,8 @@
     <dimen name="base_recycler_margin">0dp</dimen>
     <dimen name="floating_button_elevation">12dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
+
+    <!-- https://stackoverflow.com/questions/29365268/how-to-remove-default-layouts-padding-margin -->
+    <dimen name="activity_horizontal_margin">0dp</dimen>
+    <dimen name="activity_vertical_margin">0dp</dimen>
 </resources>

@@ -4,14 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.NavUtils
-import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.database.DatabaseHelper
 import com.github.quentin7b.sn.database.model.StickyNotification
-import kotlinx.android.synthetic.main.activity_detail.*
+import com.github.quentin7b.sn.ui.view.StickyNoteFullView
+import org.jetbrains.anko.*
+import org.jetbrains.anko.appcompat.v7.toolbar
+import org.jetbrains.anko.design.themedAppBarLayout
+import org.jetbrains.anko.support.v4.nestedScrollView
 
 
 class DetailsActivity : AppCompatActivity() {
@@ -28,20 +34,21 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    private var ui: DetailsActivityUI? = null
     private var notification: StickyNotification? = null
     private var databaseHelper: DatabaseHelper.StickyDao? = null
     private var showTransition: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail)
-        setSupportActionBar(toolbar)
+
+        ui = DetailsActivityUI()
+        ui!!.setContentView(this)
+
+        setSupportActionBar(ui!!.toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
-
-        ViewCompat.setTransitionName(fab, getString(R.string.transition_fab))
-
 
         notification = intent.getParcelableExtra(EXTRA_NOTE)
         if (notification == null) {
@@ -50,35 +57,20 @@ class DetailsActivity : AppCompatActivity() {
 
         showTransition = intent.getBooleanExtra(EXTRA_TRANSITION, false)
 
-
-        fab.setOnClickListener {
-            val notificationId = notification?.id
-            notification = sticky_nfv.notification
-            notification?.id = notificationId!!
-            notification?.title = note_title_et?.text.toString()
-            if (notificationIsValid(notification!!)) {
-                // note_title_et_parent.error = null
-                databaseHelper?.save(notification)
-                setResult(RESULT_OK)
-                goMain()
-            } else {
-                note_title_et_parent?.error = getString(R.string.error_title_empty)
-            }
-        }
-
         databaseHelper = DatabaseHelper(this).database
 
-        initViews()
+        ui!!.title.setText(notification?.title)
+        ui!!.title.setSelection(notification?.title!!.length)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.detail_menu, menu)
+        menuInflater.inflate(R.menu.edit_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_delete -> {
+            R.id.action_save -> {
                 if (notification!!.id > 0) {
                     val cloneNotification = StickyNotification(notification)
                     databaseHelper?.delete(notification)
@@ -106,13 +98,6 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun initViews() {
-        note_title_et?.setText(notification?.title)
-        note_title_et?.setSelection(notification?.title!!.length)
-
-        sticky_nfv.notification = notification
-    }
-
     private fun goMain() {
         if (showTransition) {
             supportFinishAfterTransition()
@@ -123,6 +108,50 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun notificationIsValid(notification: StickyNotification): Boolean {
         return !notification.title.trim { it <= ' ' }.isEmpty()
+    }
+
+    class DetailsActivityUI : AnkoComponent<DetailsActivity> {
+
+        lateinit var toolbar: Toolbar
+        lateinit var title: EditText
+        var details: StickyNoteFullView = StickyNoteFullView.newInstance()
+
+        override fun createView(ui: AnkoContext<DetailsActivity>): View {
+            return with(ui) {
+
+                verticalLayout {
+
+                    themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
+                        fitsSystemWindows = true
+
+                        toolbar = toolbar {
+                            popupTheme = R.style.ThemeOverlay_AppCompat_Light
+                        }.lparams(width = matchParent, height = wrapContent)
+
+                        title = themedEditText(R.style.Base_Theme_Sticky_TitleTextLabel) {
+                            hintResource = R.string.hint_title
+                            textSize = 16f
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            leftMargin = dip(16)
+                            rightMargin = dip(16)
+                        }
+
+                    }.lparams(width = matchParent, height = wrapContent)
+
+                    nestedScrollView {
+
+                        frameLayout {
+                            id = R.id.detailsContent
+                            owner.supportFragmentManager.beginTransaction().replace(R.id.detailsContent, details).commit()
+                        }.lparams(width = matchParent, height = matchParent)
+
+                    }.lparams(width = matchParent, height = matchParent, weight = 1f)
+
+                }
+
+            }
+        }
+
     }
 
 }

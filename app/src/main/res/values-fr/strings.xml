@@ -24,4 +24,5 @@
     <string name="about_app">A propos</string>
     <string name="about_version">Version: %s</string>
     <string name="about_licenses">Licences Open Source</string>
+    <string name="action_save">Enregistrer</string>
 </resources>

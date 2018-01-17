@@ -1,109 +1,85 @@
 package com.github.quentin7b.sn.ui.view
 
-import android.annotation.TargetApi
 import android.app.Activity
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v7.app.AlertDialog
-import android.util.AttributeSet
+import android.support.design.widget.TextInputEditText
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewAnimationUtils
-import android.widget.LinearLayout
-
+import android.view.ViewGroup
+import android.widget.TextView
 import com.github.quentin7b.sn.ColorHelper
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.Tool
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
-import kotlinx.android.synthetic.main.view_note_full.view.*
-
+import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 
-class StickyNoteFullView : LinearLayout {
+class StickyNoteFullView : Fragment() {
 
+    companion object {
+        fun newInstance(): StickyNoteFullView {
+            return StickyNoteFullView()
+        }
+    }
+
+    private var ui: StickyNoteFullViewUI? = null
     private var date: Date? = null
     private var dateFormat: SimpleDateFormat? = null
 
     var notification: StickyNotification?
         get() {
-            val title = if (note_title_et !== null)
-                note_title_et?.text?.toString()
-            else
-                ""
-
-            return StickyNotification(
-                    title,
-                    note_content_et?.text!!.toString(),
-                    ColorHelper.getColorDefcon(level_btn?.colorResIdentifier),
-                    notification_cb!!.isChecked,
-                    date
-            )
+            return with(ui!!) {
+                StickyNotification(
+                        "",
+                        content.text!!.toString(),
+                        defcon,
+                        isNotification,
+                        date
+                )
+            }
         }
         set(notification) {
-            note_title_et?.setText(notification!!.title)
-            note_title_et?.setSelection(notification?.title!!.length)
+            with(ui!!) {
+                content.setText(notification?.content)
+                content.setSelection(notification?.content!!.length)
+                isNotification = notification.isNotification
 
-            level_btn?.colorResIdentifier = ColorHelper.getDefconColor(notification!!.defcon)
-
-            note_content_et?.setText(notification.content)
-            note_content_et?.setSelection(notification.content!!.length)
-
-            notification_cb?.isChecked = notification.isNotification
-
-            if (notification.deadLine !== null) {
-                note_content_tv?.text = dateFormat?.format(notification.deadLine)
+                if (notification.deadLine !== null) {
+                    deadline.text = dateFormat?.format(notification.deadLine)
+                }
             }
         }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        dateFormat = SimpleDateFormat(context!!.getString(R.string.long_date_format),
+                Tool.getLocale(context!!))
 
-    constructor(context: Context) : super(context) {
-        initLayout()
+        ui = StickyNoteFullViewUI()
+        var detailView = ui!!.createView(AnkoContext.create(context!!, this, false))
+
+        ui!!.deadline.setOnClickListener { onDateClick() }
+
+        return detailView
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        initLayout()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initLayout()
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initLayout()
-    }
-
-    private fun initLayout() {
-        val context = context
-        dateFormat = SimpleDateFormat(context.getString(R.string.long_date_format),
-                Tool.getLocale(context))
-
-        orientation = LinearLayout.VERTICAL
-        LayoutInflater.from(getContext()).inflate(R.layout.view_note_full, this, true)
-        isSaveEnabled = true
-
-        level_btn?.setOnClickListener { onDefconClick() }
-        note_content_tv?.setOnClickListener { onDateClick() }
-    }
-
-    override fun onSaveInstanceState(): Parcelable? {
+    fun onSaveInstanceState(): Parcelable? {
         val instanceState = Bundle()
-        instanceState.putParcelable(EXTRA.SUPER, super.onSaveInstanceState())
-        instanceState.putString(EXTRA.TITLE, note_title_et?.text.toString())
-        instanceState.putString(EXTRA.CONTENT, note_content_et?.text.toString())
-        instanceState.putBoolean(EXTRA.NOTIFICATION, notification_cb!!.isChecked)
-        instanceState.putInt(EXTRA.DEFCON, ColorHelper.getColorDefcon(level_btn?.colorResIdentifier).describe())
+        instanceState.putString(EXTRA.TITLE, "")
+        instanceState.putString(EXTRA.CONTENT, ui?.content?.text.toString())
+        instanceState.putBoolean(EXTRA.NOTIFICATION, ui!!.isNotification)
+        instanceState.putInt(EXTRA.DEFCON, ui?.defcon!!.describe())
         instanceState.putLong(EXTRA.DATE, if (date != null) date!!.time else -1)
-        return super.onSaveInstanceState()
+        return instanceState
     }
 
-    override fun onRestoreInstanceState(state: Parcelable?) {
+    fun onRestoreInstanceState(state: Parcelable?) {
         if (state is Bundle) {
             val bundle = state as Bundle?
             val notification = StickyNotification(
@@ -118,58 +94,6 @@ class StickyNoteFullView : LinearLayout {
                 notification.deadLine = Date(dateLong)
             }
             this.notification = notification
-            super.onRestoreInstanceState(bundle.getParcelable(EXTRA.SUPER))
-        } else {
-            super.onRestoreInstanceState(state)
-        }
-    }
-
-    private fun onDefconClick() {
-        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_color_picker, null)
-        val alertDialog = AlertDialog.Builder(context)
-                .setView(dialogView)
-                .create()
-
-        addRevealAnimation(alertDialog, dialogView)
-
-        val uselessBtn = dialogView.findViewById<View>(R.id.useless_btn) as LabelImageButton
-        val normalBtn = dialogView.findViewById<View>(R.id.normal_btn) as LabelImageButton
-        val importantBtn = dialogView.findViewById<View>(R.id.important_btn) as LabelImageButton
-        val ultraBtn = dialogView.findViewById<View>(R.id.ultra_btn) as LabelImageButton
-
-        uselessBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.USELESS)
-        normalBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.NORMAL)
-        importantBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.IMPORTANT)
-        ultraBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.ULTRA)
-
-        val colorClickListener = OnClickListener { v ->
-            val imageButton = v as LabelImageButton
-            level_btn.colorResIdentifier = imageButton.colorResIdentifier
-            alertDialog.dismiss()
-        }
-
-        uselessBtn.setOnClickListener(colorClickListener)
-        normalBtn.setOnClickListener(colorClickListener)
-        importantBtn.setOnClickListener(colorClickListener)
-        ultraBtn.setOnClickListener(colorClickListener)
-
-        alertDialog.setCancelable(true)
-        alertDialog.show()
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun addRevealAnimation(alertDialog: AlertDialog, dialogView: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            alertDialog.setOnShowListener {
-                val view = dialogView.findViewById<View>(R.id.reveal_view)
-                val w = view.width
-                val h = view.height
-                val maxRadius = Math.sqrt((w * w / 2 + h * h / 2).toDouble()).toFloat()
-                val revealAnimator = ViewAnimationUtils.createCircularReveal(view,
-                        w, h / 2, 0f, maxRadius)
-                view.visibility = View.VISIBLE
-                revealAnimator.start()
-            }
         }
     }
 
@@ -180,12 +104,13 @@ class StickyNoteFullView : LinearLayout {
             calendar.time = currentDate
         }
         val dpd = DatePickerDialog.newInstance(
-                { view, year, monthOfYear, dayOfMonth ->
+                { _, year, monthOfYear, dayOfMonth ->
                     val setCalendar = Calendar.getInstance()
                     setCalendar.set(Calendar.YEAR, year)
                     setCalendar.set(Calendar.MONTH, monthOfYear)
                     setCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     date = setCalendar.time
+                    ui!!.deadline.text = dateFormat?.format(date)
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -195,12 +120,206 @@ class StickyNoteFullView : LinearLayout {
     }
 
     private object EXTRA {
-        val SUPER = "superState"
         val TITLE = "titleState"
         val CONTENT = "contentState"
         val DEFCON = "defconState"
         val NOTIFICATION = "notificationState"
         val DATE = "dateState"
+    }
+
+    inner class StickyNoteFullViewUI : AnkoComponent<StickyNoteFullView> {
+
+        lateinit var content: TextInputEditText
+        var isNotification: Boolean = false
+        lateinit var deadline: TextView
+        var defcon: StickyNotification.Defcon = StickyNotification.Defcon.NORMAL
+
+        override fun createView(ui: AnkoContext<StickyNoteFullView>): View {
+            return with(ui) {
+
+                verticalLayout {
+
+                    relativeLayout {
+                        padding = dip(16)
+
+                        imageView(R.drawable.ic_attach_file_24dp) {
+                            id = R.id.noteShowNotificationIcon
+                        }.lparams(width = dip(24), height = dip(24)) {
+                            alignParentLeft()
+                            alignParentStart()
+
+                            centerVertically()
+                        }
+
+                        checkBox {
+                            onCheckedChange { _, isChecked ->
+                                isNotification = isChecked
+                            }
+                        }.lparams(width = wrapContent, height = wrapContent) {
+                            id = R.id.noteShowNotificationCheckBox
+
+                            alignParentRight()
+                            alignParentEnd()
+
+                            centerVertically()
+                        }
+
+                        textView(R.string.hint_notification) {
+                            textSize = 15f
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            horizontalMargin = dip(32)
+
+                            rightOf(R.id.noteShowNotificationIcon)
+                            leftOf(R.id.noteShowNotificationCheckBox)
+
+                            centerVertically()
+                        }
+
+                    }.lparams(width = matchParent, height = dip(72))
+
+                    horizontalDivider()
+
+                    relativeLayout {
+                        padding = dip(16)
+
+                        imageView(R.drawable.ic_color_lens_24dp) {
+                            id = R.id.noteColorIcon
+                        }.lparams(width = dip(24), height = dip(24)) {
+                            alignParentLeft()
+                            alignParentStart()
+
+                            centerVertically()
+                        }
+
+                        labelImageButton {
+                            id = R.id.noteColorButton
+                            colorResIdentifier = ColorHelper.getDefconColor(defcon)
+                            onClick {
+                                alert {
+                                    customView {
+                                        linearLayout {
+
+                                            labelImageButton {
+                                                colorResIdentifier = R.color.color_useless
+                                                padding = dip(5)
+                                                onClick {
+                                                    defcon = StickyNotification.Defcon.USELESS
+                                                }
+                                            }
+
+                                            labelImageButton {
+                                                colorResIdentifier = R.color.color_normal
+                                                padding = dip(5)
+                                                onClick {
+                                                    defcon = StickyNotification.Defcon.NORMAL
+                                                }
+                                            }.lparams(weight = 1f)
+
+                                            labelImageButton {
+                                                colorResIdentifier = R.color.color_important
+                                                padding = dip(5)
+                                                onClick {
+                                                    defcon = StickyNotification.Defcon.IMPORTANT
+                                                }
+                                            }.lparams(weight = 1f)
+
+
+                                            labelImageButton {
+                                                colorResIdentifier = R.color.color_ultra
+                                                padding = dip(5)
+                                                onClick {
+                                                    defcon = StickyNotification.Defcon.ULTRA
+                                                }
+                                            }.lparams(weight = 1f)
+
+                                        }
+                                    }
+                                }.show()
+                            }
+                        }.lparams(width = dip(48), height = dip(48)) {
+                            alignParentRight()
+                            alignParentEnd()
+
+                            centerVertically()
+                        }
+
+                        textView(R.string.hint_color) {
+                            textSize = 15f
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            horizontalMargin = dip(32)
+
+
+                            rightOf(R.id.noteColorIcon)
+                            leftOf(R.id.noteColorButton)
+
+                            centerVertically()
+                        }
+
+                    }.lparams(width = matchParent, height = dip(72))
+
+                    horizontalDivider()
+
+                    relativeLayout {
+                        padding = dip(16)
+
+                        imageView(R.drawable.ic_short_text_24dp) {
+                            id = R.id.noteDetailsIcon
+                        }.lparams(width = dip(24), height = dip(24)) {
+                            alignParentStart()
+                            alignParentLeft()
+
+                            centerVertically()
+                        }
+
+                        editText {
+                            hintResource = R.string.hint_details
+                            textColor = R.color.primary_text
+                            hintTextColor = R.color.accent
+                            textSize = 15f
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            horizontalMargin = dip(32)
+
+                            rightOf(R.id.noteDetailsIcon)
+
+                            centerVertically()
+                        }
+
+                    }.lparams(width = matchParent, height = wrapContent) {
+                        minimumHeight = dip(72)
+                    }
+
+                    horizontalDivider()
+
+                    relativeLayout {
+                        padding = dip(16)
+
+                        imageView(R.drawable.ic_schedule_24dp) {
+                            id = R.id.noteDateIcon
+                        }.lparams(width = dip(24), height = dip(24)) {
+                            alignParentLeft()
+                            alignParentStart()
+
+                            centerVertically()
+
+                        }
+
+                        deadline = textView {
+                            hintResource = R.string.hint_date
+                            textColor = R.color.primary_text
+                            textSize = 15f
+                        }.lparams(height = wrapContent, width = matchParent) {
+                            horizontalMargin = dip(32)
+
+                            rightOf(R.id.noteDateIcon)
+
+                            centerVertically()
+                        }
+
+                    }.lparams(width = matchParent, height = dip(72))
+
+                }
+            }
+        }
     }
 
 }

@@ -75,6 +75,12 @@ dependencies {
     compile 'de.psdev.licensesdialog:licensesdialog:1.8.3'
     // Tools
     compile project(':database')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compile "org.jetbrains.anko:anko:$anko_version"
+    compile "org.jetbrains.anko:anko-design:$anko_version"
+}
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }

@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
         setSupportActionBar(toolbar)
 
         databaseHelper = DatabaseHelper(this).database
-        ViewCompat.setTransitionName(fab, getString(R.string.transition_fab))
 
         fab.setOnClickListener { showNote(StickyNotification(), true) }
         notes_snlv?.setNoteListener(this)
@@ -109,19 +108,11 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
     }
 
     private fun showNote(note: StickyNotification, withTransition: Boolean) {
-        if (note_snfv == null) {
-            ActivityCompat.startActivityForResult(
-                    this,
-                    DetailsActivity.newIntent(this, note, withTransition),
-                    DETAIL_RC,
-                    if (withTransition)
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(this, fab as View, getString(R.string.transition_fab))
-                                .toBundle()
-                    else
-                        null)
-        } else {
-            note_snfv?.notification = note
-        }
+        ActivityCompat.startActivityForResult(
+                this,
+                DetailsActivity.newIntent(this, note, withTransition),
+                DETAIL_RC,
+                null)
     }
 
     private fun showSnackbar(anchor: View, @StringRes message: Int, duration: Int, @StringRes actionMessage: Int, actionListener: ((View) -> Unit)?) {

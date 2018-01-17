@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="detailsContent" type="id" />
+
+    <item name="noteShowNotificationIcon" type="id" />
+    <item name="noteShowNotificationCheckBox" type="id" />
+    <item name="noteColorIcon" type="id" />
+    <item name="noteColorButton" type="id" />
+    <item name="noteDetailsIcon" type="id" />
+    <item name="noteDateIcon" type="id" />
+</resources>
