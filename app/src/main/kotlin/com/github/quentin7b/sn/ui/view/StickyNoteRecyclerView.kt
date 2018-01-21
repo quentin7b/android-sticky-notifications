@@ -8,18 +8,15 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.text.format.DateUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 
 import com.github.quentin7b.sn.ColorHelper
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.Tool
 import com.github.quentin7b.sn.database.model.StickyNotification
-import com.github.quentin7b.sn.ui.MainActivity
 
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -126,7 +123,7 @@ class StickyNoteRecyclerView : RecyclerView {
             private val titleTextView: AppCompatTextView = rootView.findViewById(R.id.note_title_tv)
             private val contentTextView: AppCompatTextView = rootView.findViewById(R.id.note_description_tv)
             private val dateTextView: AppCompatTextView = rootView.findViewById(R.id.note_date_tv)
-            private val colorIv: LabelImageView = rootView.findViewById(R.id.note_color)
+            private val colorIv: DefconImageView = rootView.findViewById(R.id.note_color)
             private val isNotificationIv: AppCompatImageView = rootView.findViewById(R.id.note_notif_iv)
 
             fun bind(stickyNotification: StickyNotification,
@@ -134,7 +131,7 @@ class StickyNoteRecyclerView : RecyclerView {
                 titleTextView.text = stickyNotification.title
                 rootView.setOnClickListener { listenerProvider.listener!!.onNoteSelected(stickyNotification) }
 
-                colorIv.setColorRes(ColorHelper.getDefconColor(stickyNotification.defcon))
+                colorIv.defcon = stickyNotification.defcon
 
                 if (!stickyNotification.isNotification) {
                     isNotificationIv.setImageDrawable(null)

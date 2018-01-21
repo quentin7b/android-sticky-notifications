@@ -10,7 +10,7 @@
     android:orientation="horizontal"
     android:padding="16dp">
 
-    <com.github.quentin7b.sn.ui.view.LabelImageView
+    <com.github.quentin7b.sn.ui.view.DefconImageView
         android:id="@+id/note_color"
         android:layout_width="40dp"
         android:layout_height="40dp"

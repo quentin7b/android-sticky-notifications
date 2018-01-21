@@ -64,17 +64,16 @@ android {
 
 dependencies {
     // Multidex
-    compile 'com.android.support:multidex:1.0.2'
+    implementation 'com.android.support:multidex:1.0.2'
     // Support
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
     // UI
-    compile 'com.wdullaer:materialdatetimepicker:3.5.0'
-    compile 'de.psdev.licensesdialog:licensesdialog:1.8.3'
+    implementation 'com.wdullaer:materialdatetimepicker:3.5.0'
+    implementation 'de.psdev.licensesdialog:licensesdialog:1.8.3'
     // Tools
-    compile project(':database')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "org.jetbrains.anko:anko:$anko_version"
+    implementation project(':database')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

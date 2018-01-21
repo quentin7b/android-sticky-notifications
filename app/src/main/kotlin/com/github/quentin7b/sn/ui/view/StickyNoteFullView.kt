@@ -10,19 +10,16 @@ import android.support.v7.app.AlertDialog
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewAnimationUtils
 import android.widget.LinearLayout
-
-import com.github.quentin7b.sn.ColorHelper
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.Tool
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.view_note_full.view.*
-
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 
 class StickyNoteFullView : LinearLayout {
@@ -40,7 +37,7 @@ class StickyNoteFullView : LinearLayout {
             return StickyNotification(
                     title,
                     note_content_et?.text!!.toString(),
-                    ColorHelper.getColorDefcon(level_btn?.colorResIdentifier),
+                    level_btn?.defcon,
                     notification_cb!!.isChecked,
                     date
             )
@@ -49,7 +46,7 @@ class StickyNoteFullView : LinearLayout {
             note_title_et?.setText(notification!!.title)
             note_title_et?.setSelection(notification?.title!!.length)
 
-            level_btn?.colorResIdentifier = ColorHelper.getDefconColor(notification!!.defcon)
+            level_btn?.defcon = notification!!.defcon
 
             note_content_et?.setText(notification.content)
             note_content_et?.setSelection(notification.content!!.length)
@@ -98,7 +95,7 @@ class StickyNoteFullView : LinearLayout {
         instanceState.putString(EXTRA.TITLE, note_title_et?.text.toString())
         instanceState.putString(EXTRA.CONTENT, note_content_et?.text.toString())
         instanceState.putBoolean(EXTRA.NOTIFICATION, notification_cb!!.isChecked)
-        instanceState.putInt(EXTRA.DEFCON, ColorHelper.getColorDefcon(level_btn?.colorResIdentifier).describe())
+        instanceState.putInt(EXTRA.DEFCON, level_btn?.defcon!!.describe())
         instanceState.putLong(EXTRA.DATE, if (date != null) date!!.time else -1)
         return super.onSaveInstanceState()
     }
@@ -132,19 +129,19 @@ class StickyNoteFullView : LinearLayout {
 
         addRevealAnimation(alertDialog, dialogView)
 
-        val uselessBtn = dialogView.findViewById<View>(R.id.useless_btn) as LabelImageButton
-        val normalBtn = dialogView.findViewById<View>(R.id.normal_btn) as LabelImageButton
-        val importantBtn = dialogView.findViewById<View>(R.id.important_btn) as LabelImageButton
-        val ultraBtn = dialogView.findViewById<View>(R.id.ultra_btn) as LabelImageButton
+        val uselessBtn = dialogView.findViewById<View>(R.id.useless_btn) as DefconImageButton
+        val normalBtn = dialogView.findViewById<View>(R.id.normal_btn) as DefconImageButton
+        val importantBtn = dialogView.findViewById<View>(R.id.important_btn) as DefconImageButton
+        val ultraBtn = dialogView.findViewById<View>(R.id.ultra_btn) as DefconImageButton
 
-        uselessBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.USELESS)
-        normalBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.NORMAL)
-        importantBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.IMPORTANT)
-        ultraBtn.colorResIdentifier = ColorHelper.getDefconColor(StickyNotification.Defcon.ULTRA)
+        uselessBtn.defcon = StickyNotification.Defcon.USELESS
+        normalBtn.defcon = StickyNotification.Defcon.NORMAL
+        importantBtn.defcon = StickyNotification.Defcon.IMPORTANT
+        ultraBtn.defcon = StickyNotification.Defcon.ULTRA
 
         val colorClickListener = OnClickListener { v ->
-            val imageButton = v as LabelImageButton
-            level_btn.colorResIdentifier = imageButton.colorResIdentifier
+            val imageButton = v as DefconImageButton
+            level_btn.defcon = imageButton.defcon
             alertDialog.dismiss()
         }
 

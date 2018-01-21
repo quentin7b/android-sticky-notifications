@@ -5,15 +5,25 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.support.annotation.ColorRes
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatImageView
+import android.support.v7.widget.AppCompatImageButton
 import android.util.AttributeSet
+import com.github.quentin7b.sn.ColorHelper
 
 import com.github.quentin7b.sn.R
+import com.github.quentin7b.sn.database.model.StickyNotification
 
 
-class LabelImageView : AppCompatImageView {
+class DefconImageButton : AppCompatImageButton {
 
-    var itemDrawable: Drawable? = null
+    private var itemDrawable: Drawable? = null
+
+    var defcon: StickyNotification.Defcon = StickyNotification.Defcon.NORMAL
+        set(value) {
+            field = value
+            val color = ColorHelper.getDefconColor(value)
+            itemDrawable?.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC)
+            setImageDrawable(itemDrawable)
+        }
 
     constructor(context: Context) : super(context) {
         initView()
@@ -32,8 +42,4 @@ class LabelImageView : AppCompatImageView {
         itemDrawable = ContextCompat.getDrawable(context, R.drawable.circle)
     }
 
-    fun setColorRes(@ColorRes color: Int) {
-        itemDrawable?.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC)
-        setImageDrawable(itemDrawable)
-    }
 }
