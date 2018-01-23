@@ -56,7 +56,7 @@ class DetailsActivity : AppCompatActivity() {
             notification = sticky_nfv.notification
             notification?.id = notificationId!!
             notification?.title = note_title_et?.text.toString()
-            if (notificationIsValid(notification!!)) {
+            if (notification?.title?.trim { it <= ' ' }?.isEmpty() == false) {
                 // note_title_et_parent.error = null
                 databaseHelper?.save(notification)
                 setResult(RESULT_OK)
@@ -120,9 +120,4 @@ class DetailsActivity : AppCompatActivity() {
             NavUtils.navigateUpFromSameTask(this)
         }
     }
-
-    private fun notificationIsValid(notification: StickyNotification): Boolean {
-        return !notification.title.trim { it <= ' ' }.isEmpty()
-    }
-
 }

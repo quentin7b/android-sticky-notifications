@@ -16,12 +16,9 @@
             android:id="@+id/notification_ico"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:paddingEnd="48dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="48dp"
             android:paddingStart="0dp"
             android:src="@drawable/ic_attach_file_24dp" />
 
@@ -29,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/notification_ico"
-            android:layout_toRightOf="@id/notification_ico"
             android:paddingBottom="16dp"
             android:paddingTop="16dp">
 
@@ -37,14 +33,12 @@
                 android:id="@+id/notification_cb"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentEnd="true" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/notification_cb"
                 android:layout_toStartOf="@id/notification_cb"
                 android:text="@string/hint_notification"
                 android:textSize="16sp" />
@@ -64,12 +58,9 @@
             android:id="@+id/level_ico"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:paddingEnd="48dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="48dp"
             android:paddingStart="0dp"
             android:src="@drawable/ic_color_lens_24dp" />
 
@@ -77,7 +68,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/level_ico"
-            android:layout_toRightOf="@id/level_ico"
             android:paddingBottom="16dp"
             android:paddingTop="16dp">
 
@@ -86,14 +76,12 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:background="?attr/selectableItemBackground" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/level_btn"
                 android:layout_toStartOf="@id/level_btn"
                 android:text="@string/hint_color"
                 android:textSize="16sp" />
@@ -113,12 +101,9 @@
             android:id="@+id/content_ico"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:paddingEnd="48dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="48dp"
             android:paddingStart="0dp"
             android:src="@drawable/ic_short_text_24dp" />
 
@@ -126,7 +111,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/content_ico"
-            android:layout_toRightOf="@id/content_ico"
             android:paddingBottom="16dp"
             android:paddingTop="16dp">
 
@@ -139,7 +123,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:hint="@string/hint_details"
                     android:textColor="@color/primary_text" />
 
@@ -159,12 +142,9 @@
             android:id="@+id/date_ico"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:paddingEnd="48dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="48dp"
             android:paddingStart="0dp"
             android:src="@drawable/ic_schedule_24dp" />
 
@@ -172,15 +152,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/date_ico"
-            android:layout_toRightOf="@id/date_ico">
+            android:layout_toEndOf="@id/date_ico" >
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/note_content_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:hint="@string/hint_date"
                 android:textColor="@color/primary_text"

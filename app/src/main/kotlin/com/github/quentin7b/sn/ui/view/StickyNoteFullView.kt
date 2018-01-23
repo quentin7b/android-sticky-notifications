@@ -11,13 +11,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.ViewAnimationUtils
 import android.widget.LinearLayout
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.Tool
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.view_note_full.view.*
+import kotlinx.android.synthetic.main.view_note_list_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +25,8 @@ import java.util.*
 class StickyNoteFullView : LinearLayout {
 
     private var date: Date? = null
-    private var dateFormat: SimpleDateFormat? = null
+    private val dateFormat: SimpleDateFormat = SimpleDateFormat(context.getString(R.string.long_date_format),
+            Tool.getLocale(context))
 
     var notification: StickyNotification?
         get() {
@@ -54,10 +55,18 @@ class StickyNoteFullView : LinearLayout {
             notification_cb?.isChecked = notification.isNotification
 
             if (notification.deadLine !== null) {
-                note_content_tv?.text = dateFormat?.format(notification.deadLine)
+                note_content_tv?.text = dateFormat.format(notification.deadLine)
             }
         }
 
+    companion object EXTRA {
+        const val SUPER = "superState"
+        const val TITLE = "titleState"
+        const val CONTENT = "contentState"
+        const val DEFCON = "defconState"
+        const val NOTIFICATION = "notificationState"
+        const val DATE = "dateState"
+    }
 
     constructor(context: Context) : super(context) {
         initLayout()
@@ -78,9 +87,6 @@ class StickyNoteFullView : LinearLayout {
 
     private fun initLayout() {
         val context = context
-        dateFormat = SimpleDateFormat(context.getString(R.string.long_date_format),
-                Tool.getLocale(context))
-
         orientation = LinearLayout.VERTICAL
         LayoutInflater.from(getContext()).inflate(R.layout.view_note_full, this, true)
         isSaveEnabled = true
@@ -127,8 +133,6 @@ class StickyNoteFullView : LinearLayout {
                 .setView(dialogView)
                 .create()
 
-        addRevealAnimation(alertDialog, dialogView)
-
         val uselessBtn = dialogView.findViewById<View>(R.id.useless_btn) as DefconImageButton
         val normalBtn = dialogView.findViewById<View>(R.id.normal_btn) as DefconImageButton
         val importantBtn = dialogView.findViewById<View>(R.id.important_btn) as DefconImageButton
@@ -154,22 +158,6 @@ class StickyNoteFullView : LinearLayout {
         alertDialog.show()
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun addRevealAnimation(alertDialog: AlertDialog, dialogView: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            alertDialog.setOnShowListener {
-                val view = dialogView.findViewById<View>(R.id.reveal_view)
-                val w = view.width
-                val h = view.height
-                val maxRadius = Math.sqrt((w * w / 2 + h * h / 2).toDouble()).toFloat()
-                val revealAnimator = ViewAnimationUtils.createCircularReveal(view,
-                        w, h / 2, 0f, maxRadius)
-                view.visibility = View.VISIBLE
-                revealAnimator.start()
-            }
-        }
-    }
-
     private fun onDateClick() {
         val calendar = Calendar.getInstance()
         val currentDate = date
@@ -177,27 +165,19 @@ class StickyNoteFullView : LinearLayout {
             calendar.time = currentDate
         }
         val dpd = DatePickerDialog.newInstance(
-                { view, year, monthOfYear, dayOfMonth ->
+                { _, year, monthOfYear, dayOfMonth ->
                     val setCalendar = Calendar.getInstance()
                     setCalendar.set(Calendar.YEAR, year)
                     setCalendar.set(Calendar.MONTH, monthOfYear)
                     setCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     date = setCalendar.time
+                    note_date_tv.text = dateFormat.format(date)
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         )
         dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
-    }
-
-    private object EXTRA {
-        val SUPER = "superState"
-        val TITLE = "titleState"
-        val CONTENT = "contentState"
-        val DEFCON = "defconState"
-        val NOTIFICATION = "notificationState"
-        val DATE = "dateState"
     }
 
 }

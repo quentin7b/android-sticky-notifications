@@ -20,7 +20,7 @@
         <item name="android:popupBackground">@color/window_background</item>
     </style>
 
-    <style name="Base.Theme.Sticky.TitleTextLabel" parent="TextAppearance.AppCompat">
+    <style name="Base.Theme.Sticky.TitleTextLabel" parent="Theme.AppCompat">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@color/accent</item>
         <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
