@@ -16,8 +16,6 @@
         android:layout_height="40dp"
         android:paddingBottom="8dp"
         android:paddingEnd="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="16dp"
         android:paddingStart="0dp"
         android:paddingTop="8dp" />
 

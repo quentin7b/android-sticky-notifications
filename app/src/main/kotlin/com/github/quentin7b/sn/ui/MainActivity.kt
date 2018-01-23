@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
                     else
                         null)
         } else {
-            note_snfv?.notification = note
+            // note_snfv?.notification = note
         }
     }
 
@@ -137,11 +137,10 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
     }
 
     companion object {
-
-        private val DETAIL_RC = 8471
-        val RESULT_DELETED = 1234
-        val RESULT_FINISH = 5678
-        val ACTION_NOTIFICATION = "com.github.quentin7b.sn.ACTION_NOTIFICATION"
-        val EXTRA_NOTIFICATION = "com.github.quentin7b.sn.EXTRA_NOTE"
+        private const val DETAIL_RC = 8471
+        const val RESULT_DELETED = 1234
+        const val RESULT_FINISH = 5678
+        const val ACTION_NOTIFICATION = "com.github.quentin7b.sn.ACTION_NOTIFICATION"
+        const val EXTRA_NOTIFICATION = "com.github.quentin7b.sn.EXTRA_NOTE"
     }
 }

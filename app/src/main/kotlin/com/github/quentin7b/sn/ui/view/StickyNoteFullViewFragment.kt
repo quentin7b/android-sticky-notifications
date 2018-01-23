@@ -1,51 +1,51 @@
 package com.github.quentin7b.sn.ui.view
 
-import android.annotation.TargetApi
 import android.app.Activity
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.app.Fragment
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
-import android.util.AttributeSet
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.Tool
 import com.github.quentin7b.sn.database.model.StickyNotification
+import com.github.quentin7b.sn.ui.FragmentLifecycleListner
+import com.github.quentin7b.sn.ui.StickyNoteListener
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
-import kotlinx.android.synthetic.main.view_note_full.view.*
-import kotlinx.android.synthetic.main.view_note_list_item.view.*
+import kotlinx.android.synthetic.main.view_note_full.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class StickyNoteFullView : LinearLayout {
+class StickyNoteFullViewFragment : Fragment() {
 
     private var date: Date? = null
-    private val dateFormat: SimpleDateFormat = SimpleDateFormat(context.getString(R.string.long_date_format),
-            Tool.getLocale(context))
+    private var dateFormat: SimpleDateFormat? = null
 
-    var notification: StickyNotification?
+    var notification: StickyNotification? = null
         get() {
-            val title = if (note_title_et !== null)
-                note_title_et?.text?.toString()
-            else
-                ""
-
-            return StickyNotification(
-                    title,
+            val note = StickyNotification(
+                    note_title_et?.text!!.toString(),
                     note_content_et?.text!!.toString(),
                     level_btn?.defcon,
                     notification_cb!!.isChecked,
                     date
             )
+            note.id = field!!.id
+
+            return note
+
         }
         set(notification) {
+            field = notification
+
             note_title_et?.setText(notification!!.title)
-            note_title_et?.setSelection(notification?.title!!.length)
+            note_title_et?.setSelection(notification!!.title.length)
 
             level_btn?.defcon = notification!!.defcon
 
@@ -55,9 +55,11 @@ class StickyNoteFullView : LinearLayout {
             notification_cb?.isChecked = notification.isNotification
 
             if (notification.deadLine !== null) {
-                note_content_tv?.text = dateFormat.format(notification.deadLine)
+                note_date_tv?.text = dateFormat?.format(notification.deadLine)
             }
         }
+
+    var toolbar: Toolbar? = null
 
     companion object EXTRA {
         const val SUPER = "superState"
@@ -68,45 +70,42 @@ class StickyNoteFullView : LinearLayout {
         const val DATE = "dateState"
     }
 
-    constructor(context: Context) : super(context) {
-        initLayout()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.view_note_full, container, false)
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        initLayout()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initLayout()
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initLayout()
-    }
-
-    private fun initLayout() {
-        val context = context
-        orientation = LinearLayout.VERTICAL
-        LayoutInflater.from(getContext()).inflate(R.layout.view_note_full, this, true)
-        isSaveEnabled = true
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        dateFormat = SimpleDateFormat(context!!.getString(R.string.long_date_format),
+                Tool.getLocale(context!!))
 
         level_btn?.setOnClickListener { onDefconClick() }
-        note_content_tv?.setOnClickListener { onDateClick() }
+        note_date_tv?.setOnClickListener { onDateClick() }
+        toolbar = toolbar_widget
+
+        ViewCompat.setTransitionName(fab, getString(R.string.transition_fab))
+        fab.setOnClickListener {
+            if (!note_title_et?.text.toString().trim { it <= ' ' }.isEmpty()) {
+                (activity as StickyNoteListener).onNoteEdited()
+            } else {
+                note_title_et_parent?.error = getString(R.string.error_title_empty)
+            }
+        }
+        super.onViewCreated(view, savedInstanceState)
+
+        (activity as FragmentLifecycleListner).onFragmentViewCreated()
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    fun onSaveInstanceState(): Parcelable? {
         val instanceState = Bundle()
-        instanceState.putParcelable(EXTRA.SUPER, super.onSaveInstanceState())
-        instanceState.putString(EXTRA.TITLE, note_title_et?.text.toString())
+        //        instanceState.putString(EXTRA.TITLE, note_title_et?.text.toString())
         instanceState.putString(EXTRA.CONTENT, note_content_et?.text.toString())
         instanceState.putBoolean(EXTRA.NOTIFICATION, notification_cb!!.isChecked)
         instanceState.putInt(EXTRA.DEFCON, level_btn?.defcon!!.describe())
         instanceState.putLong(EXTRA.DATE, if (date != null) date!!.time else -1)
-        return super.onSaveInstanceState()
+        return instanceState
     }
 
-    override fun onRestoreInstanceState(state: Parcelable?) {
+    fun onRestoreInstanceState(state: Parcelable?) {
         if (state is Bundle) {
             val bundle = state as Bundle?
             val notification = StickyNotification(
@@ -121,15 +120,12 @@ class StickyNoteFullView : LinearLayout {
                 notification.deadLine = Date(dateLong)
             }
             this.notification = notification
-            super.onRestoreInstanceState(bundle.getParcelable(EXTRA.SUPER))
-        } else {
-            super.onRestoreInstanceState(state)
         }
     }
 
     private fun onDefconClick() {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_color_picker, null)
-        val alertDialog = AlertDialog.Builder(context)
+        val alertDialog = AlertDialog.Builder(context!!)
                 .setView(dialogView)
                 .create()
 
@@ -171,7 +167,7 @@ class StickyNoteFullView : LinearLayout {
                     setCalendar.set(Calendar.MONTH, monthOfYear)
                     setCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     date = setCalendar.time
-                    note_date_tv.text = dateFormat.format(date)
+                    note_date_tv?.text = dateFormat?.format(date)
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),

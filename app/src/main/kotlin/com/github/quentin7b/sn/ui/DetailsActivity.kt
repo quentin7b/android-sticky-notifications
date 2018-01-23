@@ -11,10 +11,11 @@ import android.view.MenuItem
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.database.DatabaseHelper
 import com.github.quentin7b.sn.database.model.StickyNotification
+import com.github.quentin7b.sn.ui.view.StickyNoteFullViewFragment
 import kotlinx.android.synthetic.main.activity_detail.*
 
 
-class DetailsActivity : AppCompatActivity() {
+class DetailsActivity : AppCompatActivity(), FragmentLifecycleListner, StickyNoteListener {
 
     companion object {
 
@@ -28,6 +29,7 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    private var noteFullViewFragment: StickyNoteFullViewFragment? = null
     private var notification: StickyNotification? = null
     private var databaseHelper: DatabaseHelper.StickyDao? = null
     private var showTransition: Boolean = false
@@ -35,13 +37,13 @@ class DetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        setSupportActionBar(toolbar)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = ""
+        noteFullViewFragment = StickyNoteFullViewFragment()
 
-        ViewCompat.setTransitionName(fab, getString(R.string.transition_fab))
-
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.note_snfv, noteFullViewFragment)
+                .commit()
 
         notification = intent.getParcelableExtra(EXTRA_NOTE)
         if (notification == null) {
@@ -49,26 +51,20 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         showTransition = intent.getBooleanExtra(EXTRA_TRANSITION, false)
-
-
-        fab.setOnClickListener {
-            val notificationId = notification?.id
-            notification = sticky_nfv.notification
-            notification?.id = notificationId!!
-            notification?.title = note_title_et?.text.toString()
-            if (notification?.title?.trim { it <= ' ' }?.isEmpty() == false) {
-                // note_title_et_parent.error = null
-                databaseHelper?.save(notification)
-                setResult(RESULT_OK)
-                goMain()
-            } else {
-                note_title_et_parent?.error = getString(R.string.error_title_empty)
-            }
-        }
-
         databaseHelper = DatabaseHelper(this).database
+    }
 
-        initViews()
+    override fun onFragmentViewCreated() {
+        setSupportActionBar(noteFullViewFragment?.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = ""
+        noteFullViewFragment?.notification = notification
+    }
+
+    override fun onNoteEdited() {
+        databaseHelper?.save(noteFullViewFragment!!.notification)
+        setResult(AppCompatActivity.RESULT_OK)
+        goMain()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -104,13 +100,6 @@ class DetailsActivity : AppCompatActivity() {
             setResult(MainActivity.RESULT_FINISH)
             finish()
         }
-    }
-
-    private fun initViews() {
-        note_title_et?.setText(notification?.title)
-        note_title_et?.setSelection(notification?.title!!.length)
-
-        sticky_nfv.notification = notification
     }
 
     private fun goMain() {

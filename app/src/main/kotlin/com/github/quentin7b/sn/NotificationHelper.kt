@@ -8,30 +8,23 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
-import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.github.quentin7b.sn.ui.MainActivity
 
-import java.util.ArrayList
-import java.util.Collections
-
-/**
- * Help showing notifications on screen
- */
 object NotificationHelper {
 
-    private val ID = 14628
+    private const val ID = 14628
+    private const val CHANNEL_ID = "com.github.quentin7b.stickychannel"
 
     fun showNotifications(context: Context, notifications: List<StickyNotification>) {
-        val toShowNotifications = notifications.filter { it.isNotification }
-        Collections.sort(toShowNotifications)
+        val toShowNotifications = notifications.filter { it.isNotification }.sorted()
         if (!toShowNotifications.isEmpty()) {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .notify(ID, if (toShowNotifications.size > 1)
@@ -91,22 +84,31 @@ object NotificationHelper {
     }
 
     private fun generateBuilder(context: Context, title: String, text: String, style: NotificationCompat.Style): NotificationCompat.Builder {
-        val mBuilder = NotificationCompat.Builder(context)
+        val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.small_icon)
-                .setOngoing(true)
                 .setStyle(style)
                 .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
                 .setOngoing(true)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mBuilder.priority = NotificationManager.IMPORTANCE_MAX
+            setPriorityNewAPI(mBuilder)
         } else {
-            mBuilder.priority = Notification.PRIORITY_MAX
+            setPriorityOldAPI(mBuilder)
         }
 
         return mBuilder
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun setPriorityNewAPI(builder: NotificationCompat.Builder) {
+        builder.priority = NotificationManager.IMPORTANCE_MAX
+    }
+
+    @SuppressWarnings("deprecation")
+    private fun setPriorityOldAPI(builder: NotificationCompat.Builder) {
+        builder.priority = Notification.PRIORITY_MAX
     }
 
 }
