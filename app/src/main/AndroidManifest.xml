@@ -54,7 +54,6 @@
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="fr.quentinklein.stickynotifs.UPDATE_LIST" />
             </intent-filter>
 
             <meta-data

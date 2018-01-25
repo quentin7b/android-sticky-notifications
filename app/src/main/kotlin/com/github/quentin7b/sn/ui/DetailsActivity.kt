@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.NavUtils
-import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -12,15 +11,14 @@ import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.database.DatabaseHelper
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.github.quentin7b.sn.ui.view.StickyNoteFullViewFragment
-import kotlinx.android.synthetic.main.activity_detail.*
 
 
 class DetailsActivity : AppCompatActivity(), FragmentLifecycleListner, StickyNoteListener {
 
     companion object {
 
-        private val EXTRA_NOTE = "com.github.quentin7b.sn.EXTRA_NOTE"
-        private val EXTRA_TRANSITION = "com.github.quentin7b.sn.EXTRA_TRANSITION"
+        private const val EXTRA_NOTE = "com.github.quentin7b.sn.EXTRA_NOTE"
+        private const val EXTRA_TRANSITION = "com.github.quentin7b.sn.EXTRA_TRANSITION"
 
         fun newIntent(context: Context, notification: StickyNotification, withTransition: Boolean): Intent {
             return Intent(context, DetailsActivity::class.java)

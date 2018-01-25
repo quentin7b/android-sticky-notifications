@@ -1,16 +1,15 @@
 package com.github.quentin7b.sn.ui
 
-import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +19,7 @@ import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.database.DatabaseHelper
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.github.quentin7b.sn.ui.view.StickyNoteRecyclerView
+import com.github.quentin7b.sn.widget.StickyWidgetProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -35,18 +35,24 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
         databaseHelper = DatabaseHelper(this).database
         ViewCompat.setTransitionName(fab, getString(R.string.transition_fab))
 
-        fab.setOnClickListener { showNote(StickyNotification(), true) }
+        fab?.setOnClickListener { showNote(StickyNotification(), true) }
         notes_snlv?.setNoteListener(this)
     }
 
     override fun onResume() {
         super.onResume()
         if (ACTION_NOTIFICATION == intent.action) {
-            showNote(intent.getParcelableExtra<Parcelable>(EXTRA_NOTIFICATION) as StickyNotification, false)
+            val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
+            if (notificationId != -1) {
+                val notification = databaseHelper!!.one(notificationId.toInt())
+                showNote(notification, false)
+            } else {
+                Log.i("MainActivity", "Notification action but no id passed $notificationId")
+            }
         } else {
             loadNotifications()
             // refresh widgets
-            sendBroadcast(Intent().setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
+            StickyWidgetProvider.triggerNoteListWidgetUpdate(this)
         }
     }
 
@@ -142,5 +148,6 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
         const val RESULT_FINISH = 5678
         const val ACTION_NOTIFICATION = "com.github.quentin7b.sn.ACTION_NOTIFICATION"
         const val EXTRA_NOTIFICATION = "com.github.quentin7b.sn.EXTRA_NOTE"
+        const val EXTRA_NOTIFICATION_ID = "com.github.quentin7b.sn.EXTRA_NOTE_ID"
     }
 }

@@ -2,8 +2,11 @@ package com.github.quentin7b.sn.widget
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
+import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 
@@ -18,62 +21,51 @@ import java.sql.SQLException
 import java.util.ArrayList
 import java.util.Collections
 
-class StickyWidgetRemoteViewsFactory
-/**
- * Create a widget factory and return it
- *
- * @param context the app context
- */
-(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
+class StickyWidgetRemoteViewsFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
 
     private val database: DatabaseHelper.StickyDao = DatabaseHelper(context).database
-    private var notificationList: MutableList<StickyNotification>? = null
-
-    private fun updateWidgetListView() {
-        notificationList = database.all
-        Collections.sort(notificationList!!)
-    }
+    private var notificationList: ArrayList<StickyNotification> = ArrayList()
 
     override fun onCreate() {
-        updateWidgetListView()
+        // nothing to do
     }
 
     override fun onDataSetChanged() {
-        updateWidgetListView()
+        notificationList.clear()
+        notificationList.addAll(database.all.sorted())
     }
 
     override fun onDestroy() {
-        notificationList!!.clear()
+        notificationList.clear()
     }
 
     override fun getCount(): Int {
-        return if (notificationList != null)
-            notificationList!!.size
-        else
-            0
+        return notificationList.size
     }
 
     override fun getViewAt(position: Int): RemoteViews {
         val remoteView = RemoteViews(context.packageName, R.layout.widget_row)
-        val notification = notificationList!![position]
+        val notification = notificationList[position]
         remoteView.setTextViewText(R.id.note_title_tv, notification.title)
         remoteView.setTextColor(R.id.note_title_tv, ContextCompat.getColor(context, ColorHelper.getDefconColor(notification.defcon)))
         remoteView.setTextViewText(R.id.note_description_tv, notification.content)
 
-        if (!notification.isNotification) {
-            remoteView.setImageViewBitmap(R.id.note_notif_iv, null)
-        }
+        remoteView.setViewVisibility(R.id.note_notif_iv,
+                if (notification.isNotification)
+                    View.VISIBLE
+                else
+                    View.INVISIBLE
+        )
 
+        Log.i("Widget", "Put extra $notification for $position")
         val fillInIntent = Intent()
-                .setAction(MainActivity.ACTION_NOTIFICATION)
-                .putExtra(MainActivity.EXTRA_NOTIFICATION, notification)
-        remoteView.setOnClickFillInIntent(R.id.widget_row, fillInIntent)
+                .putExtra(MainActivity.EXTRA_NOTIFICATION_ID, notification.id)
+        remoteView.setOnClickFillInIntent(R.id.widget_item, fillInIntent)
 
         return remoteView
     }
 
     override fun getLoadingView(): RemoteViews? {
-        // Auto
         return null
     }
 
@@ -82,7 +74,7 @@ class StickyWidgetRemoteViewsFactory
     }
 
     override fun getItemId(position: Int): Long {
-        return notificationList!![position].id.toLong()
+        return notificationList[position].id.toLong()
     }
 
     override fun hasStableIds(): Boolean {

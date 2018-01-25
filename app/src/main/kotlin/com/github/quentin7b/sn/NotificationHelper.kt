@@ -49,7 +49,7 @@ object NotificationHelper {
                 0,
                 Intent(context, MainActivity::class.java)
                         .setAction(MainActivity.ACTION_NOTIFICATION)
-                        .putExtra(MainActivity.EXTRA_NOTIFICATION, notification),
+                        .putExtra(MainActivity.EXTRA_NOTIFICATION_ID, notification.id),
                 PendingIntent.FLAG_UPDATE_CURRENT
         ))
 

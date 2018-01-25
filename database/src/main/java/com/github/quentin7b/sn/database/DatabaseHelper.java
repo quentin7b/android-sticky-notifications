@@ -78,6 +78,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             }
         }
 
+        public synchronized StickyNotification one(int id) {
+            try {
+                return dao.queryForId(id);
+            } catch (Exception e) {
+                Log.e("Database", "Can't get all notifications", e);
+                return null;
+            }
+        }
+
         public synchronized List<StickyNotification> getAll() {
             try {
                 return dao.queryForAll();
