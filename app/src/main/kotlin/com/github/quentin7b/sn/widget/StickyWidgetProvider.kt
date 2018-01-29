@@ -68,6 +68,7 @@ class StickyWidgetProvider : AppWidgetProvider() {
 
     private fun composeActionPendingIntent(context: Context): PendingIntent {
         val intent = Intent(context, MainActivity::class.java)
+                .setAction(MainActivity.ACTION_COMPOSE)
         // set action new
 
         return PendingIntent.getActivity(context, 0, intent, 0)

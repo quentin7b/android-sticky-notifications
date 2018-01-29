@@ -41,18 +41,24 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
 
     override fun onResume() {
         super.onResume()
-        if (ACTION_NOTIFICATION == intent.action) {
-            val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
-            if (notificationId != -1) {
-                val notification = databaseHelper!!.one(notificationId.toInt())
-                showNote(notification, false)
-            } else {
-                Log.i("MainActivity", "Notification action but no id passed $notificationId")
+        when (intent.action) {
+            ACTION_NOTIFICATION -> {
+                val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
+                if (notificationId != -1) {
+                    val notification = databaseHelper!!.one(notificationId.toInt())
+                    showNote(notification, false)
+                } else {
+                    Log.i("MainActivity", "Notification action but no id passed $notificationId")
+                }
             }
-        } else {
-            loadNotifications()
-            // refresh widgets
-            StickyWidgetProvider.triggerNoteListWidgetUpdate(this)
+            ACTION_COMPOSE -> {
+                showNote(StickyNotification(), false)
+            }
+            else -> {
+                loadNotifications()
+                // refresh widgets
+                StickyWidgetProvider.triggerNoteListWidgetUpdate(this)
+            }
         }
     }
 
@@ -147,6 +153,7 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
         const val RESULT_DELETED = 1234
         const val RESULT_FINISH = 5678
         const val ACTION_NOTIFICATION = "com.github.quentin7b.sn.ACTION_NOTIFICATION"
+        const val ACTION_COMPOSE = "com.github.quentin7b.sn.ACTION_COMPOSE"
         const val EXTRA_NOTIFICATION = "com.github.quentin7b.sn.EXTRA_NOTE"
         const val EXTRA_NOTIFICATION_ID = "com.github.quentin7b.sn.EXTRA_NOTE_ID"
     }

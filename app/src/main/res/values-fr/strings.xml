@@ -24,4 +24,7 @@
     <string name="about_app">A propos</string>
     <string name="about_version">Version: %s</string>
     <string name="about_licenses">Licences Open Source</string>
+
+    <string name="action_compose_short">Composer</string>
+    <string name="action_compose_long">Créer une notification</string>
 </resources>

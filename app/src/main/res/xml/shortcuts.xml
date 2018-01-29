@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="compose"
+        android:icon="@drawable/ic_add_white_24dp"
+        android:shortcutShortLabel="@string/action_compose_short"
+        android:shortcutLongLabel="@string/action_compose_long">
+        <intent
+            android:action="com.github.quentin7b.sn.ACTION_COMPOSE"
+            android:targetPackage="${applicationId}"
+            android:targetClass="com.github.quentin7b.sn.ui.MainActivity" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>
