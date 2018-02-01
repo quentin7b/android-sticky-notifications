@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_1_title">Appeller Marion</string>
+    <string name="note_1_content">Prendre un rendez-vous</string>
+
+    <string name="note_2_title">Poster la lettre</string>
+    <string name="note_2_content">A Quentin</string>
+
+    <string name="note_3_title">Acheter du caffé</string>
+    <string name="note_3_content">Et du thé si dispo</string>
+
+    <string name="note_4_title">Imprimer les photos</string>
+    <string name="note_4_content">En 13x15</string>
+</resources>

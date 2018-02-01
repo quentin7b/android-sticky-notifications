@@ -1,0 +1,4 @@
+- Nouveau design
+- Gère la dernière version d'Android
+- Possibilité de filter les notifications
+- Thème customisable !

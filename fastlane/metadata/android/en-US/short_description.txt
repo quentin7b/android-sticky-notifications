@@ -1,0 +1,1 @@
+A beautiful and simple Todo List that appears in your notifications bar

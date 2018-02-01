@@ -1,0 +1,2 @@
+fix: Correction du fonctionnement du widget
+chore: Meilleur affichage de l'écran d'édition
