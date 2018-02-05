@@ -1,22 +1,26 @@
 package com.github.quentin7b.sn
 
-import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.swipeLeft
+import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.contrib.RecyclerViewActions.actionOnItem
-import android.support.test.espresso.matcher.ViewMatchers.*
+import android.support.test.espresso.intent.Intents
+import android.support.test.espresso.intent.Intents.intended
+import android.support.test.espresso.intent.matcher.BundleMatchers.hasEntry
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasExtras
+import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
+import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import android.support.v7.widget.RecyclerView
-import com.github.quentin7b.sn.database.model.StickyNotification
+import com.github.quentin7b.sn.ui.DetailsActivity
 import com.github.quentin7b.sn.ui.MainActivity
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import tools.fastlane.screengrab.Screengrab
 import tools.fastlane.screengrab.locale.LocaleTestRule
 
 
@@ -38,11 +42,39 @@ class MainActivityTest {
     }
 
     @Test
-    fun testEmpty() {
-        onView(withId(R.id.notes_snlv)).check(matches(isDisplayed()))
-        Screengrab.screenshot("home_empty")
+    fun testToolbarIsDisplayed() {
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()))
     }
 
+    @Test
+    fun testRecyclerIsDisplayed() {
+        onView(withId(R.id.notes_snlv)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testFabIsDisplayed() {
+        onView(withId(R.id.main_fab)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testStartDetailActivity() {
+        Intents.init()
+
+        onView(withId(R.id.main_fab))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        intended(allOf(
+                hasComponent(DetailsActivity::class.java.name),
+                hasExtras(allOf(
+                        hasEntry(equalTo(DetailsActivity.EXTRA_TRANSITION), equalTo(true))
+                ))
+        ))
+
+        Intents.release()
+    }
+
+    /*
     @Test
     fun testComplete() {
         val resources = InstrumentationRegistry.getContext().resources
@@ -77,6 +109,7 @@ class MainActivityTest {
 
         assert(true)
     }
+    */
 
 
 }

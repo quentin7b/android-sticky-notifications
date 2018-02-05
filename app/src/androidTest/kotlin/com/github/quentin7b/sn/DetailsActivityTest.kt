@@ -33,6 +33,32 @@ class DetailsActivityTest {
     val activity = ActivityTestRule<DetailsActivity>(DetailsActivity::class.java)
 
     @Test
+    fun testTitleIsDisplayed() {
+        onView(withId(R.id.note_title_et)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testContentIsDisplayed() {
+        onView(withId(R.id.note_content_et)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testCheckboxIsDisplayed() {
+        onView(withId(R.id.notification_cb)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testDefconLevelIsDisplayed() {
+        onView(withId(R.id.level_btn)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testSaveBtnIsDisplayed() {
+        onView(withId(R.id.fab)).check(matches(isDisplayed()))
+    }
+
+    /*
+    @Test
     fun testFull() {
         val resources = InstrumentationRegistry.getContext().resources
 
@@ -46,5 +72,6 @@ class DetailsActivityTest {
 
         assert(true)
     }
+    */
 
 }
