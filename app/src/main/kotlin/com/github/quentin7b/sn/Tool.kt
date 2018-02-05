@@ -22,7 +22,7 @@ object Tool {
         return configuration.locales.get(0)
     }
 
-    @SuppressWarnings("deprecation")
+    @Suppress("DEPRECATION")
     private fun getLocaleOldAPI(configuration: Configuration): Locale {
         return configuration.locale
     }

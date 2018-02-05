@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'de.timfreiheit.resourceplaceholders.plugin'
 
@@ -11,6 +10,10 @@ repositories {
 
 kapt {
     generateStubs = true
+}
+
+androidExtensions {
+    experimental = true
 }
 
 android {
@@ -77,6 +80,9 @@ dependencies {
     // Tools
     implementation project(':database')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'com.j256.ormlite:ormlite-android:5.0'
+    implementation 'com.j256.ormlite:ormlite-core:5.0'
 }
 
 resourcePlaceholders {

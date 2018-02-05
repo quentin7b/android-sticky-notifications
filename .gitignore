@@ -39,3 +39,6 @@ local.properties
 
 #app/keystore
 gradle.properties
+
+# fastlane
+gplay-fastlane-8f8b62ba5e44.json

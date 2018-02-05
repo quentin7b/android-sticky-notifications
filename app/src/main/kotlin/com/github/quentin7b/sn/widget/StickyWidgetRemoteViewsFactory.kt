@@ -2,24 +2,17 @@ package com.github.quentin7b.sn.widget
 
 import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
-import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-
 import com.github.quentin7b.sn.ColorHelper
 import com.github.quentin7b.sn.R
 import com.github.quentin7b.sn.database.DatabaseHelper
 import com.github.quentin7b.sn.database.model.StickyNotification
 import com.github.quentin7b.sn.ui.MainActivity
-import com.j256.ormlite.dao.Dao
-
-import java.sql.SQLException
-import java.util.ArrayList
-import java.util.Collections
+import java.util.*
 
 class StickyWidgetRemoteViewsFactory(private val context: Context) : RemoteViewsService.RemoteViewsFactory {
 

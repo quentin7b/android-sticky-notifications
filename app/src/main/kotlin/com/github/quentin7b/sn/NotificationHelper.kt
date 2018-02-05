@@ -61,7 +61,11 @@ object NotificationHelper {
         for (note in notifications) {
             val suffix = if (!note.content.isEmpty()) " - " + note.content else ""
             val wordToSpan = SpannableString(note.title + suffix)
-            wordToSpan.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, ColorHelper.getDefconColor(note.defcon))), 0, note.title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            wordToSpan.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(context, ColorHelper.getDefconColor(note.defcon))),
+                    0,
+                    note.title.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             wordToSpan.setSpan(StyleSpan(Typeface.BOLD), 0, note.title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             notificationCompat.addLine(wordToSpan)
         }
@@ -106,7 +110,7 @@ object NotificationHelper {
         builder.priority = NotificationManager.IMPORTANCE_MAX
     }
 
-    @SuppressWarnings("deprecation")
+    @Suppress("DEPRECATION")
     private fun setPriorityOldAPI(builder: NotificationCompat.Builder) {
         builder.priority = Notification.PRIORITY_MAX
     }

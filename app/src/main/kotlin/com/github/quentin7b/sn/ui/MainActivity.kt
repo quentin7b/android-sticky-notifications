@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
         setSupportActionBar(toolbar)
 
         databaseHelper = DatabaseHelper(this).database
-        ViewCompat.setTransitionName(fab, getString(R.string.transition_fab))
+        ViewCompat.setTransitionName(main_fab, getString(R.string.transition_fab))
 
-        fab?.setOnClickListener { showNote(StickyNotification(), true) }
+        main_fab?.setOnClickListener { showNote(StickyNotification(), true) }
         notes_snlv?.setNoteListener(this)
     }
 
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
                 val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
                 if (notificationId != -1) {
                     val notification = databaseHelper!!.one(notificationId.toInt())
-                    showNote(notification, false)
+                    showNote(notification!!, false)
                 } else {
                     Log.i("MainActivity", "Notification action but no id passed $notificationId")
                 }
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
                     DetailsActivity.newIntent(this, note, withTransition),
                     DETAIL_RC,
                     if (withTransition)
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(this, fab as View, getString(R.string.transition_fab))
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(this, main_fab as View, getString(R.string.transition_fab))
                                 .toBundle()
                     else
                         null)

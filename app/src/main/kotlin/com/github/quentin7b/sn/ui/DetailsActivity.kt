@@ -60,7 +60,7 @@ class DetailsActivity : AppCompatActivity(), FragmentLifecycleListner, StickyNot
     }
 
     override fun onNoteEdited() {
-        databaseHelper?.save(noteFullViewFragment!!.notification)
+        databaseHelper?.save(noteFullViewFragment!!.notification!!)
         setResult(AppCompatActivity.RESULT_OK)
         goMain()
     }
@@ -74,8 +74,8 @@ class DetailsActivity : AppCompatActivity(), FragmentLifecycleListner, StickyNot
         when (item.itemId) {
             R.id.action_delete -> {
                 if (notification!!.id > 0) {
-                    val cloneNotification = StickyNotification(notification)
-                    databaseHelper?.delete(notification)
+                    val cloneNotification = StickyNotification(notification!!)
+                    databaseHelper?.delete(notification!!)
                     setResult(MainActivity.RESULT_DELETED,
                             Intent().putExtra(MainActivity.EXTRA_NOTIFICATION, cloneNotification))
                 }

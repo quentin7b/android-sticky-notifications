@@ -11,10 +11,10 @@ object ColorHelper {
     private val DEFCON_COLORS = BiMap()
 
     init {
-        DEFCON_COLORS.put(StickyNotification.Defcon.USELESS, R.color.color_useless)
-        DEFCON_COLORS.put(StickyNotification.Defcon.NORMAL, R.color.color_normal)
-        DEFCON_COLORS.put(StickyNotification.Defcon.IMPORTANT, R.color.color_important)
-        DEFCON_COLORS.put(StickyNotification.Defcon.ULTRA, R.color.color_ultra)
+        DEFCON_COLORS[StickyNotification.Defcon.USELESS] = R.color.color_useless
+        DEFCON_COLORS[StickyNotification.Defcon.NORMAL] = R.color.color_normal
+        DEFCON_COLORS[StickyNotification.Defcon.IMPORTANT] = R.color.color_important
+        DEFCON_COLORS[StickyNotification.Defcon.ULTRA] = R.color.color_ultra
     }
 
     @ColorRes

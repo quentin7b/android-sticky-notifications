@@ -32,7 +32,7 @@ class StickyNoteFullViewFragment : Fragment() {
             val note = StickyNotification(
                     note_title_et?.text!!.toString(),
                     note_content_et?.text!!.toString(),
-                    level_btn?.defcon,
+                    level_btn?.defcon!!,
                     notification_cb!!.isChecked,
                     date
             )
@@ -50,7 +50,7 @@ class StickyNoteFullViewFragment : Fragment() {
             level_btn?.defcon = notification!!.defcon
 
             note_content_et?.setText(notification.content)
-            note_content_et?.setSelection(notification.content!!.length)
+            note_content_et?.setSelection(notification.content.length)
 
             notification_cb?.isChecked = notification.isNotification
 
