@@ -17,12 +17,17 @@ class DetailsActivity : AppCompatActivity(), FragmentLifecycleListner, StickyNot
 
     companion object {
 
-        private const val EXTRA_NOTE = "com.github.quentin7b.sn.EXTRA_NOTE"
-        private const val EXTRA_TRANSITION = "com.github.quentin7b.sn.EXTRA_TRANSITION"
+        const val EXTRA_NOTE = "com.github.quentin7b.sn.EXTRA_NOTE"
+        const val EXTRA_TRANSITION = "com.github.quentin7b.sn.EXTRA_TRANSITION"
 
         fun newIntent(context: Context, notification: StickyNotification, withTransition: Boolean): Intent {
-            return Intent(context, DetailsActivity::class.java)
+            return newIntent(context, withTransition)
                     .putExtra(EXTRA_NOTE, notification)
+
+        }
+
+        fun newIntent(context: Context, withTransition: Boolean): Intent {
+            return Intent(context, DetailsActivity::class.java)
                     .putExtra(EXTRA_TRANSITION, withTransition)
         }
     }

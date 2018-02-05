@@ -22,11 +22,11 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/appCompatTextView"
+        android:id="@+id/about_tv"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:gravity="center_vertical"
-        android:paddingLeft="16dp"
+        android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:text="@string/about_app"
         app:textAllCaps="true" />
@@ -60,6 +60,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
+            android:focusable="true"
             android:padding="16dp"
             android:text="@string/about_licenses" />
     </FrameLayout>

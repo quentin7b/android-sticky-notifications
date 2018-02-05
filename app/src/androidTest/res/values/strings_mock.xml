@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_1_title">Call Marion</string>
+    <string name="note_1_content">Schedule a meeting</string>
+
+    <string name="note_2_title">Post the letter</string>
+    <string name="note_2_content">To Quentin</string>
+    
+    <string name="note_3_title">Buy some coffee</string>
+    <string name="note_3_content">And some tea if there is</string>
+
+    <string name="note_4_title">Print the photos</string>
+    <string name="note_4_content">13x15</string>
+</resources>

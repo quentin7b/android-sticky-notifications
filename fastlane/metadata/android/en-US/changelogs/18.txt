@@ -1,0 +1,2 @@
+fix: fixes widget behavior
+chore: better display in note edition screen

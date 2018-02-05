@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
         databaseHelper = DatabaseHelper(this).database
         ViewCompat.setTransitionName(main_fab, getString(R.string.transition_fab))
 
-        main_fab?.setOnClickListener { showNote(StickyNotification(), true) }
+        main_fab?.setOnClickListener { showNote(null, true) }
         notes_snlv?.setNoteListener(this)
     }
 
@@ -120,11 +120,14 @@ class MainActivity : AppCompatActivity(), StickyNoteRecyclerView.NoteListener {
         confirmNoteDeleted(StickyNotification(note)) // As a new one
     }
 
-    private fun showNote(note: StickyNotification, withTransition: Boolean) {
+    private fun showNote(note: StickyNotification?, withTransition: Boolean) {
         if (note_snfv == null) {
             ActivityCompat.startActivityForResult(
                     this,
-                    DetailsActivity.newIntent(this, note, withTransition),
+                    if (note !== null)
+                        DetailsActivity.newIntent(this, note, withTransition)
+                    else
+                        DetailsActivity.newIntent(this, withTransition),
                     DETAIL_RC,
                     if (withTransition)
                         ActivityOptionsCompat.makeSceneTransitionAnimation(this, main_fab as View, getString(R.string.transition_fab))

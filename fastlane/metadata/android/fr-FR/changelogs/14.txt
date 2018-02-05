@@ -1,0 +1,3 @@
+- Refonte graphique
+- Correction de bugs
+- Introduction d'une date de délai

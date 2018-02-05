@@ -42,3 +42,4 @@ gradle.properties
 
 # fastlane
 gplay-fastlane-8f8b62ba5e44.json
+fastlane/report.xml
