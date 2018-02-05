@@ -74,6 +74,21 @@ class MainActivityTest {
         Intents.release()
     }
 
+    @Test
+    fun testEditFail() {
+        //
+    }
+
+    @Test
+    fun testEditOk() {
+        //
+    }
+
+    @Test
+    fun testNewOk() {
+        // use intending
+    }
+
     /*
     @Test
     fun testComplete() {
